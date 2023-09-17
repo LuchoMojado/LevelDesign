@@ -6,8 +6,8 @@ using System;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : Entity
 {
-    [SerializeField] float _speed, _jumpStrength;
-
+    [SerializeField] float _speed, _jumpStrength, _grappleRange, _hookSpeed;
+    
     [Range(500, 1000), SerializeField]
     float _mouseSensitivity;
 
@@ -15,11 +15,13 @@ public class Player : Entity
 
     public Movement movement;
     Inputs _inputs;
+    [field:SerializeField] public GrapplingHook _grapplingHook { private set; get; }
 
     float _xRotation;
-    Ray _ray;
+    Ray _grapple;
     RaycastHit _rayHit;
     Transform _cameraTransform;
+    public bool _canGrapple { private set; get; }
 
     private void Awake()
     {
@@ -31,6 +33,8 @@ public class Player : Entity
 
         movement = new Movement(transform, _myRB, _speed, _mouseSensitivity, _jumpStrength);
         _inputs = new Inputs(movement, this);
+
+        _grapple = new Ray();
     }
 
     private void Start()
@@ -43,6 +47,22 @@ public class Player : Entity
     {
         if(_inputs.inputUpdate != null)
             _inputs.inputUpdate();
+
+        if (!_grapplingHook.grappled)
+        {
+            if (Physics.Raycast(transform.position, _cameraTransform.forward, out _rayHit, _grappleRange))
+            {
+                _canGrapple = true;
+            }
+            else
+            {
+                _canGrapple = false;
+            }
+        }
+        else
+        {
+            _canGrapple = false;
+        }
     }
 
     private void FixedUpdate()
@@ -72,6 +92,16 @@ public class Player : Entity
         Cursor.visible = true;
         _inputs.inputUpdate = null;
         //UIManager.instance.GameOver();
+    }
+
+    public void UseGrapple()
+    {
+        StartCoroutine(_grapplingHook.Grapple(_hookSpeed, _rayHit));
+    }
+
+    public void UseUngrapple()
+    {
+        StartCoroutine(_grapplingHook.Ungrapple(_hookSpeed));
     }
 }
 

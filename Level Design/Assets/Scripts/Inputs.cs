@@ -38,6 +38,20 @@ public class Inputs
             inputUpdate = Paused;
         }
 
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            if (_player._canGrapple)
+                _player.UseGrapple();
+        }
+
+        if (_player._grapplingHook.grappled)
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                _player.UseUngrapple();
+            }
+        }
+
         if (Input.GetKey(KeyCode.LeftShift))
         {
             if (_inputVertical <= 0)
