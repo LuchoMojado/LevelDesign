@@ -6,61 +6,65 @@ public class GrapplingHook : MonoBehaviour
 {
     [SerializeField] GameObject _hook;
     LineRenderer _lineR;
-    Transform _return;
+    [SerializeField] Transform _return;
 
     [HideInInspector] public bool grappled;
 
     private void Awake()
     {
         _lineR = GetComponent<LineRenderer>();
-        _return = GetComponentInChildren<Transform>();
     }
 
     private void Update()
     {
-        if (_lineR.enabled == true)
-        {
-            _lineR.SetPosition(0, _return.position);
-            _lineR.SetPosition(1, _hook.transform.position);
-        }
         
+    }
+
+    private void LateUpdate()
+    {
+        _lineR.SetPosition(0, _return.position);
+        _lineR.SetPosition(1, _hook.transform.position);
     }
 
     public IEnumerator Grapple(float speed, RaycastHit hit)
     {
         _lineR.enabled = true;
         grappled = true;
-
+        _hook.transform.SetParent(null);
         float time = 0;
+        float distance = (_hook.transform.position - hit.point).magnitude;
 
-        while (time < speed)
+        while (time < distance * speed)
         {
             time += Time.deltaTime;
 
-            _hook.transform.position = Vector3.Lerp(_hook.transform.position, hit.point, time);
+            _hook.transform.position = Vector3.Lerp(_hook.transform.position, hit.point, time / (distance * speed));
 
             yield return null;
         }
 
-        _hook.transform.SetParent(null);
+        _hook.transform.rotation = Quaternion.Euler(hit.normal + new Vector3(90,0,0));
     }
 
     public IEnumerator Ungrapple(float speed)
     {
         float time = 0;
+        Vector3 oldPos = _hook.transform.position;
+        float distance = (_hook.transform.position - _return.position).magnitude;
 
-        while (time < speed)
+        while (time < distance * speed)
         {
             time += Time.deltaTime;
 
-            _hook.transform.position = Vector3.Lerp(_hook.transform.position, _return.position, time);
-
+            _hook.transform.position = Vector3.Lerp(oldPos, _return.position, time / (distance * speed));
+            print(time);
             yield return null;
         }
+        print("si");
 
+        _hook.transform.position = _return.position;
+        _hook.transform.rotation = _return.rotation;
         _hook.transform.SetParent(transform);
-        //_hook.transform.position = _return.position;
-
         grappled = false;
         _lineR.enabled = false;
     }

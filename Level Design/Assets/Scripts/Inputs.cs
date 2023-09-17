@@ -29,14 +29,14 @@ public class Inputs
 
         _movement.Rotation(_inputMouseX, _inputMouseY);
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        /*if (Input.GetKeyDown(KeyCode.Escape))
         {
             Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             //UIManager.instance.SetPauseMenu(true);
             inputUpdate = Paused;
-        }
+        }*/
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
