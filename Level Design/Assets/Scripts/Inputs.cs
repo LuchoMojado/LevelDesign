@@ -50,6 +50,10 @@ public class Inputs
             {
                 _player.UseUngrapple();
             }
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                _player.PropelToHook();
+            }
         }
 
         if (Input.GetKey(KeyCode.LeftShift))

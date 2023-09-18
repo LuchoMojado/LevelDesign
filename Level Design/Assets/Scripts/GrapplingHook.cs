@@ -42,15 +42,27 @@ public class GrapplingHook : MonoBehaviour
 
             _hook.transform.position = Vector3.Lerp(_hook.transform.position, hit.point, time / (distance * speed));
 
+            if (_hook.transform.position == hit.point)
+            {
+                float jointLimit = (player.transform.position - hit.point).magnitude + 0.6f;
+                _hook.transform.rotation = Quaternion.Euler(hit.normal + new Vector3(90, 0, 0));
+                grappled = true;
+                limitConfig.limit = jointLimit;
+                _playerJoint = player.AddComponent<ConfigurableJoint>();
+                JointSetUp(_playerJoint, hit.point, limitConfig);
+
+                yield break;
+            }
+
             yield return null;
         }
 
-        float jointLimit = (player.transform.position - hit.point).magnitude + 0.6f;
+        /*float jointLimit = (player.transform.position - hit.point).magnitude + 0.6f;
         _hook.transform.rotation = Quaternion.Euler(hit.normal + new Vector3(90,0,0));
         grappled = true;
         limitConfig.limit = jointLimit;
         _playerJoint = player.AddComponent<ConfigurableJoint>();
-        JointSetUp(_playerJoint, hit.point, limitConfig);
+        JointSetUp(_playerJoint, hit.point, limitConfig);*/
     }
 
     public IEnumerator Ungrapple(float speed)

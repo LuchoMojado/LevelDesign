@@ -6,7 +6,7 @@ using System;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : Entity
 {
-    [SerializeField] float _speed, _jumpStrength, _grappleRange, _hookSpeed;
+    [SerializeField] float _speed, _jumpStrength, _grappleRange, _hookSpeed, _properStr;
     
     [Range(500, 1000), SerializeField]
     float _mouseSensitivity;
@@ -101,9 +101,10 @@ public class Player : Entity
         StartCoroutine(_grapplingHook.Ungrapple(_hookSpeed));
     }
 
-    /*public void PropelToHook()
+    public void PropelToHook()
     {
-        movement.MoveToHook
-    }*/
+        UseUngrapple();
+        movement.MoveToHook(rayHit.point - transform.position, _properStr);
+    }
 }
 
