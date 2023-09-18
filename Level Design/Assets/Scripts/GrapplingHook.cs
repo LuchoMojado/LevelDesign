@@ -6,9 +6,11 @@ public class GrapplingHook : MonoBehaviour
 {
     [SerializeField] GameObject _hook;
     LineRenderer _lineR;
+    ConfigurableJoint _playerJoint;
     [SerializeField] Transform _return;
+    SoftJointLimit limitConfig = new SoftJointLimit();
 
-    [HideInInspector] public bool grappled;
+    [HideInInspector] public bool shot, grappled;
 
     private void Awake()
     {
@@ -26,10 +28,10 @@ public class GrapplingHook : MonoBehaviour
         _lineR.SetPosition(1, _hook.transform.position);
     }
 
-    public IEnumerator Grapple(float speed, RaycastHit hit)
+    public IEnumerator Grapple(float speed, RaycastHit hit, GameObject player)
     {
         _lineR.enabled = true;
-        grappled = true;
+        shot = true;
         _hook.transform.SetParent(null);
         float time = 0;
         float distance = (_hook.transform.position - hit.point).magnitude;
@@ -44,6 +46,10 @@ public class GrapplingHook : MonoBehaviour
         }
 
         _hook.transform.rotation = Quaternion.Euler(hit.normal + new Vector3(90,0,0));
+        grappled = true;
+        limitConfig.limit = distance;
+        _playerJoint = player.AddComponent<ConfigurableJoint>();
+        JointSetUp(_playerJoint, hit.point, limitConfig);
     }
 
     public IEnumerator Ungrapple(float speed)
@@ -51,6 +57,8 @@ public class GrapplingHook : MonoBehaviour
         float time = 0;
         Vector3 oldPos = _hook.transform.position;
         float distance = (_hook.transform.position - _return.position).magnitude;
+        grappled = false;
+        Destroy(_playerJoint);
 
         while (time < distance * speed)
         {
@@ -60,12 +68,21 @@ public class GrapplingHook : MonoBehaviour
             print(time);
             yield return null;
         }
-        print("si");
 
         _hook.transform.position = _return.position;
         _hook.transform.rotation = _return.rotation;
         _hook.transform.SetParent(transform);
-        grappled = false;
+        shot = false;
         _lineR.enabled = false;
+    }
+
+    void JointSetUp(ConfigurableJoint joint, Vector3 grapplePoint, SoftJointLimit limit)
+    {
+        joint.autoConfigureConnectedAnchor = false;
+        joint.connectedAnchor = grapplePoint;
+        joint.linearLimit = limit;
+        joint.xMotion = ConfigurableJointMotion.Limited;
+        joint.yMotion = ConfigurableJointMotion.Limited;
+        joint.zMotion = ConfigurableJointMotion.Limited;
     }
 }

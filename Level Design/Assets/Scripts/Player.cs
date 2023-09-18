@@ -18,7 +18,6 @@ public class Player : Entity
     [field:SerializeField] public GrapplingHook _grapplingHook { private set; get; }
 
     float _xRotation;
-    Ray _grapple;
     RaycastHit _rayHit;
     Transform _cameraTransform;
     public bool _canGrapple { private set; get; }
@@ -33,8 +32,6 @@ public class Player : Entity
 
         movement = new Movement(transform, _myRB, _speed, _mouseSensitivity, _jumpStrength);
         _inputs = new Inputs(movement, this);
-
-        _grapple = new Ray();
     }
 
     private void Start()
@@ -48,7 +45,7 @@ public class Player : Entity
         if(_inputs.inputUpdate != null)
             _inputs.inputUpdate();
 
-        if (!_grapplingHook.grappled)
+        if (!_grapplingHook.shot)
         {
             if (Physics.Raycast(transform.position, _cameraTransform.forward, out _rayHit, _grappleRange))
             {
@@ -96,7 +93,7 @@ public class Player : Entity
 
     public void UseGrapple()
     {
-        StartCoroutine(_grapplingHook.Grapple(_hookSpeed, _rayHit));
+        StartCoroutine(_grapplingHook.Grapple(_hookSpeed, _rayHit, gameObject));
     }
 
     public void UseUngrapple()
