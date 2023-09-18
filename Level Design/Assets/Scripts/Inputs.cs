@@ -89,7 +89,10 @@ public class Inputs
 
         if (_jump)
         {
-            _movement.Jump();
+            if (_movement.Jump(_player._grapplingHook.grappled))
+            {
+                _player.UseUngrapple();
+            }
             _jump = false;
         }
     }

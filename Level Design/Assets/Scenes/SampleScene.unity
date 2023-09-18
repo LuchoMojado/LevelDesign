@@ -867,7 +867,7 @@ GameObject:
   - component: {fileID: 470014864}
   - component: {fileID: 470014863}
   - component: {fileID: 470014862}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -964,7 +964,7 @@ GameObject:
   - component: {fileID: 629327400}
   - component: {fileID: 629327399}
   - component: {fileID: 629327398}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1452,7 +1452,7 @@ GameObject:
   - component: {fileID: 1086584664}
   - component: {fileID: 1086584663}
   - component: {fileID: 1086584662}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1473,7 +1473,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 150
   _speed: 5
-  _jumpStrength: 700
+  _jumpStrength: 300
   _grappleRange: 20
   _hookSpeed: 0.07
   _mouseSensitivity: 765
@@ -1492,7 +1492,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!136 &1086584664
 CapsuleCollider:

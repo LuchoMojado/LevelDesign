@@ -23,8 +23,6 @@ public class Movement
         _jumpStrength = jumpStrength;
     }
 
-    
-
     public void Move(float horizontalInput, float verticalInput)
     {
         Vector3 direction = _playerTransform.forward * verticalInput + _playerTransform.right * horizontalInput;
@@ -63,14 +61,29 @@ public class Movement
         _currentSpeed = _normalSpeed;
     }
 
-    public void Jump()
+    public bool Jump(bool grappled)
     {
         Ray groundedRay = new Ray(_playerTransform.position, -_playerTransform.up);
-        _isGrounded = Physics.Raycast(groundedRay, 1.1f, 512);
+        _isGrounded = Physics.Raycast(groundedRay, 1.1f, 1<<6);
 
         if (_isGrounded)
         {
             _myRB.AddForce(Vector3.up * (_jumpStrength));
+            return false;
         }
+        else if (grappled && _playerTransform.gameObject.GetComponent<Player>().rayHit.point.y > _playerTransform.position.y)
+        {
+            _myRB.AddForce(Vector3.up * (_jumpStrength * 1.25f));
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void MoveToHook(Vector3 dir, float strength)
+    {
+        _myRB.AddForce(dir * strength);
     }
 }

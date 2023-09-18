@@ -45,9 +45,10 @@ public class GrapplingHook : MonoBehaviour
             yield return null;
         }
 
+        float jointLimit = (player.transform.position - hit.point).magnitude + 0.6f;
         _hook.transform.rotation = Quaternion.Euler(hit.normal + new Vector3(90,0,0));
         grappled = true;
-        limitConfig.limit = distance;
+        limitConfig.limit = jointLimit;
         _playerJoint = player.AddComponent<ConfigurableJoint>();
         JointSetUp(_playerJoint, hit.point, limitConfig);
     }
@@ -60,12 +61,12 @@ public class GrapplingHook : MonoBehaviour
         grappled = false;
         Destroy(_playerJoint);
 
-        while (time < distance * speed)
+        while (time < distance * speed * 0.5f)
         {
             time += Time.deltaTime;
 
-            _hook.transform.position = Vector3.Lerp(oldPos, _return.position, time / (distance * speed));
-            print(time);
+            _hook.transform.position = Vector3.Lerp(oldPos, _return.position, time / (distance * speed * 0.5f));
+            
             yield return null;
         }
 
