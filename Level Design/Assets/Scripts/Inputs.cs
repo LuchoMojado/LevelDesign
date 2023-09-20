@@ -54,6 +54,14 @@ public class Inputs
             {
                 _player.PropelToHook();
             }
+            if (Input.GetKey(KeyCode.R))
+            {
+                _player.Climb(true);
+            }
+            else if (Input.GetKey(KeyCode.F))
+            {
+                _player.Climb(false);
+            }
         }
 
         if (Input.GetKey(KeyCode.LeftShift))

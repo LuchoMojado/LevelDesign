@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.3069224, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -964,6 +964,7 @@ GameObject:
   - component: {fileID: 629327400}
   - component: {fileID: 629327399}
   - component: {fileID: 629327398}
+  - component: {fileID: 629327402}
   m_Layer: 6
   m_Name: Floor
   m_TagString: Untagged
@@ -1049,6 +1050,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &629327402
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 629327397}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &634783272
 GameObject:
   m_ObjectHideFlags: 0
@@ -1477,8 +1494,10 @@ MonoBehaviour:
   _grappleRange: 25
   _hookSpeed: 0.07
   _properStr: 60
+  _climbSpeed: 0.009
   _mouseSensitivity: 765
   <_grapplingHook>k__BackingField: {fileID: 90424177}
+  joint: {fileID: 0}
 --- !u!54 &1086584663
 Rigidbody:
   m_ObjectHideFlags: 0

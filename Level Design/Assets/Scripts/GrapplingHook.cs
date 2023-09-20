@@ -49,6 +49,7 @@ public class GrapplingHook : MonoBehaviour
                 grappled = true;
                 limitConfig.limit = jointLimit;
                 _playerJoint = player.AddComponent<ConfigurableJoint>();
+                player.GetComponent<Player>().joint = _playerJoint;
                 JointSetUp(_playerJoint, hit.point, limitConfig);
 
                 yield break;
@@ -89,11 +90,19 @@ public class GrapplingHook : MonoBehaviour
         _lineR.enabled = false;
     }
 
+    public SoftJointLimit ChangeJointDistance(float dir)
+    {
+        limitConfig.limit += dir;
+
+        return limitConfig;
+    }
+
     void JointSetUp(ConfigurableJoint joint, Vector3 grapplePoint, SoftJointLimit limit)
     {
         joint.autoConfigureConnectedAnchor = false;
         joint.connectedAnchor = grapplePoint;
         joint.linearLimit = limit;
+        joint.enableCollision = true;
         joint.xMotion = ConfigurableJointMotion.Limited;
         joint.yMotion = ConfigurableJointMotion.Limited;
         joint.zMotion = ConfigurableJointMotion.Limited;

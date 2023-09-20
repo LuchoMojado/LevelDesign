@@ -6,7 +6,7 @@ using System;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : Entity
 {
-    [SerializeField] float _speed, _jumpStrength, _grappleRange, _hookSpeed, _properStr;
+    [SerializeField] float _speed, _jumpStrength, _grappleRange, _hookSpeed, _properStr, _climbSpeed;
     
     [Range(500, 1000), SerializeField]
     float _mouseSensitivity;
@@ -16,6 +16,7 @@ public class Player : Entity
     public Movement movement;
     Inputs _inputs;
     [field:SerializeField] public GrapplingHook _grapplingHook { private set; get; }
+    public ConfigurableJoint joint;
 
     float _xRotation;
     [HideInInspector] public RaycastHit rayHit;
@@ -105,6 +106,18 @@ public class Player : Entity
     {
         UseUngrapple();
         movement.MoveToHook(rayHit.point - transform.position, _properStr);
+    }
+
+    public void Climb(bool yea)
+    {
+        if (yea)
+            joint.linearLimit = _grapplingHook.ChangeJointDistance(-_climbSpeed);
+        else
+            if (_grapplingHook.ChangeJointDistance(_climbSpeed).limit < _grappleRange)
+        {
+            joint.linearLimit = _grapplingHook.ChangeJointDistance(_climbSpeed);
+        }
+            
     }
 }
 
