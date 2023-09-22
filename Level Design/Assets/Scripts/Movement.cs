@@ -6,14 +6,14 @@ public class Movement
 {
     public delegate void FloatsDelegate(float a, float b);
     public event FloatsDelegate OnRotation;
+    public event FloatsDelegate OnWallRunRotation;
 
     float _currentSpeed, _normalSpeed, _sprintSpeed, _xRotation, _mouseSensitivity, _jumpStrength;
-    bool _isGrounded;
     Transform _playerTransform;
     Rigidbody _myRB;
-    public LayerMask whatisWall;
+    /*public LayerMask whatisWall;
     public float _maxWallrunTime, wallrunForce, currentWallRunTime, maxWallSpeed;
-    bool isWallRunning = false;
+    bool isWallRunning = false;*/
     
 
 
@@ -40,7 +40,7 @@ public class Movement
         _myRB.MovePosition(_playerTransform.position + direction * _currentSpeed * Time.fixedDeltaTime);
     }
 
-    public void Rotation(float horizontalMouse, float verticalMouse)
+    public void Rotation(float horizontalMouse, float verticalMouse, bool wallRunning)
     {
         _xRotation += horizontalMouse * _mouseSensitivity * Time.deltaTime;
 
@@ -53,7 +53,10 @@ public class Movement
 
         verticalMouse *= _mouseSensitivity * Time.deltaTime;
 
-        OnRotation(_xRotation, verticalMouse);
+        if (!wallRunning)
+            OnRotation(_xRotation, verticalMouse);
+        else
+            OnWallRunRotation(_xRotation, verticalMouse);
     }
 
     public void Sprint()
@@ -68,15 +71,12 @@ public class Movement
 
     public bool Jump(bool grappled)
     {
-        Ray groundedRay = new Ray(_playerTransform.position, -_playerTransform.up);
-        _isGrounded = Physics.Raycast(groundedRay, 1.1f, 1 << 6);
-
-        if (_isGrounded)
+        if (GroundedCheck())
         {
             _myRB.AddForce(Vector3.up * (_jumpStrength));
             return false;
         }
-        else if (grappled && _playerTransform.gameObject.GetComponent<Player>().rayHit.point.y > _playerTransform.position.y)
+        else if (grappled && _playerTransform.gameObject.GetComponent<Player>().hookHit.point.y > _playerTransform.position.y)
         {
             _myRB.AddForce(Vector3.up * (_jumpStrength * 1.25f));
             return true;
@@ -85,6 +85,14 @@ public class Movement
         {
             return false;
         }
+    }
+
+    public bool GroundedCheck()
+    {
+        Ray groundedRay = new Ray(_playerTransform.position, -_playerTransform.up);
+        bool grounded = Physics.Raycast(groundedRay, 1.1f, 1 << 6);
+
+        return grounded;
     }
 
     public void MoveToHook(Vector3 dir, float strength)

@@ -6,7 +6,7 @@ using System;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : Entity
 {
-    [SerializeField] float _speed, _jumpStrength, _grappleRange, _hookSpeed, _properStr, _climbSpeed;
+    [SerializeField] float _speed, _jumpStrength, _grappleRange, _hookSpeed, _properStr, _climbSpeed, _wallCheckRange;
     
     [Range(500, 1000), SerializeField]
     float _mouseSensitivity;
@@ -16,12 +16,15 @@ public class Player : Entity
     public Movement movement;
     Inputs _inputs;
     [field:SerializeField] public GrapplingHook _grapplingHook { private set; get; }
-    public ConfigurableJoint joint;
+    [HideInInspector] public ConfigurableJoint joint;
 
     float _xRotation;
-    [HideInInspector] public RaycastHit rayHit;
+    [SerializeField] Transform _leftRay, _rightRay;
+    [HideInInspector] public RaycastHit hookHit;
+    [SerializeField] PlayerCamera _camera;
     Transform _cameraTransform;
     public bool _canGrapple { private set; get; }
+    public bool _isWallRunning { private set; get; }
 
     private void Awake()
     {
@@ -48,7 +51,7 @@ public class Player : Entity
 
         if (!_grapplingHook.shot)
         {
-            if (Physics.Raycast(transform.position, _cameraTransform.forward, out rayHit, _grappleRange))
+            if (Physics.Raycast(transform.position, _cameraTransform.forward, out hookHit, _grappleRange))
             {
                 _canGrapple = true;
             }
@@ -61,7 +64,18 @@ public class Player : Entity
         {
             _canGrapple = false;
         }
-        
+
+        if (!movement.GroundedCheck() && !_isWallRunning)
+        {
+            if (Physics.Raycast(_leftRay.position, transform.forward, _wallCheckRange))
+            {
+                StartWallRun(/*inclinando a la derecha*/);
+            }
+            if (Physics.Raycast(_rightRay.position, transform.forward, _wallCheckRange))
+            {
+                StartWallRun(/*inclinando a la izquierda*/);
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -95,7 +109,7 @@ public class Player : Entity
 
     public void UseGrapple()
     {
-        StartCoroutine(_grapplingHook.Grapple(_hookSpeed, rayHit, gameObject));
+        StartCoroutine(_grapplingHook.Grapple(_hookSpeed, hookHit, gameObject));
     }
 
     public void UseUngrapple()
@@ -106,7 +120,7 @@ public class Player : Entity
     public void PropelToHook()
     {
         UseUngrapple();
-        movement.MoveToHook(rayHit.point - transform.position, _properStr);
+        movement.MoveToHook(hookHit.point - transform.position, _properStr);
     }
 
     public void Climb(bool yea)
@@ -118,7 +132,11 @@ public class Player : Entity
         {
             joint.linearLimit = _grapplingHook.ChangeJointDistance(_climbSpeed);
         }
-            
+    }
+
+    public void StartWallRun()
+    {
+
     }
 }
 
