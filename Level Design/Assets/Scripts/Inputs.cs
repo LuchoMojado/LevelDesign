@@ -72,6 +72,7 @@ public class Inputs
                 return;
             }
             _movement.Sprint();
+           
         }
 
         if (Input.GetKeyUp(KeyCode.LeftShift))

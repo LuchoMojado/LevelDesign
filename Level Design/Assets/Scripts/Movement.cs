@@ -11,6 +11,11 @@ public class Movement
     bool _isGrounded;
     Transform _playerTransform;
     Rigidbody _myRB;
+    public LayerMask whatisWall;
+    public float _maxWallrunTime, wallrunForce, currentWallRunTime, maxWallSpeed;
+    bool isWallRunning = false;
+    
+
 
     public Movement(Transform transform, Rigidbody rigidbody, float speed, float mouseSensitivity, float jumpStrength)
     {
@@ -64,7 +69,7 @@ public class Movement
     public bool Jump(bool grappled)
     {
         Ray groundedRay = new Ray(_playerTransform.position, -_playerTransform.up);
-        _isGrounded = Physics.Raycast(groundedRay, 1.1f, 1<<6);
+        _isGrounded = Physics.Raycast(groundedRay, 1.1f, 1 << 6);
 
         if (_isGrounded)
         {
@@ -85,5 +90,22 @@ public class Movement
     public void MoveToHook(Vector3 dir, float strength)
     {
         _myRB.AddForce(dir * strength);
+    }
+
+    public void WallRunnig()
+    {
+
+    }
+    public void StartWallRun()
+    {
+
+    }
+    public void StopWallRun()
+    {
+
+    }
+    public void CheckWall()
+    {
+
     }
 }

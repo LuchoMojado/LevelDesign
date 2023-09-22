@@ -61,6 +61,7 @@ public class Player : Entity
         {
             _canGrapple = false;
         }
+        
     }
 
     private void FixedUpdate()
