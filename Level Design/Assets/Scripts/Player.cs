@@ -6,7 +6,7 @@ using System;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : Entity
 {
-    [SerializeField] float _speed, _jumpStrength, _grappleRange, _hookSpeed, _properStr, _climbSpeed, _wallCheckRange;
+    [SerializeField] float _speed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle;
     
     [Range(500, 1000), SerializeField]
     float _mouseSensitivity;
@@ -20,7 +20,7 @@ public class Player : Entity
 
     float _xRotation;
     [SerializeField] Transform _leftRay, _rightRay;
-    [HideInInspector] public RaycastHit hookHit;
+    [HideInInspector] public RaycastHit hookHit, wallHit;
     [SerializeField] PlayerCamera _camera;
     Transform _cameraTransform;
     public bool _canGrapple { private set; get; }
@@ -67,13 +67,23 @@ public class Player : Entity
 
         if (!movement.GroundedCheck() && !_isWallRunning)
         {
-            if (Physics.Raycast(_leftRay.position, transform.forward, _wallCheckRange))
+            if (Physics.Raycast(_leftRay.position, transform.forward, out wallHit, _wallCheckRange) || Physics.Raycast(_rightRay.position, transform.forward, out wallHit, _wallCheckRange))
             {
-                StartWallRun(/*inclinando a la derecha*/);
-            }
-            if (Physics.Raycast(_rightRay.position, transform.forward, _wallCheckRange))
-            {
-                StartWallRun(/*inclinando a la izquierda*/);
+                if (Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, wallHit.normal)) >= _wallrunMinAngle /*&& chequeo de velocidad*/)
+                {
+                    if (wallHit.point.x > transform.position.x)
+                    {
+                        StartWallRun(true, wallHit);
+                    }
+                    else
+                    {
+                        StartWallRun(false, wallHit);
+                    }
+                }
+                else
+                {
+                    // quedarse agarrado
+                }
             }
         }
     }
@@ -120,7 +130,7 @@ public class Player : Entity
     public void PropelToHook()
     {
         UseUngrapple();
-        movement.MoveToHook(hookHit.point - transform.position, _properStr);
+        movement.MoveToHook(hookHit.point - transform.position, _propelStr);
     }
 
     public void Climb(bool yea)
@@ -134,9 +144,13 @@ public class Player : Entity
         }
     }
 
-    public void StartWallRun()
+    public void StartWallRun(bool right, RaycastHit hit)
     {
+        _camera.CameraTilt(right);
+        /*if (right)
+        {
 
+        }*/
     }
 }
 

@@ -49,12 +49,14 @@ public class Movement
             _xRotation -= 360 * Mathf.Sign(_xRotation);
         }
 
-        _playerTransform.rotation = Quaternion.Euler(0, _xRotation, 0);
-
         verticalMouse *= _mouseSensitivity * Time.deltaTime;
 
         if (!wallRunning)
+        {
+            _playerTransform.rotation = Quaternion.Euler(0, _xRotation, 0);
+
             OnRotation(_xRotation, verticalMouse);
+        }
         else
             OnWallRunRotation(_xRotation, verticalMouse);
     }
