@@ -27,7 +27,7 @@ public class Inputs
 
         _inputVertical = Input.GetAxis("Vertical");
 
-        _movement.Rotation(_inputMouseX, _inputMouseY);
+        _movement.Rotation(_inputMouseX, _inputMouseY, _player._isWallRunning);
 
         /*if (Input.GetKeyDown(KeyCode.Escape))
         {
