@@ -8,7 +8,7 @@ public class Movement
     public event FloatsDelegate OnRotation;
     public event FloatsDelegate OnWallRunRotation;
 
-    float _currentSpeed, _normalSpeed, _sprintSpeed, _xRotation, _mouseSensitivity, _jumpStrength;
+    float _currentSpeed, _normalSpeed, _sprintSpeed, _xRotation, _mouseSensitivity, _jumpStrength, _maxSpeed, _acceleration;
     Transform _playerTransform;
     Rigidbody _myRB;
     /*public LayerMask whatisWall;
@@ -24,6 +24,8 @@ public class Movement
         _currentSpeed = speed;
         _normalSpeed = speed;
         _sprintSpeed = speed * 1.5f;
+        _maxSpeed = _normalSpeed;
+        _acceleration = 0.05f;
         _mouseSensitivity = mouseSensitivity;
         _jumpStrength = jumpStrength;
     }
@@ -37,7 +39,11 @@ public class Movement
             direction.Normalize();
         }
 
-        _myRB.MovePosition(_playerTransform.position + direction * _currentSpeed * Time.fixedDeltaTime);
+        ChangeSpeed();
+
+        //_myRB.MovePosition(_playerTransform.position + direction * _currentSpeed * Time.fixedDeltaTime);
+        _myRB.AddForce(direction * _currentSpeed * 5f, ForceMode.Force);
+        //Debug.Log("La velocidad es " + _currentSpeed + " y su velocidad max es " + _maxSpeed);
     }
 
     public void Rotation(float horizontalMouse, float verticalMouse, bool wallRunning)
@@ -60,15 +66,25 @@ public class Movement
         else
             OnWallRunRotation(_xRotation, verticalMouse);
     }
-
+    void ChangeSpeed()
+    {
+        if (_currentSpeed < _maxSpeed)
+        {
+            _currentSpeed += _acceleration;
+        }
+        else
+        {
+            _currentSpeed -= _acceleration;
+        }
+    }
     public void Sprint()
     {
-        _currentSpeed = _sprintSpeed;
+        _maxSpeed = _sprintSpeed;
     }
 
     public void StopSprint()
     {
-        _currentSpeed = _normalSpeed;
+        _maxSpeed = _normalSpeed;
     }
 
     public bool Jump(bool grappled)
