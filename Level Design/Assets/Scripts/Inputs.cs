@@ -82,6 +82,14 @@ public class Inputs
         {
             _jump = true;
         }
+
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            _movement.Slide();
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftControl))
+            _movement.StopSlide();
     }
 
     public void Paused()

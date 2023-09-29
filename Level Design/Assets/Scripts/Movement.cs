@@ -14,6 +14,7 @@ public class Movement
     /*public LayerMask whatisWall;
     public float _maxWallrunTime, wallrunForce, currentWallRunTime, maxWallSpeed;
     bool isWallRunning = false;*/
+    bool IsSliding = false;
     
 
 
@@ -114,6 +115,15 @@ public class Movement
     public void MoveToHook(Vector3 dir, float strength)
     {
         _myRB.AddForce(dir * strength);
+    }
+
+    public void Slide()
+    {
+
+    }
+    public void StopSlide()
+    {
+
     }
 
     public void WallRunnig()
