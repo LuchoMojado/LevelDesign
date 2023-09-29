@@ -4478,11 +4478,16 @@ MonoBehaviour:
   _jumpStrength: 300
   _grappleRange: 25
   _hookSpeed: 0.07
-  _properStr: 60
+  _propelStr: 0
   _climbSpeed: 0.009
+  _wallCheckRange: 0
+  _wallrunMinAngle: 0
   _mouseSensitivity: 765
   <_grapplingHook>k__BackingField: {fileID: 1219510372}
   joint: {fileID: 0}
+  _leftRay: {fileID: 0}
+  _rightRay: {fileID: 0}
+  _camera: {fileID: 0}
 --- !u!54 &659294562
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -9024,6 +9029,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _yMaxRotation: 80
   _yMinRotation: -80
+  _xMaxRotation: 0
+  _xMinRotation: 0
+  _wallRunTilt: 0
   _player: {fileID: 659294561}
 --- !u!81 &1354687478
 AudioListener:
