@@ -2,16 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Player : Entity
 {
-    [SerializeField] float _speed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle;
-    
+    [SerializeField] float _speed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag;
+
     [Range(500, 1000), SerializeField]
     float _mouseSensitivity;
 
     Rigidbody _myRB;
+    [SerializeField] Image _crosshair;
+    
 
     public Movement movement;
     Inputs _inputs;
@@ -34,7 +37,7 @@ public class Player : Entity
         _myRB = GetComponent<Rigidbody>();
         _cameraTransform = Camera.main.transform;
 
-        movement = new Movement(transform, _myRB, _speed, _mouseSensitivity, _jumpStrength);
+        movement = new Movement(transform, _myRB, _speed, _mouseSensitivity, _jumpStrength, _gDrag, _aDrag);
         _inputs = new Inputs(movement, this);
     }
 
@@ -48,6 +51,11 @@ public class Player : Entity
     {
         if(_inputs.inputUpdate != null)
             _inputs.inputUpdate();
+
+        if (_canGrapple)
+            _crosshair.color = Color.white;
+        else
+            _crosshair.color = new Color(1, 1, 1, 0.2f);
 
         if (!_grapplingHook.shot)
         {
@@ -69,7 +77,7 @@ public class Player : Entity
         {
             if (Physics.Raycast(_leftRay.position, transform.forward, out wallHit, _wallCheckRange) || Physics.Raycast(_rightRay.position, transform.forward, out wallHit, _wallCheckRange))
             {
-                if (Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, wallHit.normal)) >= _wallrunMinAngle /*&& chequeo de velocidad*/)
+                if (Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, wallHit.normal)) >= _wallrunMinAngle && _myRB.velocity.sqrMagnitude > _minWallRunSpd)
                 {
                     if (wallHit.point.x > transform.position.x)
                     {
@@ -135,7 +143,7 @@ public class Player : Entity
 
     public void Climb(bool yea)
     {
-        if (yea)
+        if (yea && _grapplingHook.ChangeJointDistance(-_climbSpeed).limit > 0.5f)
             joint.linearLimit = _grapplingHook.ChangeJointDistance(-_climbSpeed);
         else
             if (_grapplingHook.ChangeJointDistance(_climbSpeed).limit < _grappleRange)

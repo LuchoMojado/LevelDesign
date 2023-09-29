@@ -8,7 +8,7 @@ public class Movement
     public event FloatsDelegate OnRotation;
     public event FloatsDelegate OnWallRunRotation;
 
-    float _currentSpeed, _normalSpeed, _sprintSpeed, _xRotation, _mouseSensitivity, _jumpStrength, _maxVel;
+    float _currentSpeed, _normalSpeed, _sprintSpeed, _airSpeed, _xRotation, _mouseSensitivity, _jumpStrength, _maxVel, _groundDrag, _airDrag;
     Transform _playerTransform;
     Rigidbody _myRB;
     /*public LayerMask whatisWall;
@@ -18,16 +18,19 @@ public class Movement
     
 
 
-    public Movement(Transform transform, Rigidbody rigidbody, float speed, float mouseSensitivity, float jumpStrength)
+    public Movement(Transform transform, Rigidbody rigidbody, float speed, float mouseSensitivity, float jumpStrength, float gdrag, float adrag)
     {
         _playerTransform = transform;
         _myRB = rigidbody;
         _currentSpeed = speed;
         _normalSpeed = speed;
-        _sprintSpeed = speed * 1.5f;
+        _sprintSpeed = speed * 1.3f;
+        _airSpeed = speed * 0.3f;
         _maxVel = 10;
         _mouseSensitivity = mouseSensitivity;
         _jumpStrength = jumpStrength;
+        _groundDrag = gdrag;
+        _airDrag = adrag;
     }
 
     public void Move(float horizontalInput, float verticalInput)
@@ -39,10 +42,22 @@ public class Movement
             direction.Normalize();
         }
 
-        SpeedLimit();
+        if (GroundedCheck())
+        {
+            _myRB.drag = _groundDrag;
+            SpeedLimit(direction, _currentSpeed, _maxVel);
+            //_myRB.AddForce(direction * _currentSpeed, ForceMode.Force);
+        }
+        else
+        {
+            _myRB.drag = _airDrag;
+            SpeedLimit(direction, _airSpeed, _maxVel * 1.75f);
+            //_myRB.AddForce(direction * _normalSpeed, ForceMode.Force);
+        }
+        
 
         //_myRB.MovePosition(_playerTransform.position + direction * _currentSpeed * Time.fixedDeltaTime);
-        _myRB.AddForce(direction * _currentSpeed * 5f, ForceMode.Force);
+        //_myRB.AddForce(direction * _currentSpeed * 5f, ForceMode.Force);
         //Debug.Log("La velocidad es " + _currentSpeed + " y su velocidad max es " + _maxSpeed);
     }
 
@@ -66,16 +81,18 @@ public class Movement
         else
             OnWallRunRotation(_xRotation, verticalMouse);
     }
-    void SpeedLimit()
+    void SpeedLimit(Vector3 dir, float spd, float limitValue)
     {
-        Vector3 horizontalVel = new Vector3(_myRB.velocity.x, 0, _myRB.velocity.z);
+        float oldSpd = _myRB.velocity.sqrMagnitude;
 
-        if (horizontalVel.magnitude > _maxVel)
+        _myRB.AddForce(dir * spd, ForceMode.Force);
+
+        if (_myRB.velocity.sqrMagnitude > oldSpd && oldSpd > limitValue)
         {
-            Vector3 limitedVel = horizontalVel.normalized * _maxVel;
-            _myRB.velocity = new Vector3(limitedVel.x, _myRB.velocity.y, limitedVel.z);
+            _myRB.AddForce(-dir * spd, ForceMode.Force);
         }
     }
+
     public void Sprint()
     {
         _currentSpeed = _sprintSpeed;
@@ -114,7 +131,8 @@ public class Movement
 
     public void MoveToHook(Vector3 dir, float strength)
     {
-        _myRB.AddForce(dir * strength);
+        //_myRB.velocity = Vector3.zero;
+        _myRB.AddForce(dir * strength * 0.9f);
     }
 
     public void Slide()
