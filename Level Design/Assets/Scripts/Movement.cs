@@ -15,7 +15,8 @@ public class Movement
     public float _maxWallrunTime, wallrunForce, currentWallRunTime, maxWallSpeed;
     bool isWallRunning = false;*/
     bool IsSliding = false;
-    
+    public float slideForce = 10f;
+
 
 
     public Movement(Transform transform, Rigidbody rigidbody, float speed, float mouseSensitivity, float jumpStrength, float gdrag, float adrag)
@@ -96,11 +97,19 @@ public class Movement
     public void Sprint()
     {
         _currentSpeed = _sprintSpeed;
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        Vector3 movement = new Vector3(horizontalInput, 0f, verticalInput).normalized;
+        if (!IsSliding) _myRB.velocity = movement * _sprintSpeed;
     }
 
     public void StopSprint()
     {
         _currentSpeed = _normalSpeed;
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        Vector3 movement = new Vector3(horizontalInput, 0f, verticalInput).normalized;
+        if (!IsSliding) _myRB.velocity = movement * _sprintSpeed;
     }
 
     public bool Jump(bool grappled)
@@ -137,11 +146,15 @@ public class Movement
 
     public void Slide()
     {
-
+        IsSliding = true;
+        if (IsSliding)
+        {
+            _myRB.AddForce(Vector3.forward * slideForce);
+        }
     }
     public void StopSlide()
     {
-
+        IsSliding = false;
     }
 
     public void WallRunnig()
