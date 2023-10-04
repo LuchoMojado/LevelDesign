@@ -14,7 +14,7 @@ public class Player : Entity
 
     Rigidbody _myRB;
     [SerializeField] Image _crosshair;
-    
+    Coroutine _wallRunCR;
 
     public Movement movement;
     Inputs _inputs;
@@ -157,11 +157,28 @@ public class Player : Entity
 
     public void StartWallRun(bool right, RaycastHit hit)
     {
-        _camera.StartWallRun(right, hit.normal);
-        /*if (right)
+        _isWallRunning = true;
+        _myRB.freezeRotation = true;
+        movement.StartWallRun();
+        _wallRunCR = StartCoroutine(movement.WallRunning());
+        if (right)
         {
+            transform.rotation = Quaternion.Euler(-hit.normal);
+            _camera.StartWallRun(right, -hit.normal);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(hit.normal);
+            _camera.StartWallRun(right, hit.normal);
+        }
+    }
 
-        }*/
+    public void StopWallRun()
+    {
+        _myRB.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        _isWallRunning = false;
+        StopCoroutine(_wallRunCR);
+        movement.StopWallRun();
     }
 
     public void Slide()
@@ -169,14 +186,14 @@ public class Player : Entity
         if (movement.GroundedCheck())
         {
             movement.Slide(true);
-            _camera.ChangeCameraY(-15);
+            _camera.ChangeCameraY(-0.4f);
         }
     }
 
     public void StopSlide()
     {
         movement.Slide(false);
-        _camera.ChangeCameraY(15);
+        _camera.ChangeCameraY(0);
     }
 }
 

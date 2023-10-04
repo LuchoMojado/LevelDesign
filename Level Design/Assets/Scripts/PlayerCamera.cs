@@ -10,6 +10,8 @@ public class PlayerCamera : MonoBehaviour
 
     float _yRotation, _xRotation;
 
+    float _yChange;
+
     private void Start()
     {
         _player.movement.OnRotation += Rotation;
@@ -24,6 +26,10 @@ public class PlayerCamera : MonoBehaviour
     void Movement()
     {
         transform.position = _player.transform.position;
+        if (_yChange != 0)
+        {
+            transform.position = _player.transform.position + new Vector3(0, _yChange, 0);
+        }
     }
 
     public void Rotation(float xAxis, float yAxis)
@@ -67,10 +73,10 @@ public class PlayerCamera : MonoBehaviour
     {
         float time = 0;
 
-        while (time < 0.5f)
+        while (time < 1f)
         {
             time += Time.deltaTime;
-            Quaternion.Lerp(transform.rotation, Quaternion.Euler(normal), time * 2);
+            Quaternion.Lerp(transform.rotation, Quaternion.Euler(normal), time);
 
             yield return null;
         }
@@ -83,6 +89,6 @@ public class PlayerCamera : MonoBehaviour
 
     public void ChangeCameraY(float amount)
     {
-        transform.position += new Vector3(0, amount, 0);
+        _yChange = amount;
     }
 }

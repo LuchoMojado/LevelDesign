@@ -89,6 +89,11 @@ public class Inputs
         }
         else if (Input.GetKeyUp(KeyCode.LeftControl))
             _player.StopSlide();
+
+        if (_player._isWallRunning && _inputVertical <= 0)
+        {
+            _player.StopWallRun();
+        }
     }
 
     public void Paused()

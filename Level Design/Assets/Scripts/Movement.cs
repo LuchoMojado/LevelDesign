@@ -15,6 +15,7 @@ public class Movement
     public float _maxWallrunTime, wallrunForce, currentWallRunTime, maxWallSpeed;
     bool isWallRunning = false;*/
     public bool isSliding = false;
+    bool _isWallRunning = false;
     public float slideForce = 30;
 
 
@@ -43,7 +44,7 @@ public class Movement
             direction.Normalize();
         }
 
-        if (!isSliding)
+        if (!isSliding || !_isWallRunning)
         {
             if (GroundedCheck())
             {
@@ -145,7 +146,7 @@ public class Movement
         if (start)
         {
             isSliding = true;
-            _myRB.drag = 0.01f;
+            _myRB.drag = 0.02f;
             _myRB.AddForce(Vector3.forward * slideForce);
         }
         else
@@ -154,17 +155,22 @@ public class Movement
         }
     }
 
-    public void WallRunnig()
+    public IEnumerator WallRunning()
     {
+        //_myRB.AddForce(-Vector3.up * 0.2f);
+        SpeedLimit(Vector3.forward, _sprintSpeed, _maxVel);
 
+        yield return null;
     }
     public void StartWallRun()
     {
-
+        _isWallRunning = true;
+        _myRB.useGravity = false;
     }
     public void StopWallRun()
     {
-
+        _isWallRunning = true;
+        _myRB.useGravity = true;
     }
     public void CheckWall()
     {
