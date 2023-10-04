@@ -49,12 +49,31 @@ public class PlayerCamera : MonoBehaviour
         transform.rotation = Quaternion.Euler(-_yRotation, _xRotation, 0f);
     }
 
-    public void CameraTilt(bool right)
+    public void StartWallRun(bool right, Vector3 normal)
     {
+        StartCoroutine(Rotate(normal));
+
         if (right)
+        {
             transform.rotation = Quaternion.Euler(-_yRotation, _xRotation, _wallRunTilt);
+        }
         else
+        {
             transform.rotation = Quaternion.Euler(-_yRotation, _xRotation, -_wallRunTilt);
+        }
+    }
+
+    IEnumerator Rotate(Vector3 normal)
+    {
+        float time = 0;
+
+        while (time < 0.5f)
+        {
+            time += Time.deltaTime;
+            Quaternion.Lerp(transform.rotation, Quaternion.Euler(normal), time * 2);
+
+            yield return null;
+        }
     }
 
     public void CameraUntilt()

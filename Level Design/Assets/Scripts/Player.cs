@@ -23,7 +23,7 @@ public class Player : Entity
 
     float _xRotation;
     [SerializeField] Transform _leftRay, _rightRay;
-    [HideInInspector] public RaycastHit hookHit, wallHit;
+    [HideInInspector] public RaycastHit hookHit, leftWallHit, rightWallHit;
     [SerializeField] PlayerCamera _camera;
     Transform _cameraTransform;
     public bool _canGrapple { private set; get; }
@@ -75,22 +75,25 @@ public class Player : Entity
 
         if (!movement.GroundedCheck() && !_isWallRunning)
         {
-            if (Physics.Raycast(_leftRay.position, transform.forward, out wallHit, _wallCheckRange) || Physics.Raycast(_rightRay.position, transform.forward, out wallHit, _wallCheckRange))
+            bool left = Physics.Raycast(_leftRay.position, transform.forward, out leftWallHit, _wallCheckRange);
+            bool right = Physics.Raycast(_rightRay.position, transform.forward, out rightWallHit, _wallCheckRange);
+
+            if (left && right)
             {
-                if (Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, wallHit.normal)) >= _wallrunMinAngle && _myRB.velocity.sqrMagnitude > _minWallRunSpd)
+                // quedarse agarrado
+            }
+            else if (right)
+            {
+                if (Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, rightWallHit.normal)) >= _wallrunMinAngle && _myRB.velocity.sqrMagnitude > _minWallRunSpd)
                 {
-                    if (wallHit.point.x > transform.position.x)
-                    {
-                        StartWallRun(true, wallHit);
-                    }
-                    else
-                    {
-                        StartWallRun(false, wallHit);
-                    }
+                    StartWallRun(true, rightWallHit);
                 }
-                else
+            }
+            else if (left)
+            {
+                if (Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, leftWallHit.normal)) >= _wallrunMinAngle && _myRB.velocity.sqrMagnitude > _minWallRunSpd)
                 {
-                    // quedarse agarrado
+                    StartWallRun(false, leftWallHit);
                 }
             }
         }
@@ -154,7 +157,7 @@ public class Player : Entity
 
     public void StartWallRun(bool right, RaycastHit hit)
     {
-        _camera.CameraTilt(right);
+        _camera.StartWallRun(right, hit.normal);
         /*if (right)
         {
 
