@@ -160,5 +160,20 @@ public class Player : Entity
 
         }*/
     }
+
+    public void Slide()
+    {
+        if (movement.GroundedCheck())
+        {
+            movement.Slide(true);
+            _camera.ChangeCameraY(-15);
+        }
+    }
+
+    public void StopSlide()
+    {
+        movement.Slide(false);
+        _camera.ChangeCameraY(15);
+    }
 }
 

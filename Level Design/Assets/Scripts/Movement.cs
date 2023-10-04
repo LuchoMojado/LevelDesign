@@ -14,8 +14,8 @@ public class Movement
     /*public LayerMask whatisWall;
     public float _maxWallrunTime, wallrunForce, currentWallRunTime, maxWallSpeed;
     bool isWallRunning = false;*/
-    bool IsSliding = false;
-    public float slideForce = 10f;
+    public bool isSliding = false;
+    public float slideForce = 30;
 
 
 
@@ -43,18 +43,22 @@ public class Movement
             direction.Normalize();
         }
 
-        if (GroundedCheck())
+        if (!isSliding)
         {
-            _myRB.drag = _groundDrag;
-            SpeedLimit(direction, _currentSpeed, _maxVel);
-            //_myRB.AddForce(direction * _currentSpeed, ForceMode.Force);
+            if (GroundedCheck())
+            {
+                _myRB.drag = _groundDrag;
+                SpeedLimit(direction, _currentSpeed, _maxVel);
+                //_myRB.AddForce(direction * _currentSpeed, ForceMode.Force);
+            }
+            else
+            {
+                _myRB.drag = _airDrag;
+                SpeedLimit(direction, _airSpeed, _maxVel * 1.75f);
+                //_myRB.AddForce(direction * _normalSpeed, ForceMode.Force);
+            }
         }
-        else
-        {
-            _myRB.drag = _airDrag;
-            SpeedLimit(direction, _airSpeed, _maxVel * 1.75f);
-            //_myRB.AddForce(direction * _normalSpeed, ForceMode.Force);
-        }
+        
         
 
         //_myRB.MovePosition(_playerTransform.position + direction * _currentSpeed * Time.fixedDeltaTime);
@@ -97,19 +101,11 @@ public class Movement
     public void Sprint()
     {
         _currentSpeed = _sprintSpeed;
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        Vector3 movement = new Vector3(horizontalInput, 0f, verticalInput).normalized;
-        if (!IsSliding) _myRB.velocity = movement * _sprintSpeed;
     }
 
     public void StopSprint()
     {
         _currentSpeed = _normalSpeed;
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        Vector3 movement = new Vector3(horizontalInput, 0f, verticalInput).normalized;
-        if (!IsSliding) _myRB.velocity = movement * _sprintSpeed;
     }
 
     public bool Jump(bool grappled)
@@ -144,17 +140,18 @@ public class Movement
         _myRB.AddForce(dir * strength * 0.9f);
     }
 
-    public void Slide()
+    public void Slide(bool start)
     {
-        IsSliding = true;
-        if (IsSliding)
+        if (start)
         {
+            isSliding = true;
+            _myRB.drag = 0.01f;
             _myRB.AddForce(Vector3.forward * slideForce);
         }
-    }
-    public void StopSlide()
-    {
-        IsSliding = false;
+        else
+        {
+            isSliding = false;
+        }
     }
 
     public void WallRunnig()

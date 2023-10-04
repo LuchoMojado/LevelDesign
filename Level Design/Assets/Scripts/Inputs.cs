@@ -83,13 +83,12 @@ public class Inputs
             _jump = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKey(KeyCode.LeftControl) && !_movement.isSliding)
         {
-            _movement.Slide();
+            _player.Slide();
         }
-
-        if (Input.GetKeyUp(KeyCode.LeftControl))
-            _movement.StopSlide();
+        else if (Input.GetKeyUp(KeyCode.LeftControl))
+            _player.StopSlide();
     }
 
     public void Paused()

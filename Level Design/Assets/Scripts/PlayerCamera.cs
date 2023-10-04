@@ -61,4 +61,9 @@ public class PlayerCamera : MonoBehaviour
     {
         transform.rotation = Quaternion.Euler(-_yRotation, _xRotation, 0);
     }
+
+    public void ChangeCameraY(float amount)
+    {
+        transform.position += new Vector3(0, amount, 0);
+    }
 }
