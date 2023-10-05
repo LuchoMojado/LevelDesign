@@ -9,6 +9,9 @@ public class GrapplingHook : MonoBehaviour
     ConfigurableJoint _playerJoint;
     [SerializeField] Transform _return;
     SoftJointLimit limitConfig = new SoftJointLimit();
+    public Chain chainPrefab;
+    public Factory<Chain> factory;
+    ObjectPool<Chain> myPool;
 
     [HideInInspector] public bool shot, grappled;
 
@@ -20,6 +23,12 @@ public class GrapplingHook : MonoBehaviour
     private void Update()
     {
         
+    }
+
+    public void Start()
+    {
+        factory = new Factory<Chain>(chainPrefab);
+        myPool = new ObjectPool<Chain>(factory.GetObject, Chain.TurnOff, Chain.TurnOff, 30);
     }
 
     private void LateUpdate()
@@ -51,6 +60,7 @@ public class GrapplingHook : MonoBehaviour
                 _playerJoint = player.AddComponent<ConfigurableJoint>();
                 player.GetComponent<Player>().joint = _playerJoint;
                 JointSetUp(_playerJoint, hit.point, limitConfig);
+                SpawnChain();
 
                 yield break;
             }
@@ -106,5 +116,13 @@ public class GrapplingHook : MonoBehaviour
         joint.xMotion = ConfigurableJointMotion.Limited;
         joint.yMotion = ConfigurableJointMotion.Limited;
         joint.zMotion = ConfigurableJointMotion.Limited;
+    }
+
+    public void SpawnChain()
+    {
+        var x = myPool.Get();
+        x.Initialize(myPool);
+        x.transform.position = transform.position;
+        x.transform.forward = transform.position;
     }
 }
