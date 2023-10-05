@@ -12,6 +12,9 @@ public class GrapplingHook : MonoBehaviour
     public Chain chainPrefab;
     public Factory<Chain> factory;
     ObjectPool<Chain> myPool;
+    public List<Chain> allChains = new List<Chain>();
+
+    public ConfigurableJoint chainJoint;
 
     [HideInInspector] public bool shot, grappled;
 
@@ -22,13 +25,28 @@ public class GrapplingHook : MonoBehaviour
 
     private void Update()
     {
-        
+        if(shot)
+        {
+            int lastChain = allChains.Count;
+            if (lastChain > 1)
+            {
+                Debug.Log(lastChain);
+                if (Vector3.Distance(allChains[lastChain-1].transform.position, _return.position) < 0.5f)
+                {
+                    allChains[lastChain].Refil(allChains[lastChain-1]);
+                }
+                else
+                {
+                    SpawnChain();
+                }
+            }
+        }
     }
 
     public void Start()
     {
         factory = new Factory<Chain>(chainPrefab);
-        myPool = new ObjectPool<Chain>(factory.GetObject, Chain.TurnOff, Chain.TurnOff, 30);
+        myPool = new ObjectPool<Chain>(factory.GetObject, Chain.TurnOff, Chain.TurnOn, 30);
     }
 
     private void LateUpdate()
@@ -122,7 +140,21 @@ public class GrapplingHook : MonoBehaviour
     {
         var x = myPool.Get();
         x.Initialize(myPool);
-        x.transform.position = transform.position;
-        x.transform.forward = transform.position;
+        allChains.Add(x);
+        int lastChain = allChains.Count;
+        if (lastChain > 1)
+        {
+            int newPoint = lastChain - 2;
+            x.gameObject.GetComponent<ConfigurableJoint>().connectedBody = allChains[newPoint].GetComponent<Rigidbody>();
+            x.gameObject.transform.position = allChains[newPoint].transform.position;
+        }
+        else
+        {
+            x.gameObject.GetComponent<ConfigurableJoint>().connectedBody = _hook.GetComponent<Rigidbody>();
+            x.transform.position = _hook.transform.position;
+            x.transform.up = _hook.transform.position;
+            //x.transform.forward = transform.position;
+        }
+        //desde donde choca la cadena poner el primer punto, y si es mayor la distancia a tanto a comparacion del return spawnee otra 
     }
 }

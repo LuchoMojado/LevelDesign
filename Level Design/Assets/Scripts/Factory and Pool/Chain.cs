@@ -26,7 +26,7 @@ public class Chain : MonoBehaviour
         }*/
         if(Vector3.Distance(GameManager.gameManager.player.transform.position, this.transform.position) <= 2f)
         {
-            _objectPool.RefillStock(this);
+            //_objectPool.RefillStock(this);
         }
     }
 
@@ -35,8 +35,12 @@ public class Chain : MonoBehaviour
         x.gameObject.SetActive(false);
         x.count = 0;
     }
-    public static void TurnOn()
+    public static void TurnOn(Chain x)
     {
         x.gameObject.SetActive(true);
+    }
+    public void Refil(Chain x)
+    {
+        _objectPool.RefillStock(this);
     }
 }

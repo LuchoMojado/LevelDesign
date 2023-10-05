@@ -31,8 +31,8 @@ public class Bullet : MonoBehaviour
         x.gameObject.SetActive(false);
         x.count = 0;
     }
-    public static void TurnOn()
+    public static void TurnOn(Bullet x)
     {
-
+        x.gameObject.SetActive(true);
     }
 }

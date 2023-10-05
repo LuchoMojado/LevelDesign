@@ -25,7 +25,7 @@ public class PlayerF : MonoBehaviour
         {
             //Le pasa todo al object pool para que haga las balas 
             var x = myPool.Get();
-            x.Initialize(myPool,10);
+            x.Initialize(myPool);
             x.transform.position = transform.position;
             x.transform.forward = transform.position;
         }
