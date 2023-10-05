@@ -85,7 +85,7 @@ public class Player : Entity
         {
             _canGrapple = false;
         }
-        if (!_isWallRunning)
+        if (!_isWallRunning || !_isWallGrabbing)
         {
             if (_wallCD <= 0)
             {
@@ -97,11 +97,11 @@ public class Player : Entity
                     if (right)
                     {
                         var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, rightWallHit.normal));
-                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1)
+                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1 && _inputs._inputHorizontal > 0 && _myRB.velocity.magnitude > _minWallRunSpd && _myRB.velocity.y < 5)
                         {
                             StartWall(true, true, angle);
                         }
-                        else
+                        else if (_inputs._inputHorizontal > 0)
                         {
                             print("yea");
                             StartWall(true, false, angle);
@@ -110,11 +110,11 @@ public class Player : Entity
                     else if (left)
                     {
                         var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, leftWallHit.normal));
-                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1)
+                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1 && _inputs._inputHorizontal < 0 && _myRB.velocity.magnitude > _minWallRunSpd && _myRB.velocity.y < 5)
                         {
                             StartWall(false, true, angle);
                         }
-                        else
+                        else if (_inputs._inputHorizontal < 0)
                         {
                             print("yea");
                             StartWall(false, false, angle);
