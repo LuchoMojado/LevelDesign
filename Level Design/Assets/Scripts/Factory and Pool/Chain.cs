@@ -37,6 +37,6 @@ public class Chain : MonoBehaviour
     }
     public static void TurnOn()
     {
-
+        x.gameObject.SetActive(true);
     }
 }

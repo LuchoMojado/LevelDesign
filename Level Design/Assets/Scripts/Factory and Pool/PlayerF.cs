@@ -15,7 +15,7 @@ public class PlayerF : MonoBehaviour
     {
         factory = new Factory<Bullet>(bulletPrefab);
         factory2 = new Factory<Bullet>(bulletPrefab);
-        myPool = new ObjectPool<Bullet>(factory.GetObject,Bullet.TurnOff, Bullet.TurnOff,20);
+        myPool = new ObjectPool<Bullet>(factory.GetObject,Bullet.TurnOff, Bullet.TurnOn,20);
     }
 
     // Update is called once per frame
@@ -25,7 +25,7 @@ public class PlayerF : MonoBehaviour
         {
             //Le pasa todo al object pool para que haga las balas 
             var x = myPool.Get();
-            x.Initialize(myPool);
+            x.Initialize(myPool,10);
             x.transform.position = transform.position;
             x.transform.forward = transform.position;
         }
