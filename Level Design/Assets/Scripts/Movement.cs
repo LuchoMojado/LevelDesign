@@ -15,9 +15,9 @@ public class Movement
     public float _maxWallrunTime, wallrunForce, currentWallRunTime, maxWallSpeed;
     bool isWallRunning = false;*/
     public bool isSliding = false;
-    bool _isWallRunning = false;
+    bool _isWallRunning = false, _isWallGrabbing = false;
     public float slideForce = 30;
-
+    bool _wallJumpRight;
 
 
     public Movement(Transform transform, Rigidbody rigidbody, float speed, float mouseSensitivity, float jumpStrength, float gdrag, float adrag)
@@ -28,7 +28,7 @@ public class Movement
         _normalSpeed = speed;
         _sprintSpeed = speed * 1.3f;
         _airSpeed = speed * 0.3f;
-        _maxVel = 10;
+        _maxVel = 1;
         _mouseSensitivity = mouseSensitivity;
         _jumpStrength = jumpStrength;
         _groundDrag = gdrag;
@@ -44,12 +44,20 @@ public class Movement
             direction.Normalize();
         }
 
-        if (!isSliding || !_isWallRunning)
+        if (!_isWallRunning || !_isWallGrabbing)
         {
             if (GroundedCheck())
             {
-                _myRB.drag = _groundDrag;
-                SpeedLimit(direction, _currentSpeed, _maxVel);
+                if (!isSliding)
+                {
+                    _myRB.drag = _groundDrag;
+                    SpeedLimit(direction, _currentSpeed, _maxVel);
+                }
+                else
+                {
+                    SpeedLimit(direction, _normalSpeed, _maxVel);
+                }
+                
                 //_myRB.AddForce(direction * _currentSpeed, ForceMode.Force);
             }
             else
@@ -89,11 +97,11 @@ public class Movement
     }
     void SpeedLimit(Vector3 dir, float spd, float limitValue)
     {
-        float oldSpd = _myRB.velocity.sqrMagnitude;
-
+        float oldSpd = _myRB.velocity.magnitude;
+        
         _myRB.AddForce(dir * spd, ForceMode.Force);
 
-        if (_myRB.velocity.sqrMagnitude > oldSpd && oldSpd > limitValue)
+        if (_myRB.velocity.magnitude > oldSpd && oldSpd > limitValue)
         {
             _myRB.AddForce(-dir * spd, ForceMode.Force);
         }
@@ -109,22 +117,43 @@ public class Movement
         _currentSpeed = _normalSpeed;
     }
 
-    public bool Jump(bool grappled)
+    public bool Jump(bool grappled, out bool stopWallRun)
     {
         if (GroundedCheck())
         {
             _myRB.AddForce(Vector3.up * (_jumpStrength));
+            stopWallRun = false;
+            return false;
+        }
+        else if (_isWallRunning || _isWallGrabbing)
+        {
+            if (_wallJumpRight)
+            {
+                _myRB.AddForce((Vector3.up + -_playerTransform.right) * (_jumpStrength));
+            }
+            else
+            {
+                _myRB.AddForce((Vector3.up + _playerTransform.right) * (_jumpStrength));
+            }
+            stopWallRun = true;
             return false;
         }
         else if (grappled && _playerTransform.gameObject.GetComponent<Player>().hookHit.point.y > _playerTransform.position.y)
         {
             _myRB.AddForce(Vector3.up * (_jumpStrength * 1.25f));
+            stopWallRun = false;
             return true;
         }
         else
         {
+            stopWallRun = false;
             return false;
         }
+    }
+
+    public void SetWallJump(bool right)
+    {
+        _wallJumpRight = right;
     }
 
     public bool GroundedCheck()
@@ -155,25 +184,38 @@ public class Movement
         }
     }
 
-    public IEnumerator WallRunning()
+    public void Walling(bool running)
     {
-        //_myRB.AddForce(-Vector3.up * 0.2f);
-        SpeedLimit(Vector3.forward, _sprintSpeed, _maxVel);
+        if (running)
+        {
+            _myRB.AddForce(_playerTransform.forward * 4);
+            _myRB.drag = _groundDrag;
+        }
+        else
+        {
+            _myRB.drag = _groundDrag * 2;
+        }
 
-        yield return null;
+        _myRB.AddForce(-_playerTransform.up * 0.5f);
     }
-    public void StartWallRun()
+    public void StartWall(bool running)
     {
-        _isWallRunning = true;
+        if (running)
+        {
+            _myRB.AddForce(_playerTransform.forward * 20);
+            _isWallRunning = true;
+        }
+        else
+        {
+            _isWallGrabbing = true;
+        }
+        
         _myRB.useGravity = false;
     }
-    public void StopWallRun()
+    public void StopWall()
     {
-        _isWallRunning = true;
+        _isWallGrabbing = false;
+        _isWallRunning = false;
         _myRB.useGravity = true;
-    }
-    public void CheckWall()
-    {
-
     }
 }

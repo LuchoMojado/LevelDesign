@@ -5,7 +5,7 @@ using UnityEngine;
 public class Inputs
 {
     public System.Action inputUpdate;
-    float _inputHorizontal, _inputVertical;
+    public float _inputHorizontal, _inputVertical;
     float _inputMouseX, _inputMouseY;
     Movement _movement;
     Player _player;
@@ -90,9 +90,30 @@ public class Inputs
         else if (Input.GetKeyUp(KeyCode.LeftControl))
             _player.StopSlide();
 
-        if (_player._isWallRunning && _inputVertical <= 0)
+        if (_player._isWallRunning && _inputVertical == 1)
         {
-            _player.StopWallRun();
+            _movement.Walling(true);
+            if (_movement.GroundedCheck())
+            {
+                _player.StopWall();
+            }
+            else if(!_player.CheckWallRunSpeed())
+            {
+                _player.StopWall();
+            }
+        }
+        else if (_player._isWallRunning)
+        {
+            _player.StopWall();
+        }
+
+        if (_player._isWallGrabbing)
+        {
+            _movement.Walling(false);
+            if (_movement.GroundedCheck())
+            {
+                _player.StopWall();
+            }
         }
     }
 
@@ -114,9 +135,13 @@ public class Inputs
 
         if (_jump)
         {
-            if (_movement.Jump(_player._grapplingHook.grappled))
+            if (_movement.Jump(_player._grapplingHook.grappled, out bool stopWall))
             {
                 _player.UseUngrapple();
+            }
+            if (stopWall)
+            {
+                _player.StopWall();
             }
             _jump = false;
         }

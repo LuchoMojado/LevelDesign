@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerCamera : MonoBehaviour
 {
     [SerializeField] float _yMaxRotation, _yMinRotation, _xMaxRotation, _xMinRotation, _wallRunTilt;
+    float _tilt, _xMax, _xMin;
 
     [SerializeField] Player _player;
 
@@ -43,40 +44,41 @@ public class PlayerCamera : MonoBehaviour
 
     public void WallRunRotation(float xAxis, float yAxis)
     {
-        float xMax = transform.rotation.x + _xMaxRotation;
-        float xMin = transform.rotation.x - _xMinRotation;
-
         _yRotation += yAxis;
         _yRotation = Mathf.Clamp(_yRotation, _yMinRotation, _yMaxRotation);
 
-        _xRotation += xAxis;
-        _xRotation = Mathf.Clamp(_xRotation, xMin, xMax);
+        _xRotation += xAxis * 0.25f;
+        _xRotation = Mathf.Clamp(_xRotation, _xMin, _xMax);
 
-        transform.rotation = Quaternion.Euler(-_yRotation, _xRotation, 0f);
+        transform.rotation = Quaternion.Euler(-_yRotation, _xRotation, _tilt);
     }
 
-    public void StartWallRun(bool right, Vector3 normal)
+    public void StartWall(bool right, float angle)
     {
-        StartCoroutine(Rotate(normal));
+        StartCoroutine(Rotate(angle));
 
         if (right)
         {
-            transform.rotation = Quaternion.Euler(-_yRotation, _xRotation, _wallRunTilt);
+            _tilt = _wallRunTilt;
         }
         else
         {
-            transform.rotation = Quaternion.Euler(-_yRotation, _xRotation, -_wallRunTilt);
+            _tilt = -_wallRunTilt;
         }
     }
 
-    IEnumerator Rotate(Vector3 normal)
+    IEnumerator Rotate(float angle)
     {
         float time = 0;
+        var oldRot = transform.rotation;
 
-        while (time < 1f)
+        while (time < 0.1f)
         {
             time += Time.deltaTime;
-            Quaternion.Lerp(transform.rotation, Quaternion.Euler(normal), time);
+            transform.rotation = Quaternion.Lerp(oldRot, _player.transform.rotation, time * 10);
+
+            _xMin = transform.eulerAngles.y + _xMinRotation;
+            _xMax = transform.eulerAngles.y + _xMaxRotation;
 
             yield return null;
         }

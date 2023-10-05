@@ -92,7 +92,7 @@ public class GrapplingHook : MonoBehaviour
 
     public SoftJointLimit ChangeJointDistance(float dir)
     {
-        limitConfig.limit += dir;
+        limitConfig.limit += dir * Time.deltaTime;
 
         return limitConfig;
     }

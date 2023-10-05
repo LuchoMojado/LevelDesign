@@ -22,12 +22,15 @@ public class Player : Entity
     [HideInInspector] public ConfigurableJoint joint;
 
     float _xRotation;
+    float _wallCD;
     [SerializeField] Transform _leftRay, _rightRay;
     [HideInInspector] public RaycastHit hookHit, leftWallHit, rightWallHit;
     [SerializeField] PlayerCamera _camera;
     Transform _cameraTransform;
     public bool _canGrapple { private set; get; }
     public bool _isWallRunning { private set; get; }
+    public bool _isWallGrabbing { private set; get; }
+    bool _wallingRight;
 
     private void Awake()
     {
@@ -49,7 +52,17 @@ public class Player : Entity
 
     void Update()
     {
-        if(_inputs.inputUpdate != null)
+        if (Physics.Raycast(_leftRay.position, transform.forward, out leftWallHit, _wallCheckRange))
+        {
+            var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, leftWallHit.normal));
+        }
+        /*if (Physics.Raycast(_rightRay.position, transform.forward, out rightWallHit, _wallCheckRange))
+        {
+            var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, rightWallHit.normal));
+            print(angle);
+        }*/
+
+        if (_inputs.inputUpdate != null)
             _inputs.inputUpdate();
 
         if (_canGrapple)
@@ -72,31 +85,54 @@ public class Player : Entity
         {
             _canGrapple = false;
         }
-
-        if (!movement.GroundedCheck() && !_isWallRunning)
+        if (!_isWallRunning)
         {
-            bool left = Physics.Raycast(_leftRay.position, transform.forward, out leftWallHit, _wallCheckRange);
-            bool right = Physics.Raycast(_rightRay.position, transform.forward, out rightWallHit, _wallCheckRange);
+            if (_wallCD <= 0)
+            {
+                if (!movement.GroundedCheck() && !_grapplingHook.grappled)
+                {
+                    bool left = Physics.Raycast(_leftRay.position, transform.forward, out leftWallHit, _wallCheckRange);
+                    bool right = Physics.Raycast(_rightRay.position, transform.forward, out rightWallHit, _wallCheckRange);
 
-            if (left && right)
-            {
-                // quedarse agarrado
-            }
-            else if (right)
-            {
-                if (Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, rightWallHit.normal)) >= _wallrunMinAngle && _myRB.velocity.sqrMagnitude > _minWallRunSpd)
-                {
-                    StartWallRun(true, rightWallHit);
+                    if (right)
+                    {
+                        var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, rightWallHit.normal));
+                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1)
+                        {
+                            StartWall(true, true, angle);
+                        }
+                        else
+                        {
+                            print("yea");
+                            StartWall(true, false, angle);
+                        }
+                    }
+                    else if (left)
+                    {
+                        var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, leftWallHit.normal));
+                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1)
+                        {
+                            StartWall(false, true, angle);
+                        }
+                        else
+                        {
+                            print("yea");
+                            StartWall(false, false, angle);
+                        }
+                    }
                 }
             }
-            else if (left)
+            else
             {
-                if (Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, leftWallHit.normal)) >= _wallrunMinAngle && _myRB.velocity.sqrMagnitude > _minWallRunSpd)
-                {
-                    StartWallRun(false, leftWallHit);
-                }
+                _wallCD -= Time.deltaTime;
             }
         }
+        else
+        {
+            if (!CheckWall(_wallingRight))
+                StopWall();
+        }
+        
     }
 
     private void FixedUpdate()
@@ -155,30 +191,43 @@ public class Player : Entity
         }
     }
 
-    public void StartWallRun(bool right, RaycastHit hit)
+    public void StartWall(bool right, bool running, float angle)
     {
-        _isWallRunning = true;
-        _myRB.freezeRotation = true;
-        movement.StartWallRun();
-        _wallRunCR = StartCoroutine(movement.WallRunning());
-        if (right)
+        float newAngle = angle * 0.5f;
+
+        if (running)
         {
-            transform.rotation = Quaternion.Euler(-hit.normal);
-            _camera.StartWallRun(right, -hit.normal);
+            _isWallRunning = true;
         }
         else
         {
-            transform.rotation = Quaternion.Euler(hit.normal);
-            _camera.StartWallRun(right, hit.normal);
+            _isWallGrabbing = true;
         }
+        
+        movement.StartWall(running);
+
+        if (right)
+        {
+            transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y - newAngle, 0);
+            _camera.StartWall(right, newAngle);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y + newAngle, 0);
+            _camera.StartWall(right, -newAngle);
+        }
+
+        _wallingRight = right;
+        movement.SetWallJump(right);
+        _myRB.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
-    public void StopWallRun()
+    public void StopWall()
     {
         _myRB.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         _isWallRunning = false;
-        StopCoroutine(_wallRunCR);
-        movement.StopWallRun();
+        movement.StopWall();
+        _wallCD = 0.2f;
     }
 
     public void Slide()
@@ -194,6 +243,34 @@ public class Player : Entity
     {
         movement.Slide(false);
         _camera.ChangeCameraY(0);
+    }
+
+    public bool CheckWallRunSpeed()
+    {
+        if (_minWallRunSpd > _myRB.velocity.sqrMagnitude)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public bool CheckWall(bool right)
+    {
+        Ray ray;
+
+        if (right)
+        {
+            ray = new Ray(transform.position, transform.right);
+        }
+        else
+        {
+            ray = new Ray(transform.position, -transform.right);
+        }
+
+        return Physics.Raycast(ray, 1);
     }
 }
 
