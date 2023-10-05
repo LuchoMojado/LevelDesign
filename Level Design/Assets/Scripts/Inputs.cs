@@ -5,7 +5,8 @@ using UnityEngine;
 public class Inputs
 {
     public System.Action inputUpdate;
-    public float _inputHorizontal, _inputVertical;
+    public float _inputHorizontal { private set; get; }
+    public float _inputVertical { private set; get; }
     float _inputMouseX, _inputMouseY;
     Movement _movement;
     Player _player;
