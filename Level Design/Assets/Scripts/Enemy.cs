@@ -9,8 +9,7 @@ public class Enemy : Entity
 
     void Start()
     {
-        maxHp = FlyweightPointer.Enemy.maxHp;
-        _hp = maxHp;
+        _hp = FlyweightPointer.Enemy.maxHp;
         EventManager.Subscribe("ILisen", ChasePlayer);
     }
 

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour, IDamageable
 {
-    public float maxHp;
     protected float _hp;
 
     public virtual void TakeDamage(float dmg)
