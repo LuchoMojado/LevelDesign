@@ -8,13 +8,13 @@ public class MejorEnemyO : MonoBehaviour
     void Start()
     {
         EventManager.Subscribe("Call", Chase);
-        Chase(1);
     }
 
 
     //object puede ser lo que sea literal
-    void Chase(object pos)
+    void Chase(params object[] pos)
     {
-        Debug.Log("Lo persigo");
+        //Aclara que pos es un vector3
+        Debug.Log("Lo persigo" + (Vector3)pos[0]);
     }
 }

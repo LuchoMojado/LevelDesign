@@ -15,7 +15,9 @@ public class MejorPlayerO : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.N))
         {
-            EventManager.Trigger("Call");
+            EventManager.Trigger("Call", transform.position);
         }
     }
 }
+
+//Call manda la posicion del player a los que ven, estos piden recibir un vector3 y es este, lo usan para ver si estan dentro de su rango, tmb un bool si esta haciendo ruido

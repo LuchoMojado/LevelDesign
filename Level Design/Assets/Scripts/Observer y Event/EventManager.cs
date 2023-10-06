@@ -5,7 +5,8 @@ using System;
 
 public static class EventManager 
 {
-    public delegate void MyEvent(Vector3 pos);
+    //Si pedimos array por parametro y ponemos params le podes pasar todo suelto y se crea solo el array
+    public delegate void MyEvent(params object[] parameters);
 
     private static Dictionary<string,MyEvent> _events = new Dictionary<string, MyEvent>();
 
@@ -34,11 +35,11 @@ public static class EventManager
             }
         }
     }
-    public static void Trigger(string name)
+    public static void Trigger(string name, params object[] parameters)
     {
         if(_events.ContainsKey(name))
         {
-            _events[name]();
+            _events[name](parameters);
         }
     }
 }
