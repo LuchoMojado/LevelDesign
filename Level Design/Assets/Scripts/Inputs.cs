@@ -123,7 +123,7 @@ public class Inputs
         }
     }
 
-    public void Paused()
+    /*public void Paused()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -133,7 +133,7 @@ public class Inputs
             //UIManager.instance.SetPauseMenu(false);
             inputUpdate = Unpaused;
         }
-    }
+    }*/
 
     public void InputFixedUpdate()
     {
