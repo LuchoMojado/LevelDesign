@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class ImportantObjects : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    ObjectPool<ImportantObjects> _objectPool;
+    public void Initialize(ObjectPool<ImportantObjects> op)
     {
-        
+        _objectPool = op;
     }
 
     // Update is called once per frame
@@ -16,7 +16,15 @@ public class ImportantObjects : MonoBehaviour
         if(Vector3.Distance(transform.position,GameManager.gameManager.player.transform.position) <= 2f)
         {
             GameManager.gameManager.takeObject();
-            Destroy(this.gameObject);
+            _objectPool.RefillStock(this);
         }
+    }
+    public static void TurnOff(ImportantObjects x)
+    {
+        x.gameObject.SetActive(false);
+    }
+    public static void TurnOn(ImportantObjects x)
+    {
+        x.gameObject.SetActive(true);
     }
 }

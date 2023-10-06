@@ -22,26 +22,31 @@ public class GrapplingHook : MonoBehaviour
     {
         _lineR = GetComponent<LineRenderer>();
     }
-
+    bool listo = true;
     private void Update()
     {
-        if(shot)
+        /*if(shot)
         {
-            float separation = 0.1f;
-            float totalDis = Vector3.Distance(_hook.transform.position, _return.position);
-            int cantChains = Mathf.FloorToInt(totalDis / separation) + 1;
-            int lastChain = allChains.Count;
-            Debug.Log(lastChain);
-           
-            for(int i = 0; i < cantChains; i++)
+            if(listo)
             {
-                float t = i / cantChains - 1;
-                Vector3 newPos = Vector3.Lerp(_hook.transform.position, _return.position, t);
-                SpawnChain(newPos);
+                float separation = 1f;
+                float totalDis = Vector3.Distance(_hook.transform.position, _return.position);
+                int cantChains = Mathf.FloorToInt(totalDis / separation) + 1;
+                int lastChain = allChains.Count;
+                Debug.Log(lastChain);
+                for (int i = 0; i < cantChains; i++)
+                {
+                    float t = i / cantChains - 1;
+                    Vector3 newPos = Vector3.Lerp(_hook.transform.position, _return.position, t);
+                    SpawnChain(newPos);
+                }
+                if (Vector3.Distance(allChains[lastChain - 1].transform.position, _return.position) <= 0)
+                    allChains[lastChain - 1].Refil(allChains[lastChain - 1]);
+                
             }
-            if(Vector3.Distance(allChains[lastChain - 1].transform.position, _return.position) <= 0)
-                allChains[lastChain-1].Refil(allChains[lastChain-1]);
-        }
+            //listo = false;
+
+        }*/
     }
 
     public void Start()
@@ -151,7 +156,7 @@ public class GrapplingHook : MonoBehaviour
         else
         {
             x.gameObject.GetComponent<ConfigurableJoint>().connectedBody = _hook.GetComponent<Rigidbody>();
-            x.tr = _hook.transform;
+            x.transform.position = _hook.transform.position;
             x.transform.up = _hook.transform.position;
             //x.transform.forward = transform.position;
         }

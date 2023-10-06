@@ -7,7 +7,7 @@ public class Chain : MonoBehaviour
     public float count;
     public float speed;
     ObjectPool<Chain> _objectPool;
-    public Transform tr;
+    //public Transform tr;
     public ConfigurableJoint cf;
 
     // no se puede crear en el start el object pool porque cada bala haria uno nuevo 
@@ -25,7 +25,7 @@ public class Chain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        cf.anchor = tr.position;
+        //cf.anchor = tr.position;
         //transform.position += transform.forward * speed * Time.deltaTime;
         //count += Time.deltaTime;
         /*if (count > 4)
