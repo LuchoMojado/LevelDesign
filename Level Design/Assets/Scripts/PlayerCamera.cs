@@ -50,7 +50,7 @@ public class PlayerCamera : MonoBehaviour
         _xRotation += xAxis * 0.25f;
         _xRotation = Mathf.Clamp(_xRotation, _xMin, _xMax);
 
-        transform.rotation = Quaternion.Euler(-_yRotation, _xRotation, _tilt);
+        transform.rotation = Quaternion.Euler(-_yRotation, xAxis, _tilt);
     }
 
     public void StartWall(bool right, float angle)

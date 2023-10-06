@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Entity : MonoBehaviour
+public abstract class Entity : MonoBehaviour, IDamageable
 {
     public float maxHp;
     protected float _hp;
@@ -10,6 +10,10 @@ public abstract class Entity : MonoBehaviour
     public virtual void TakeDamage(float dmg)
     {
         _hp -= dmg;
+        if (_hp <= 0)
+        {
+            Die();
+        }
     }
 
     public abstract void Die();

@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IDamageable
+public class Enemy : Entity
 {
     float _currentHP;
     //[SerializeField] Player _player;
 
     void Start()
     {
-        _currentHP = FlyweightPointer.Enemy.maxHp;
+        maxHp = FlyweightPointer.Enemy.maxHp;
+        _hp = maxHp;
         EventManager.Subscribe("ILisen", ChasePlayer);
     }
 
@@ -54,14 +55,16 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         Debug.Log("ataco");
     }
-    void TakeDamage(float dmg)
-    {
-        _currentHP -= dmg;
-    }
+    
     bool CheckFloor()
     {
         Ray ray = new Ray(transform.position- new Vector3(0, 0.5f, 0), transform.forward - new Vector3(0, 1.2f, 0));
         bool canMoveForward = Physics.Raycast(ray, 1, 1 << 6);
         return canMoveForward;
+    }
+
+    public override void Die()
+    {
+        Destroy(gameObject);
     }
 }

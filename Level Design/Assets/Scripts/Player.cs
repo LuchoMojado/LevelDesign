@@ -31,6 +31,7 @@ public class Player : Entity
     public bool _isWallRunning { private set; get; }
     public bool _isWallGrabbing { private set; get; }
     bool _wallingRight;
+    [SerializeField] LayerMask _hookMask, _wallMask;
 
     //bool lisen = false;
 
@@ -55,16 +56,6 @@ public class Player : Entity
 
     void Update()
     {
-        if (Physics.Raycast(_leftRay.position, transform.forward, out leftWallHit, _wallCheckRange))
-        {
-            var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, leftWallHit.normal));
-        }
-        /*if (Physics.Raycast(_rightRay.position, transform.forward, out rightWallHit, _wallCheckRange))
-        {
-            var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, rightWallHit.normal));
-            print(angle);
-        }*/
-
         if (_inputs.inputUpdate != null)
             _inputs.inputUpdate();
 
@@ -75,7 +66,7 @@ public class Player : Entity
 
         if (!_grapplingHook.shot)
         {
-            if (Physics.Raycast(transform.position, _cameraTransform.forward, out hookHit, _grappleRange))
+            if (Physics.Raycast(transform.position, _cameraTransform.forward, out hookHit, _grappleRange, _hookMask))
             {
                 _canGrapple = true;
             }
@@ -88,14 +79,14 @@ public class Player : Entity
         {
             _canGrapple = false;
         }
-        if (!_isWallRunning || !_isWallGrabbing)
+        if (!_isWallRunning && !_isWallGrabbing)
         {
             if (_wallCD <= 0)
             {
                 if (!movement.GroundedCheck() && !_grapplingHook.grappled)
                 {
-                    bool left = Physics.Raycast(_leftRay.position, transform.forward, out leftWallHit, _wallCheckRange);
-                    bool right = Physics.Raycast(_rightRay.position, transform.forward, out rightWallHit, _wallCheckRange);
+                    bool left = Physics.Raycast(_leftRay.position, transform.forward, out leftWallHit, _wallCheckRange, _wallMask);
+                    bool right = Physics.Raycast(_rightRay.position, transform.forward, out rightWallHit, _wallCheckRange, _wallMask);
 
                     if (right)
                     {
@@ -106,7 +97,6 @@ public class Player : Entity
                         }
                         else if (_inputs._inputHorizontal > 0)
                         {
-                            print("yea");
                             StartWall(true, false, angle);
                         }
                     }
@@ -119,7 +109,6 @@ public class Player : Entity
                         }
                         else if (_inputs._inputHorizontal < 0)
                         {
-                            print("yea");
                             StartWall(false, false, angle);
                         }
                     }
@@ -148,16 +137,6 @@ public class Player : Entity
     public void HealUp(float heal)
     {
         _hp += heal;
-    }
-
-    public override void TakeDamage(float dmg)
-    {
-        base.TakeDamage(dmg);
-
-        if (_hp <= 0)
-        {
-            Die();
-        }
     }
 
     public override void Die()
@@ -231,8 +210,9 @@ public class Player : Entity
     {
         _myRB.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         _isWallRunning = false;
+        _isWallGrabbing = false;
         movement.StopWall();
-        _wallCD = 0.2f;
+        _wallCD = 0.1f;
     }
 
     public void Slide()
