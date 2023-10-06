@@ -82,9 +82,8 @@ public class GrapplingHook : MonoBehaviour
                 grappled = true;
                 limitConfig.limit = jointLimit;
                 _playerJoint = player.AddComponent<ConfigurableJoint>();
-                player.GetComponent<Player>().joint = _playerJoint;
                 JointSetUp(_playerJoint, hit.point, limitConfig);
-
+                player.GetComponent<Player>().joint = _playerJoint;
                 yield break;
             }
 

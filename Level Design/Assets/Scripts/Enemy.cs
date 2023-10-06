@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Enemy : Entity
 {
-    float _currentHP;
     //[SerializeField] Player _player;
 
     void Start()
@@ -13,11 +12,6 @@ public class Enemy : Entity
         EventManager.Subscribe("ILisen", ChasePlayer);
     }
 
-
-    /*void Update()
-    {
-
-    }*/
     void Movement(params object[] pos)
     {
         var dir = CheckNearPlayer(pos);

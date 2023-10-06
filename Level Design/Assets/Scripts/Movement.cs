@@ -8,7 +8,7 @@ public class Movement
     public event FloatsDelegate OnRotation;
     public event FloatsDelegate OnWallRunRotation;
 
-    float _currentSpeed, _normalSpeed, _sprintSpeed, _airSpeed, _xRotation, _mouseSensitivity, _jumpStrength, _maxVel, _groundDrag, _airDrag;
+    float _currentSpeed, _normalSpeed, _sprintSpeed, _airSpeed, _xRotation, _mouseSensitivity, _jumpStrength, _maxVel, _groundDrag, _airDrag, _wallRunSpeed;
     Transform _playerTransform;
     Rigidbody _myRB;
     /*public LayerMask whatisWall;
@@ -20,7 +20,7 @@ public class Movement
     bool _wallJumpRight;
 
 
-    public Movement(Transform transform, Rigidbody rigidbody, float speed, float mouseSensitivity, float jumpStrength, float gdrag, float adrag)
+    public Movement(Transform transform, Rigidbody rigidbody, float speed, float mouseSensitivity, float jumpStrength, float gdrag, float adrag, float wallSpd)
     {
         _playerTransform = transform;
         _myRB = rigidbody;
@@ -33,6 +33,7 @@ public class Movement
         _jumpStrength = jumpStrength;
         _groundDrag = gdrag;
         _airDrag = adrag;
+        _wallRunSpeed = wallSpd;
     }
 
     public void Move(float horizontalInput, float verticalInput)
@@ -44,18 +45,18 @@ public class Movement
             direction.Normalize();
         }
 
-        if (!_isWallRunning || !_isWallGrabbing)
+        if (!_isWallRunning && !_isWallGrabbing)
         {
             if (GroundedCheck())
             {
                 if (!isSliding)
                 {
                     _myRB.drag = _groundDrag;
-                    SpeedLimit(direction, _currentSpeed, _maxVel);
+                    _myRB.AddForce(direction * _currentSpeed * Time.deltaTime, ForceMode.Force);
                 }
                 else
                 {
-                    SpeedLimit(direction, _normalSpeed, _maxVel);
+                    _myRB.AddForce(direction * _normalSpeed * Time.deltaTime, ForceMode.Force);
                 }
                 
                 //_myRB.AddForce(direction * _currentSpeed, ForceMode.Force);
@@ -63,7 +64,7 @@ public class Movement
             else
             {
                 _myRB.drag = _airDrag;
-                SpeedLimit(direction, _airSpeed, _maxVel * 1.75f);
+                _myRB.AddForce(direction * _airSpeed * Time.deltaTime, ForceMode.Force);
                 //_myRB.AddForce(direction * _normalSpeed, ForceMode.Force);
             }
         }
@@ -188,7 +189,7 @@ public class Movement
     {
         if (running)
         {
-            _myRB.AddForce(_playerTransform.forward * 4);
+            _myRB.AddForce(_playerTransform.forward * _wallRunSpeed * Time.deltaTime);
             _myRB.drag = _groundDrag;
         }
         else
@@ -202,7 +203,7 @@ public class Movement
     {
         if (running)
         {
-            _myRB.AddForce(_playerTransform.forward * 20);
+            _myRB.AddForce(_playerTransform.forward * _wallRunSpeed);
             _isWallRunning = true;
         }
         else

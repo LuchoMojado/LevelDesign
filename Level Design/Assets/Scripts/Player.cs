@@ -7,21 +7,18 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : Entity
 {
-    [SerializeField] float maxHp, _speed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag;
+    [SerializeField] float maxHp, _speed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _wallRunSpeed;
 
     [Range(500, 1000), SerializeField]
     float _mouseSensitivity;
-
     Rigidbody _myRB;
     [SerializeField] Image _crosshair;
-    Coroutine _wallRunCR;
 
     public Movement movement;
     Inputs _inputs;
     [field:SerializeField] public GrapplingHook _grapplingHook { private set; get; }
     [HideInInspector] public ConfigurableJoint joint;
 
-    float _xRotation;
     float _wallCD;
     [SerializeField] Transform _leftRay, _rightRay;
     [HideInInspector] public RaycastHit hookHit, leftWallHit, rightWallHit;
@@ -43,7 +40,7 @@ public class Player : Entity
         _myRB = GetComponent<Rigidbody>();
         _cameraTransform = Camera.main.transform;
 
-        movement = new Movement(transform, _myRB, _speed, _mouseSensitivity, _jumpStrength, _gDrag, _aDrag);
+        movement = new Movement(transform, _myRB, _speed, _mouseSensitivity, _jumpStrength, _gDrag, _aDrag, _wallRunSpeed);
         _inputs = new Inputs(movement, this);
     }
 
@@ -134,10 +131,10 @@ public class Player : Entity
         _inputs.InputFixedUpdate();
     }
 
-    public void HealUp(float heal)
+    /*public void HealUp(float heal)
     {
         _hp += heal;
-    }
+    }*/
 
     public override void Die()
     {
@@ -164,9 +161,9 @@ public class Player : Entity
         movement.MoveToHook(hookHit.point - transform.position, _propelStr);
     }
 
-    public void Climb(bool yea)
+    public void Climb(bool up)
     {
-        if (yea && _grapplingHook.ChangeJointDistance(-_climbSpeed).limit > 0.5f)
+        if (up && _grapplingHook.ChangeJointDistance(-_climbSpeed).limit > 0.5f)
             joint.linearLimit = _grapplingHook.ChangeJointDistance(-_climbSpeed);
         else
             if (_grapplingHook.ChangeJointDistance(_climbSpeed).limit < _grappleRange)
