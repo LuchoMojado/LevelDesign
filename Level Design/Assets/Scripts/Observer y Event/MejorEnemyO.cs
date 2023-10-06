@@ -8,6 +8,8 @@ public class MejorEnemyO : MonoBehaviour
     void Start()
     {
         EventManager.Subscribe("Call", Chase);
+        //EventManager.Subscribe("ILisen", Movement);
+        //EventManager.Subscribe("ILisen", CheckNearPlayer);
     }
 
 
