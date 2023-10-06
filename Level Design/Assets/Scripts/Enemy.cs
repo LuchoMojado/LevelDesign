@@ -10,23 +10,25 @@ public class Enemy : MonoBehaviour, IDamageable
     void Start()
     {
         _currentHP = FlyweightPointer.Enemy.maxHp;
-        //EventManager.Subscribe("ILisen", Movement);
         EventManager.Subscribe("ILisen", ChasePlayer);
     }
 
 
-    void Update()
+    /*void Update()
     {
-        //CheckNearPlayer();
-        //Movement();
-    }
+
+    }*/
     void Movement(params object[] pos)
     {
-        
-        if (CheckFloor())
+        var dir = CheckNearPlayer(pos);
+        dir.y = 0;
+        if (dir != Vector3.zero)
         {
-            var dir = CheckNearPlayer(pos);
-            if (dir != Vector3.zero) transform.position += dir * FlyweightPointer.Enemy.speed * Time.deltaTime;
+            transform.forward = dir;
+            if (CheckFloor())
+            {
+                transform.position += transform.forward * FlyweightPointer.Enemy.speed * Time.deltaTime;
+            }
         }
     }
     Vector3 CheckNearPlayer(params object[] posPlayer)
@@ -34,14 +36,12 @@ public class Enemy : MonoBehaviour, IDamageable
         var disToPlayer = Vector3.Distance((Vector3)posPlayer[0], transform.position);
         if (disToPlayer <= FlyweightPointer.Enemy.viewRadius)
         {
-            //Debug.Log("Estoy Cerca");
-           return ((Vector3)posPlayer[0] - transform.position).normalized;
-        }
-        if (disToPlayer <= FlyweightPointer.Enemy.attackRadius)
-        {
-            //Debug.Log("ataco");
-            Attack();
-            return Vector3.zero;
+            if (disToPlayer <= FlyweightPointer.Enemy.attackRadius)
+            {
+                Attack();
+                return Vector3.zero;
+            }
+            return ((Vector3)posPlayer[0] - transform.position).normalized;
         }
         return Vector3.zero;
     }
@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviour, IDamageable
     }
     void Attack()
     {
-
+        Debug.Log("ataco");
     }
     void TakeDamage(float dmg)
     {
@@ -60,13 +60,8 @@ public class Enemy : MonoBehaviour, IDamageable
     }
     bool CheckFloor()
     {
-        Ray ray = new Ray(transform.position- new Vector3(0, 0.5f, 0), transform.forward - new Vector3(0, 1f, 0));
+        Ray ray = new Ray(transform.position- new Vector3(0, 0.5f, 0), transform.forward - new Vector3(0, 1.2f, 0));
         bool canMoveForward = Physics.Raycast(ray, 1, 1 << 6);
         return canMoveForward;
-    }
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        //Gizmos.DrawLine(transform.position - new Vector3(0, 0.5f, 0), transform.forward);
     }
 }

@@ -8,8 +8,8 @@ public static class FlyweightPointer
     {
         speed = 2,
         maxHp = 100,
-        viewRadius = 5,
-        attackRadius = 2,
+        viewRadius = 8,
+        attackRadius = 1.5f,
         damage = 10,
         enemyColor = Color.cyan
     };
@@ -17,7 +17,7 @@ public static class FlyweightPointer
     {
         speed = 1,
         maxHp = 150,
-        viewRadius = 5,
+        viewRadius = 8,
         attackRadius = 2,
         damage = 30,
         enemyColor = Color.red
@@ -26,7 +26,7 @@ public static class FlyweightPointer
     {
         speed = 2.5f,
         maxHp = 125,
-        viewRadius = 5,
+        viewRadius = 8,
         attackRadius = 1,
         damage = 15,
         enemyColor = Color.blue
@@ -35,7 +35,7 @@ public static class FlyweightPointer
     {
         speed = 3,
         maxHp = 150,
-        viewRadius = 10,
+        viewRadius = 12,
         attackRadius = 1.5f,
         damage = 20,
         enemyColor = Color.cyan
