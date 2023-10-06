@@ -18,5 +18,6 @@ public class MejorEnemyO : MonoBehaviour
     {
         //Aclara que pos es un vector3
         Debug.Log("Lo persigo" + (Vector3)pos[0]);
+        //Vector3.Distance(pos, (0, 1, 0));
     }
 }

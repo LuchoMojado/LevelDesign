@@ -6,7 +6,7 @@ public class EnemyO : MonoBehaviour, IObserver
 {
     public PlayerO player;
 
-    //CUANDO EL PLAYER CAE A SIERTO RANGO (CERCA POR EL SIGILO) ESTOS SE ENTEREN
+    //CUANDO EL PLAYER CAE A CIERTO RANGO (CERCA POR EL SIGILO) ESTOS SE ENTEREN
     public void Notify(Vector3 pos)
     {
         Debug.Log("Te escuche y te persigo");

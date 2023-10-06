@@ -5,35 +5,37 @@ using UnityEngine;
 public class Enemy : MonoBehaviour, IDamageable
 {
     float _currentHP;
-    [SerializeField] Player _player;
+    //[SerializeField] Player _player;
 
     void Start()
     {
         _currentHP = FlyweightPointer.Enemy.maxHp;
+        //EventManager.Subscribe("ILisen", Movement);
+        EventManager.Subscribe("ILisen", ChasePlayer);
     }
 
 
     void Update()
     {
-        CheckNearPlayer();
-        Movement();
+        //CheckNearPlayer();
+        //Movement();
     }
-    void Movement()
+    void Movement(params object[] pos)
     {
         
         if (CheckFloor())
         {
-            var dir = CheckNearPlayer();
-            if (dir != Vector3.zero) transform.position += dir;
+            var dir = CheckNearPlayer(pos);
+            if (dir != Vector3.zero) transform.position += dir * FlyweightPointer.Enemy.speed * Time.deltaTime;
         }
     }
-    Vector3 CheckNearPlayer()
+    Vector3 CheckNearPlayer(params object[] posPlayer)
     {
-        var disToPlayer = Vector3.Distance(_player.transform.position, transform.position);
+        var disToPlayer = Vector3.Distance((Vector3)posPlayer[0], transform.position);
         if (disToPlayer <= FlyweightPointer.Enemy.viewRadius)
         {
             //Debug.Log("Estoy Cerca");
-           return (_player.transform.position-transform.position).normalized* FlyweightPointer.Enemy.speed*Time.deltaTime;
+           return ((Vector3)posPlayer[0] - transform.position).normalized;
         }
         if (disToPlayer <= FlyweightPointer.Enemy.attackRadius)
         {
@@ -42,6 +44,11 @@ public class Enemy : MonoBehaviour, IDamageable
             return Vector3.zero;
         }
         return Vector3.zero;
+    }
+
+    void ChasePlayer(params object[] posPlayer)
+    {
+        Movement(posPlayer[0]);
     }
     void Attack()
     {

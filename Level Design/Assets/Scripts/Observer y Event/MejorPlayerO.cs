@@ -5,7 +5,7 @@ using UnityEngine;
 public class MejorPlayerO : MonoBehaviour
 {
 
-    bool lisen=false;
+    bool lisen=true;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,10 +15,6 @@ public class MejorPlayerO : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.N))
-        {
-            EventManager.Trigger("Call", transform.position);
-        }
         if(lisen)
         {
             EventManager.Trigger("ILisen", transform.position);
