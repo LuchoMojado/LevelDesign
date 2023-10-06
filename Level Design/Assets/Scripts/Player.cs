@@ -32,6 +32,8 @@ public class Player : Entity
     public bool _isWallGrabbing { private set; get; }
     bool _wallingRight;
 
+    //bool lisen = false;
+
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -46,6 +48,7 @@ public class Player : Entity
 
     private void Start()
     {
+        EventManager.Subscribe("MakeSound", MakeSound);
         _hp = maxHp;
         _inputs.inputUpdate = _inputs.Unpaused;
     }
@@ -132,7 +135,9 @@ public class Player : Entity
             if (!CheckWall(_wallingRight))
                 StopWall();
         }
-        
+
+        //MakeSound();
+
     }
 
     private void FixedUpdate()
@@ -271,6 +276,14 @@ public class Player : Entity
         }
 
         return Physics.Raycast(ray, 1);
+    }
+
+    public void MakeSound(params object[] makingSound)
+    {
+        if((bool)makingSound[0])
+        {
+            EventManager.Trigger("ILisen", transform.position);
+        }
     }
 }
 

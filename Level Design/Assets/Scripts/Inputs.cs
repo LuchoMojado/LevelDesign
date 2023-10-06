@@ -70,14 +70,19 @@ public class Inputs
             if (_inputVertical <= 0)
             {
                 _movement.StopSprint();
+                EventManager.Trigger("MakeSound", false);
                 return;
             }
+            EventManager.Trigger("MakeSound", true);
             _movement.Sprint();
            
         }
 
         if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            EventManager.Trigger("MakeSound", false);
             _movement.StopSprint();
+        }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
