@@ -7,8 +7,15 @@ public class Chain : MonoBehaviour
     public float count;
     public float speed;
     ObjectPool<Chain> _objectPool;
+    public Transform tr;
+    public ConfigurableJoint cf;
 
     // no se puede crear en el start el object pool porque cada bala haria uno nuevo 
+
+    private void Awake()
+    {
+        cf = this.GetComponent<ConfigurableJoint>();
+    }
 
     public void Initialize(ObjectPool<Chain> op)
     {
@@ -18,16 +25,13 @@ public class Chain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        cf.anchor = tr.position;
         //transform.position += transform.forward * speed * Time.deltaTime;
         //count += Time.deltaTime;
         /*if (count > 4)
         {
             _objectPool.RefillStock(this);
         }*/
-        if(Vector3.Distance(GameManager.gameManager.player.transform.position, this.transform.position) <= 2f)
-        {
-            //_objectPool.RefillStock(this);
-        }
     }
 
     public static void TurnOff(Chain x)

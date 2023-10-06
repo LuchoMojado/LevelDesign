@@ -27,19 +27,20 @@ public class GrapplingHook : MonoBehaviour
     {
         if(shot)
         {
+            float separation = 0.1f;
+            float totalDis = Vector3.Distance(_hook.transform.position, _return.position);
+            int cantChains = Mathf.FloorToInt(totalDis / separation) + 1;
             int lastChain = allChains.Count;
-            if (lastChain > 1)
+            Debug.Log(lastChain);
+           
+            for(int i = 0; i < cantChains; i++)
             {
-                Debug.Log(lastChain);
-                if (Vector3.Distance(allChains[lastChain-1].transform.position, _return.position) < 0.5f)
-                {
-                    allChains[lastChain].Refil(allChains[lastChain-1]);
-                }
-                else
-                {
-                    SpawnChain();
-                }
+                float t = i / cantChains - 1;
+                Vector3 newPos = Vector3.Lerp(_hook.transform.position, _return.position, t);
+                SpawnChain(newPos);
             }
+            if(Vector3.Distance(allChains[lastChain - 1].transform.position, _return.position) <= 0)
+                allChains[lastChain-1].Refil(allChains[lastChain-1]);
         }
     }
 
@@ -78,7 +79,6 @@ public class GrapplingHook : MonoBehaviour
                 _playerJoint = player.AddComponent<ConfigurableJoint>();
                 player.GetComponent<Player>().joint = _playerJoint;
                 JointSetUp(_playerJoint, hit.point, limitConfig);
-                SpawnChain();
 
                 yield break;
             }
@@ -136,7 +136,7 @@ public class GrapplingHook : MonoBehaviour
         joint.zMotion = ConfigurableJointMotion.Limited;
     }
 
-    public void SpawnChain()
+    public void SpawnChain(Vector3 newP)
     {
         var x = myPool.Get();
         x.Initialize(myPool);
@@ -145,13 +145,13 @@ public class GrapplingHook : MonoBehaviour
         if (lastChain > 1)
         {
             int newPoint = lastChain - 2;
-            x.gameObject.GetComponent<ConfigurableJoint>().connectedBody = allChains[newPoint].GetComponent<Rigidbody>();
-            x.gameObject.transform.position = allChains[newPoint].transform.position;
+            x.transform.position = newP;
+            x.transform.up = _hook.transform.position;
         }
         else
         {
             x.gameObject.GetComponent<ConfigurableJoint>().connectedBody = _hook.GetComponent<Rigidbody>();
-            x.transform.position = _hook.transform.position;
+            x.tr = _hook.transform;
             x.transform.up = _hook.transform.position;
             //x.transform.forward = transform.position;
         }
