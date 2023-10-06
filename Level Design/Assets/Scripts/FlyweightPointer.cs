@@ -1,0 +1,43 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public static class FlyweightPointer 
+{
+    public static readonly Flyweight Enemy = new Flyweight
+    {
+        speed = 2,
+        maxHp = 100,
+        viewRadius = 5,
+        attackRadius = 2,
+        damage = 10,
+        enemyColor = Color.cyan
+    };
+    public static readonly Flyweight EnemyHeavy = new Flyweight
+    {
+        speed = 1,
+        maxHp = 150,
+        viewRadius = 5,
+        attackRadius = 2,
+        damage = 30,
+        enemyColor = Color.red
+    };
+    public static readonly Flyweight EnemyMedium = new Flyweight
+    {
+        speed = 2.5f,
+        maxHp = 125,
+        viewRadius = 5,
+        attackRadius = 1,
+        damage = 15,
+        enemyColor = Color.blue
+    };
+    public static readonly Flyweight EnemyBoss = new Flyweight
+    {
+        speed = 3,
+        maxHp = 150,
+        viewRadius = 10,
+        attackRadius = 1.5f,
+        damage = 20,
+        enemyColor = Color.cyan
+    };
+}
