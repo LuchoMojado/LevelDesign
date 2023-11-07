@@ -51,6 +51,7 @@ public class Movement
             {
                 if (!isSliding)
                 {
+                    Debug.Log(direction.magnitude + " " + _currentSpeed);
                     _myRB.drag = _groundDrag;
                     _myRB.AddForce(direction * _currentSpeed * Time.deltaTime, ForceMode.Force);
                 }
