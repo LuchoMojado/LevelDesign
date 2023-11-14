@@ -11,6 +11,7 @@ public class Inputs
     Movement _movement;
     Player _player;
     bool _jump;
+    public bool wallGrab;
 
     public Inputs(Movement movement, Player player)
     {
@@ -86,15 +87,25 @@ public class Inputs
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            Debug.Log("yea");
             _jump = true;
         }
 
-        if (Input.GetKey(KeyCode.LeftControl) && !_movement.isSliding)
+        if (Input.GetKey(KeyCode.LeftControl))
         {
-            _player.Slide();
+            wallGrab = true;
+
+            if (!_movement.isSliding)
+            {
+                _player.Slide();
+            }
         }
         else if (Input.GetKeyUp(KeyCode.LeftControl))
+        {
+            wallGrab = false;
+
             _player.StopSlide();
+        }
 
         if (_player._isWallRunning && _inputVertical == 1)
         {
@@ -116,7 +127,7 @@ public class Inputs
         if (_player._isWallGrabbing)
         {
             _movement.Walling(false);
-            if (_movement.GroundedCheck())
+            if (_movement.GroundedCheck() || !wallGrab)
             {
                 _player.StopWall();
             }
@@ -141,6 +152,7 @@ public class Inputs
 
         if (_jump)
         {
+            Debug.Log("si");
             if (_movement.Jump(_player._grapplingHook.grappled, out bool stopWall))
             {
                 _player.UseUngrapple();

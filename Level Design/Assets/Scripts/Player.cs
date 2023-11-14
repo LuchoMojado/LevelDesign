@@ -88,11 +88,11 @@ public class Player : Entity
                     if (right)
                     {
                         var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, rightWallHit.normal));
-                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1 && _inputs._inputHorizontal > 0 && _myRB.velocity.magnitude > _minWallRunSpd && _myRB.velocity.y < 5)
+                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1 && _myRB.velocity.magnitude > _minWallRunSpd && _myRB.velocity.y < 5 && movement.isSprinting)
                         {
                             StartWall(true, true, angle);
                         }
-                        else if (_inputs._inputHorizontal > 0)
+                        else if (_inputs._inputHorizontal == 1 && _inputs.wallGrab)
                         {
                             StartWall(true, false, angle);
                         }
@@ -104,7 +104,7 @@ public class Player : Entity
                         {
                             StartWall(false, true, angle);
                         }
-                        else if (_inputs._inputHorizontal < 0)
+                        else if (_inputs._inputHorizontal == -1 && _inputs.wallGrab)
                         {
                             StartWall(false, false, angle);
                         }

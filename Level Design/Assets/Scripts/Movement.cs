@@ -14,7 +14,7 @@ public class Movement
     /*public LayerMask whatisWall;
     public float _maxWallrunTime, wallrunForce, currentWallRunTime, maxWallSpeed;
     bool isWallRunning = false;*/
-    public bool isSliding = false;
+    public bool isSliding = false, isSprinting = false;
     bool _isWallRunning = false, _isWallGrabbing = false;
     public float slideForce = 30;
     bool _wallJumpRight;
@@ -51,7 +51,6 @@ public class Movement
             {
                 if (!isSliding)
                 {
-                    Debug.Log(direction.magnitude + " " + _currentSpeed);
                     _myRB.drag = _groundDrag;
                     _myRB.AddForce(direction * _currentSpeed * Time.deltaTime, ForceMode.Force);
                 }
@@ -112,11 +111,13 @@ public class Movement
     public void Sprint()
     {
         _currentSpeed = _sprintSpeed;
+        isSprinting = true;
     }
 
     public void StopSprint()
     {
         _currentSpeed = _normalSpeed;
+        isSprinting = false;
     }
 
     public bool Jump(bool grappled, out bool stopWallRun)
