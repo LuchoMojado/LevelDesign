@@ -92,9 +92,14 @@ public class Movement
             _playerTransform.rotation = Quaternion.Euler(0, _xRotation, 0);
 
             OnRotation(_xRotation, verticalMouse);
+            Debug.Log("kkkkk");
         }
         else
+        {
             OnWallRunRotation(_xRotation, verticalMouse);
+            Debug.Log("yea");
+        }
+            
     }
     void SpeedLimit(Vector3 dir, float spd, float limitValue)
     {

@@ -92,7 +92,7 @@ public class Player : Entity
                         {
                             StartWall(true, true, angle);
                         }
-                        else if (_inputs._inputHorizontal == 1 && _inputs.wallGrab)
+                        else if (_inputs.wallGrab)
                         {
                             StartWall(true, false, angle);
                         }
@@ -104,7 +104,7 @@ public class Player : Entity
                         {
                             StartWall(false, true, angle);
                         }
-                        else if (_inputs._inputHorizontal == -1 && _inputs.wallGrab)
+                        else if (_inputs.wallGrab)
                         {
                             StartWall(false, false, angle);
                         }
@@ -242,6 +242,8 @@ public class Player : Entity
     public bool CheckWall(bool right)
     {
         Ray ray;
+
+        ray = right ? new Ray(transform.position, transform.right) : new Ray(transform.position, -transform.right);
 
         if (right)
         {

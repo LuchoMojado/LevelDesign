@@ -29,7 +29,15 @@ public class Inputs
 
         _inputVertical = Input.GetAxis("Vertical");
 
-        _movement.Rotation(_inputMouseX, _inputMouseY, _player._isWallRunning);
+        if (_player._isWallRunning || _player._isWallGrabbing)
+        {
+            _movement.Rotation(_inputMouseX, _inputMouseY, true);
+        }
+        else
+        {
+            _movement.Rotation(_inputMouseX, _inputMouseY, false);
+        }
+        
 
         /*if (Input.GetKeyDown(KeyCode.Escape))
         {

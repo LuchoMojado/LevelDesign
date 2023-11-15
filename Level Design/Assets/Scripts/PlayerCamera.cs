@@ -45,6 +45,12 @@ public class PlayerCamera : MonoBehaviour
     public void WallRunRotation(float xAxis, float yAxis)
     {
         _yRotation += yAxis;
+
+        _yRotation = Mathf.Clamp(_yRotation, _yMinRotation, _yMaxRotation);
+
+        transform.rotation = Quaternion.Euler(-_yRotation, xAxis, 0f);
+
+        _yRotation += yAxis;
         _yRotation = Mathf.Clamp(_yRotation, _yMinRotation, _yMaxRotation);
 
         _xRotation += xAxis * 0.25f;
@@ -57,14 +63,7 @@ public class PlayerCamera : MonoBehaviour
     {
         StartCoroutine(Rotate(angle));
 
-        if (right)
-        {
-            _tilt = _wallRunTilt;
-        }
-        else
-        {
-            _tilt = -_wallRunTilt;
-        }
+        _tilt = right ? _wallRunTilt : -_wallRunTilt;
     }
 
     IEnumerator Rotate(float angle)
