@@ -35,6 +35,8 @@ public class PlayerCamera : MonoBehaviour
 
     public void Rotation(float xAxis, float yAxis)
     {
+        _tilt = 0;
+
         _yRotation += yAxis;
 
         _yRotation = Mathf.Clamp(_yRotation, _yMinRotation, _yMaxRotation);

@@ -137,11 +137,11 @@ public class Movement
         {
             if (_wallJumpRight)
             {
-                _myRB.AddForce((Vector3.up + -_playerTransform.right) * (_jumpStrength));
+                _myRB.AddForce((Vector3.up * 1.5f + -_playerTransform.right) * (_jumpStrength));
             }
             else
             {
-                _myRB.AddForce((Vector3.up + _playerTransform.right) * (_jumpStrength));
+                _myRB.AddForce((Vector3.up * 1.5f + _playerTransform.right) * (_jumpStrength));
             }
             stopWallRun = true;
             return false;

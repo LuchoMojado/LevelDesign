@@ -100,7 +100,7 @@ public class Player : Entity
                     else if (left)
                     {
                         var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, leftWallHit.normal));
-                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1 && _inputs._inputHorizontal < 0 && _myRB.velocity.magnitude > _minWallRunSpd && _myRB.velocity.y < 5)
+                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1 && _myRB.velocity.magnitude > _minWallRunSpd && _myRB.velocity.y < 5 && movement.isSprinting)
                         {
                             StartWall(false, true, angle);
                         }
@@ -179,25 +179,33 @@ public class Player : Entity
         if (running)
         {
             _isWallRunning = true;
+
+            if (right)
+            {
+                transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y - newAngle, 0);
+                _camera.StartWall(right, newAngle);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y + newAngle, 0);
+                _camera.StartWall(right, -newAngle);
+            }
         }
         else
         {
             _isWallGrabbing = true;
+
+            if (right)
+            {
+                transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y - newAngle, 0);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y + newAngle, 0);
+            }
         }
         
         movement.StartWall(running);
-
-        if (right)
-        {
-            transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y - newAngle, 0);
-            _camera.StartWall(right, newAngle);
-        }
-        else
-        {
-            transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y + newAngle, 0);
-            _camera.StartWall(right, -newAngle);
-        }
-
         _wallingRight = right;
         movement.SetWallJump(right);
         _myRB.constraints = RigidbodyConstraints.FreezeRotation;
