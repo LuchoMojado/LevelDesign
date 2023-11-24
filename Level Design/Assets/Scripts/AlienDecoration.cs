@@ -22,7 +22,7 @@ public class AlienDecoration : MonoBehaviour
             Vector3 direction = waypoints[currentWaypointIndex].position - transform.position;
 
             // Normaliza la dirección y aplica velocidad
-            transform.Translate(direction.normalized * speed * Time.deltaTime);
+            transform.position += direction.normalized * speed * Time.deltaTime;
 
             // Si el alien está lo suficientemente cerca del waypoint, pasa al siguiente
             if (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) < 0.2f)
