@@ -175,7 +175,7 @@ public class Movement
     public void MoveToHook(Vector3 dir, float strength)
     {
         //_myRB.velocity = Vector3.zero;
-        _myRB.AddForce(dir * strength * 0.9f);
+        _myRB.AddForce(dir.normalized * strength * 0.9f);
     }
 
     public void Slide(bool start)
