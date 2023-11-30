@@ -15,7 +15,7 @@ public class Movement
     public float _maxWallrunTime, wallrunForce, currentWallRunTime, maxWallSpeed;
     bool isWallRunning = false;*/
     public bool isSliding = false, isSprinting = false;
-    bool _isWallRunning = false, _isWallGrabbing = false;
+    bool _isWalling = false;
     public float slideForce = 30;
     bool _wallJumpRight;
 
@@ -45,7 +45,7 @@ public class Movement
             direction.Normalize();
         }
 
-        if (!_isWallRunning && !_isWallGrabbing)
+        if (!_isWalling)
         {
             if (GroundedCheck())
             {
@@ -133,7 +133,7 @@ public class Movement
             stopWallRun = false;
             return false;
         }
-        else if (_isWallRunning || _isWallGrabbing)
+        else if (_isWalling)
         {
             if (_wallJumpRight)
             {
@@ -206,24 +206,15 @@ public class Movement
 
         _myRB.AddForce(-_playerTransform.up * 0.5f);
     }
-    public void StartWall(bool running)
+
+    public void StartWall()
     {
-        if (running)
-        {
-            _myRB.AddForce(_playerTransform.forward * _wallRunSpeed);
-            _isWallRunning = true;
-        }
-        else
-        {
-            _isWallGrabbing = true;
-        }
-        
+        _isWalling = true;
         _myRB.useGravity = false;
     }
     public void StopWall()
     {
-        _isWallGrabbing = false;
-        _isWallRunning = false;
+        _isWalling = false;
         _myRB.useGravity = true;
     }
 }

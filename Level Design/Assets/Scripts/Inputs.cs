@@ -5,8 +5,8 @@ using UnityEngine;
 public class Inputs
 {
     public System.Action inputUpdate;
-    public float _inputHorizontal { private set; get; }
-    public float _inputVertical { private set; get; }
+    public float _inputHorizontal;
+    public float _inputVertical;
     float _inputMouseX, _inputMouseY;
     Movement _movement;
     Player _player;
@@ -29,7 +29,7 @@ public class Inputs
 
         _inputVertical = Input.GetAxis("Vertical");
 
-        if (_player._isWallRunning || _player._isWallGrabbing)
+        if (_player.isWallRunning || _player.isWallGrabbing)
         {
             _movement.Rotation(_inputMouseX, _inputMouseY, true);
         }
@@ -50,7 +50,7 @@ public class Inputs
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            if (_player._canGrapple)
+            if (_player.canGrapple)
                 _player.UseGrapple();
         }
 
@@ -115,7 +115,7 @@ public class Inputs
             _player.StopSlide();
         }
 
-        if (_player._isWallRunning && _inputVertical == 1)
+        if (_player.isWallRunning && _inputVertical == 1)
         {
             _movement.Walling(true);
             if (_movement.GroundedCheck())
@@ -127,12 +127,12 @@ public class Inputs
                 _player.StopWall();
             }
         }
-        else if (_player._isWallRunning)
+        else if (_player.isWallRunning)
         {
             _player.StopWall();
         }
 
-        if (_player._isWallGrabbing)
+        if (_player.isWallGrabbing)
         {
             _movement.Walling(false);
             if (_movement.GroundedCheck() || !wallGrab)

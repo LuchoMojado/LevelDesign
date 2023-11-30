@@ -16,21 +16,17 @@ public class Player : Entity
 
     public Movement movement;
     Inputs _inputs;
+    WallrunController _wallrun;
     [field:SerializeField] public GrapplingHook _grapplingHook { private set; get; }
     [HideInInspector] public ConfigurableJoint joint;
 
-    float _wallCD;
     [SerializeField] Transform _leftRay, _rightRay;
-    [HideInInspector] public RaycastHit hookHit, leftWallHit, rightWallHit;
+    [HideInInspector] public RaycastHit hookHit;
     [SerializeField] PlayerCamera _camera;
     Transform _cameraTransform;
-    public bool _canGrapple { private set; get; }
-    public bool _isWallRunning { private set; get; }
-    public bool _isWallGrabbing { private set; get; }
+    public bool canGrapple, isWallRunning, isWallGrabbing;
     bool _wallingRight;
     [SerializeField] LayerMask _hookMask, _wallMask;
-    
-
     //bool lisen = false;
 
     private void Awake()
@@ -43,6 +39,7 @@ public class Player : Entity
 
         movement = new Movement(transform, _myRB, _speed, _mouseSensitivity, _jumpStrength, _gDrag, _aDrag, _wallRunSpeed);
         _inputs = new Inputs(movement, this);
+        _wallrun = new WallrunController(transform, _leftRay, _rightRay, _wallMask, _myRB, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd);
     }
 
     private void Start()
@@ -57,7 +54,7 @@ public class Player : Entity
         if (_inputs.inputUpdate != null)
             _inputs.inputUpdate();
 
-        if (_canGrapple)
+        if (canGrapple)
             _crosshair.color = Color.white;
         else
             _crosshair.color = new Color(1, 1, 1, 0.2f);
@@ -66,61 +63,46 @@ public class Player : Entity
         {
             if (Physics.Raycast(transform.position, _cameraTransform.forward, out hookHit, _grappleRange, _hookMask))
             {
-                _canGrapple = true;
+                canGrapple = true;
             }
             else
             {
-                _canGrapple = false;
+                canGrapple = false;
             }
         }
         else
         {
-            _canGrapple = false;
+            canGrapple = false;
         }
-        if (!_isWallRunning && !_isWallGrabbing)
+        if (!isWallRunning && !isWallGrabbing)
         {
-            if (_wallCD <= 0)
+            if (!movement.GroundedCheck() && !_grapplingHook.grappled)
             {
-                if (!movement.GroundedCheck() && !_grapplingHook.grappled)
+                if (movement.isSprinting)
                 {
-                    bool left = Physics.Raycast(_leftRay.position, transform.forward, out leftWallHit, _wallCheckRange, _wallMask);
-                    bool right = Physics.Raycast(_rightRay.position, transform.forward, out rightWallHit, _wallCheckRange, _wallMask);
-
-                    if (right)
+                    if(_wallrun.WallCheckStart(true, out bool right, out float angle))
                     {
-                        var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, rightWallHit.normal));
-                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1 && _myRB.velocity.magnitude > _minWallRunSpd && _myRB.velocity.y < 5 && movement.isSprinting)
-                        {
-                            StartWall(true, true, angle);
-                        }
-                        else if (_inputs.wallGrab)
-                        {
-                            StartWall(true, false, angle);
-                        }
+                        _wallrun.StartWall(_camera, right, true, angle);
+                        isWallRunning = true;
+                        WallStarted(right);
                     }
-                    else if (left)
+                }
+                else if (_inputs.wallGrab)
+                {
+                    if (_wallrun.WallCheckStart(false, out bool right, out float angle))
                     {
-                        var angle = Vector3.Angle(transform.forward, Vector3.Reflect(transform.forward, leftWallHit.normal));
-                        if (angle <= _wallrunMinAngle && _inputs._inputVertical == 1 && _myRB.velocity.magnitude > _minWallRunSpd && _myRB.velocity.y < 5 && movement.isSprinting)
-                        {
-                            StartWall(false, true, angle);
-                        }
-                        else if (_inputs.wallGrab)
-                        {
-                            StartWall(false, false, angle);
-                        }
+                        _wallrun.StartWall(_camera, right, false, angle);
+                        isWallGrabbing = true;
+                        _wallingRight = right;
+                        WallStarted(right);
                     }
                 }
             }
-            else
-            {
-                _wallCD -= Time.deltaTime;
-            }
         }
         else
         {
-            if (!CheckWall(_wallingRight))
-                StopWall();
+            if (!_wallrun.CheckWall(_wallingRight))
+                WallFinished();
         }
 
         //MakeSound();
@@ -166,59 +148,25 @@ public class Player : Entity
     {
         if (up && _grapplingHook.ChangeJointDistance(-_climbSpeed).limit > 0.5f)
             joint.linearLimit = _grapplingHook.ChangeJointDistance(-_climbSpeed);
-        else
-            if (_grapplingHook.ChangeJointDistance(_climbSpeed).limit < _grappleRange)
+        else if (_grapplingHook.ChangeJointDistance(_climbSpeed).limit < _grappleRange)
         {
             joint.linearLimit = _grapplingHook.ChangeJointDistance(_climbSpeed);
         }
     }
 
-    public void StartWall(bool right, bool running, float angle)
+    public void WallStarted(bool right)
     {
-        float newAngle = angle * 0.5f;
-
-        if (running)
-        {
-            _isWallRunning = true;
-
-            if (right)
-            {
-                transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y - newAngle, 0);
-                _camera.StartWall(right, newAngle);
-            }
-            else
-            {
-                transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y + newAngle, 0);
-                _camera.StartWall(right, -newAngle);
-            }
-        }
-        else
-        {
-            _isWallGrabbing = true;
-
-            if (right)
-            {
-                transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y - newAngle, 0);
-            }
-            else
-            {
-                transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y + newAngle, 0);
-            }
-        }
-        
-        movement.StartWall(running);
         _wallingRight = right;
+        movement.StartWall();
         movement.SetWallJump(right);
-        _myRB.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
-    public void StopWall()
+    public void WallFinished()
     {
         _myRB.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        _isWallRunning = false;
-        _isWallGrabbing = false;
+        isWallRunning = false;
+        isWallGrabbing = false;
         movement.StopWall();
-        _wallCD = 0.1f;
     }
 
     public void Slide()
@@ -234,36 +182,6 @@ public class Player : Entity
     {
         movement.Slide(false);
         _camera.ChangeCameraY(0);
-    }
-
-    public bool CheckWallRunSpeed()
-    {
-        if (_minWallRunSpd > _myRB.velocity.sqrMagnitude)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    public bool CheckWall(bool right)
-    {
-        Ray ray;
-
-        ray = right ? new Ray(transform.position, transform.right) : new Ray(transform.position, -transform.right);
-
-        if (right)
-        {
-            ray = new Ray(transform.position, transform.right);
-        }
-        else
-        {
-            ray = new Ray(transform.position, -transform.right);
-        }
-
-        return Physics.Raycast(ray, 1);
     }
 
     public void MakeSound(params object[] makingSound)
