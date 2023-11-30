@@ -7,11 +7,11 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     public static GameManager gameManager;
     public Player player;
-    Vector3 startPos;
+    public Vector3 checkPointPos;
     public float countObjects = 0;
     void Start()
     {
-        startPos = player.transform.position;
+        checkPointPos = player.transform.position;
         gameManager = this;
     }
 
@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     {
         if(player.transform.position.y < -75)
         {
-            player.transform.position = startPos;
+            player.transform.position = checkPointPos;
         }
     }
 
