@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(player.transform.position.y < -154f)
+        if(player.transform.position.y < -75)
         {
             player.transform.position = startPos;
         }
