@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ImportantObjects : MonoBehaviour
+public class ImportantObjects : Rewind
 {
     ObjectPool<ImportantObjects> _objectPool;
     public void Initialize(ObjectPool<ImportantObjects> op)
@@ -27,5 +27,20 @@ public class ImportantObjects : MonoBehaviour
     public static void TurnOn(ImportantObjects x)
     {
         x.gameObject.SetActive(true);
+    }
+
+    public override void Save()
+    {
+        _mementoState.Rec(transform.position,transform.rotation);
+    }
+
+    public override void Load()
+    {
+        if(_mementoState.IsRemember())
+        {
+            //Pongo en el array la pos que se donde lo puse lo que quiero
+            transform.position = (Vector3)_mementoState.data[0];
+            transform.rotation = (Quaternion)_mementoState.data[1];
+        }
     }
 }
