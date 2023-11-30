@@ -2,28 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.SceneManagement;
+using TMPro;
 
 public class PopUpTutorial : MonoBehaviour
 {
     // Start is called before the first frame update
-    public GameObject Panel;
+    //public GameObject Panel;
+    [SerializeField] TMP_Text _texto;
+    [SerializeField] string _textoTutorial;
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
 
     }
     private void OnTriggerEnter(Collider other)
     {
-            Panel.SetActive(true);
+        _texto.SetText(_textoTutorial);
+        //Panel.SetActive(true);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Panel.SetActive(false);
+        _texto.SetText("");
+        //Panel.SetActive(false);
     }
 }
