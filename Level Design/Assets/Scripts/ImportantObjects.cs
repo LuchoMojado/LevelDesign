@@ -15,6 +15,7 @@ public class ImportantObjects : MonoBehaviour
     {
         if(Vector3.Distance(transform.position,GameManager.gameManager.player.transform.position) <= 2f)
         {
+            GameManager.gameManager.checkPointPos = GameManager.gameManager.player.transform.position;
             GameManager.gameManager.takeObject();
             _objectPool.RefillStock(this);
         }
