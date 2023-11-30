@@ -120,16 +120,16 @@ public class Inputs
             _movement.Walling(true);
             if (_movement.GroundedCheck())
             {
-                _player.StopWall();
+                _player.WallFinished();
             }
             else if(!_player.CheckWallRunSpeed())
             {
-                _player.StopWall();
+                _player.WallFinished();
             }
         }
         else if (_player.isWallRunning)
         {
-            _player.StopWall();
+            _player.WallFinished();
         }
 
         if (_player.isWallGrabbing)
@@ -137,7 +137,7 @@ public class Inputs
             _movement.Walling(false);
             if (_movement.GroundedCheck() || !wallGrab)
             {
-                _player.StopWall();
+                _player.WallFinished();
             }
         }
     }
@@ -167,7 +167,7 @@ public class Inputs
             }
             if (stopWall)
             {
-                _player.StopWall();
+                _player.WallFinished();
             }
             _jump = false;
         }

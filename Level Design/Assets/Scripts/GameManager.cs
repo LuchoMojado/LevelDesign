@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
             {
                 item.Save();
             }
+            countDownSave = 0;
         }
     }
 
