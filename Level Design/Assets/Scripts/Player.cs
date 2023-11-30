@@ -29,6 +29,7 @@ public class Player : Entity
     public bool _isWallGrabbing { private set; get; }
     bool _wallingRight;
     [SerializeField] LayerMask _hookMask, _wallMask;
+    
 
     //bool lisen = false;
 
@@ -272,5 +273,7 @@ public class Player : Entity
             EventManager.Trigger("ILisen", transform.position);
         }
     }
+
+    
 }
 
