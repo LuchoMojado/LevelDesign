@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0.0022290167, b: 0.0151135605, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0.0022290787, b: 0.015113915, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -23616,7 +23616,7 @@ MonoBehaviour:
   _gDrag: 1.4
   _aDrag: 0.1
   _wallRunSpeed: 700
-  _mouseSensitivity: 500
+  _mouseSensitivity: 200
   _crosshair: {fileID: 1429087606}
   <_grapplingHook>k__BackingField: {fileID: 1219510372}
   joint: {fileID: 0}

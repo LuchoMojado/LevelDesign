@@ -9,7 +9,7 @@ public class Player : Entity
 {
     [SerializeField] float maxHp, _speed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _wallRunSpeed;
 
-    [Range(500, 1000), SerializeField]
+    [Range(200, 1000), SerializeField]
     float _mouseSensitivity;
     Rigidbody _myRB;
     [SerializeField] Image _crosshair;
