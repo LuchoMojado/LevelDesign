@@ -29,6 +29,9 @@ public class Player : Entity
     [SerializeField] LayerMask _hookMask, _wallMask;
     //bool lisen = false;
 
+
+    bool _loading;
+
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -230,14 +233,13 @@ public class Player : Entity
     {
         return _myRB.velocity.magnitude > _minWallRunSpd;
     }
-
-
-    bool _loading;
     public override void Save()
     {
+        Debug.Log("PLAYERENTRO");
         if (_loading)
             return;
-        _mementoState.Rec(transform.position, transform.rotation);
+
+        _mementoState.Rec(this.transform.position, this.transform.rotation);
     }
 
     public override void Load()
@@ -258,10 +260,11 @@ public class Player : Entity
     IEnumerator CoroutineLoad()
     {
         var WaitForSeconds = new WaitForSeconds(0.01f);
+        _loading = true;
         while (_mementoState.IsRemember())
         {
             var data = _mementoState.Remember();
-            _loading = true;
+            //_loading = true;
             //Pongo en el array la pos que se donde lo puse lo que quiero
             transform.position = (Vector3)data.parameters[0];
             transform.rotation = (Quaternion)data.parameters[1];

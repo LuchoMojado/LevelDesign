@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0.0022290174, b: 0.0151136, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0.0022290787, b: 0.015113915, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -23605,7 +23605,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 150
   _speed: 800
-  _airSpeed: 200
+  _airSpeed: 0
   _jumpStrength: 300
   _grappleRange: 25
   _hookSpeed: 0.07
@@ -23616,7 +23616,7 @@ MonoBehaviour:
   _minWallRunSpd: 1
   _gDrag: 1.4
   _aDrag: 0.4
-  _sDrag: 0.5
+  _sDrag: 0
   _wallRunSpeed: 700
   _mouseSensitivity: 200
   _crosshair: {fileID: 1429087606}
@@ -27684,7 +27684,23 @@ MonoBehaviour:
   player: {fileID: 659294561}
   checkPointPos: {x: 0, y: 0, z: 0}
   countObjects: 0
-  rewinds: []
+  rewinds:
+  - {fileID: 1313111073}
+  - {fileID: 944115681}
+  - {fileID: 1364147675}
+  - {fileID: 1279792049}
+  - {fileID: 635691391}
+  - {fileID: 1081165431}
+  - {fileID: 652558516}
+  - {fileID: 523860483}
+  - {fileID: 335154469}
+  - {fileID: 1611935187}
+  - {fileID: 1768049140}
+  - {fileID: 923236637}
+  - {fileID: 1230461282}
+  - {fileID: 1086493410}
+  - {fileID: 841652132}
+  - {fileID: 659294561}
 --- !u!4 &859802691
 Transform:
   m_ObjectHideFlags: 0

@@ -86,10 +86,11 @@ public class Enemy : Entity
     IEnumerator CoroutineLoad()
     {
         var WaitForSeconds = new WaitForSeconds(0.01f);
+        _loading = true;
         while (_mementoState.IsRemember())
         {
             var data = _mementoState.Remember();
-            _loading = true;
+            //_loading = true;
             //Pongo en el array la pos que se donde lo puse lo que quiero
             transform.position = (Vector3)data.parameters[0];
             transform.rotation = (Quaternion)data.parameters[1];

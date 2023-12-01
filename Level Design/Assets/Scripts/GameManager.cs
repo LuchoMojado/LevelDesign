@@ -28,16 +28,16 @@ public class GameManager : MonoBehaviour
         {
             player.transform.position = checkPointPos;
         }
-        float countDownSave=0;
-        countDownSave += Time.deltaTime;
-        if(countDownSave >= 300f)
-        {
-            foreach(var item in rewinds)
-            {
-                item.Save();
-            }
-            countDownSave = 0;
-        }
+        //float countDownSave=0;
+        //countDownSave += Time.deltaTime;
+        //if(countDownSave >= 300f)
+        //{
+        //    foreach(var item in rewinds)
+        //    {
+        //        item.Save();
+        //    }
+        //    countDownSave = 0;
+        //}
     }
 
     public void takeObject()
