@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class Rewind : MonoBehaviour
 {
     public MementoState _mementoState;
-    private void Awake()
+    protected virtual void Awake()
     {
         _mementoState = new MementoState();
         // para guaradr lo que sea _mementoState.Rec(x);

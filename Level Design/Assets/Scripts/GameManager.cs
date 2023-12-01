@@ -28,6 +28,13 @@ public class GameManager : MonoBehaviour
         {
             player.transform.position = checkPointPos;
         }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            foreach (var item in rewinds)
+            {
+                item.Load();
+            }
+        }
         //float countDownSave=0;
         //countDownSave += Time.deltaTime;
         //if(countDownSave >= 300f)

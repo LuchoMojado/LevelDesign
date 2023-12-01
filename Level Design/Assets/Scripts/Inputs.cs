@@ -49,10 +49,11 @@ public class Inputs
             inputUpdate = Paused;
         }*/
 
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            GameManager.gameManager.LoadGame();
-        }
+        //if (Input.GetKeyDown(KeyCode.T))
+        //{
+        //    Debug.Log("T");
+        //    GameManager.gameManager.LoadGame();
+        //}
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {

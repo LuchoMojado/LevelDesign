@@ -32,8 +32,9 @@ public class Player : Entity
 
     bool _loading;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
