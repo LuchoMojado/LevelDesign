@@ -129,7 +129,12 @@ public class Player : Entity
         else
         {
             if (!_wallrun.CheckWall(_wallingRight))
+            {
                 WallFinished();
+                movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
+                movement.currentDrag = _aDrag;
+            }
+                
         }
 
         //MakeSound();
