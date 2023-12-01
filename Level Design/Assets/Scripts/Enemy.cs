@@ -2,14 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : Entity
+public class Enemy : Entity, IHear
 {
     //[SerializeField] Player _player;
     bool _loading;
     void Start()
     {
         _hp = FlyweightPointer.Enemy.maxHp;
-        EventManager.Subscribe("ILisen", ChasePlayer);
     }
 
     void Movement(params object[] pos)
@@ -40,9 +39,9 @@ public class Enemy : Entity
         return Vector3.zero;
     }
 
-    void ChasePlayer(params object[] posPlayer)
+    public void ChasePlayer(Vector3 posPlayer)
     {
-        Movement(posPlayer[0]);
+        Movement(posPlayer);
     }
     void Attack()
     {
@@ -99,4 +98,9 @@ public class Enemy : Entity
         }
         _loading = false;
     }
+
+    //public void Subscribe()
+    //{
+    //    EventManager.Subscribe("ILisen", ChasePlayer);
+    //}
 }

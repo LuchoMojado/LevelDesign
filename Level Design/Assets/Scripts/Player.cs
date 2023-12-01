@@ -26,7 +26,7 @@ public class Player : Entity
     Transform _cameraTransform;
     public bool canGrapple, isWallRunning, isWallGrabbing;
     bool _wallingRight;
-    [SerializeField] LayerMask _hookMask, _wallMask;
+    [SerializeField] LayerMask _hookMask, _wallMask,_EnemyMask;
     //bool lisen = false;
 
 
@@ -221,13 +221,28 @@ public class Player : Entity
         movement.Slide(false);
         _camera.ChangeCameraY(0);
     }
-
+    public Collider[] colliders;
     public void MakeSound(params object[] makingSound)
     {
         if((bool)makingSound[0])
         {
             EventManager.Trigger("ILisen", transform.position);
+            colliders = Physics.OverlapSphere(transform.position, 10);
+            if(colliders!=null)
+            {
+                foreach (var item in colliders)
+                {
+                    item.TryGetComponent<IHear>(out IHear Hear);
+                    if (Hear != null)
+                    {
+                        Hear.ChasePlayer(transform.position);
+                        //EventManager.Trigger("ILisen", transform.position);
+                    }
+                        
+                }
+            }
         }
+        
     }
 
     public bool CheckWallRunSpeed()

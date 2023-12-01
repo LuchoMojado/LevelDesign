@@ -7326,7 +7326,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _texto: {fileID: 103344371}
-  _textoTutorial: 
   ID: IDTutoHook
 --- !u!65 &129459437
 BoxCollider:
@@ -12121,7 +12120,7 @@ GameObject:
   - component: {fileID: 335154467}
   - component: {fileID: 335154469}
   - component: {fileID: 335154466}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20768,7 +20767,7 @@ GameObject:
   - component: {fileID: 523860481}
   - component: {fileID: 523860483}
   - component: {fileID: 523860480}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22891,7 +22890,7 @@ GameObject:
   - component: {fileID: 635691388}
   - component: {fileID: 635691391}
   - component: {fileID: 635691387}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23228,7 +23227,7 @@ GameObject:
   - component: {fileID: 652558513}
   - component: {fileID: 652558516}
   - component: {fileID: 652558512}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23685,6 +23684,9 @@ MonoBehaviour:
   _wallMask:
     serializedVersion: 2
     m_Bits: 2147483647
+  _EnemyMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!54 &659294562
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -27357,7 +27359,7 @@ GameObject:
   - component: {fileID: 841652130}
   - component: {fileID: 841652132}
   - component: {fileID: 841652129}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(14)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27897,7 +27899,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _texto: {fileID: 103344371}
-  _textoTutorial: 
   ID: IDTutoWallRun
 --- !u!65 &862926055
 BoxCollider:
@@ -28612,7 +28613,7 @@ GameObject:
   - component: {fileID: 923236635}
   - component: {fileID: 923236637}
   - component: {fileID: 923236634}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28927,7 +28928,7 @@ GameObject:
   - component: {fileID: 944115678}
   - component: {fileID: 944115681}
   - component: {fileID: 944115677}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31257,7 +31258,7 @@ GameObject:
   - component: {fileID: 1081165428}
   - component: {fileID: 1081165431}
   - component: {fileID: 1081165427}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31451,7 +31452,7 @@ GameObject:
   - component: {fileID: 1086493408}
   - component: {fileID: 1086493410}
   - component: {fileID: 1086493407}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(13)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31957,7 +31958,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _texto: {fileID: 103344371}
-  _textoTutorial: 
   ID: IDTutoSlide
 --- !u!65 &1092785280
 BoxCollider:
@@ -39895,7 +39895,7 @@ GameObject:
   - component: {fileID: 1230461280}
   - component: {fileID: 1230461282}
   - component: {fileID: 1230461279}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(12)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41400,7 +41400,7 @@ GameObject:
   - component: {fileID: 1279792046}
   - component: {fileID: 1279792049}
   - component: {fileID: 1279792045}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42194,7 +42194,7 @@ GameObject:
   - component: {fileID: 1313111070}
   - component: {fileID: 1313111073}
   - component: {fileID: 1313111069}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43835,7 +43835,7 @@ GameObject:
   - component: {fileID: 1364147672}
   - component: {fileID: 1364147675}
   - component: {fileID: 1364147671}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57398,7 +57398,7 @@ GameObject:
   - component: {fileID: 1611935185}
   - component: {fileID: 1611935187}
   - component: {fileID: 1611935184}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58736,7 +58736,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _texto: {fileID: 103344371}
-  _textoTutorial: 
   ID: IDTutoWallgrab
 --- !u!65 &1683669517
 BoxCollider:
@@ -59141,7 +59140,7 @@ GameObject:
   - component: {fileID: 1693411018}
   - component: {fileID: 1693411020}
   - component: {fileID: 1693411017}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy()
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60747,7 +60746,7 @@ GameObject:
   - component: {fileID: 1768049138}
   - component: {fileID: 1768049140}
   - component: {fileID: 1768049137}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy(10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61922,7 +61921,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _texto: {fileID: 103344371}
-  _textoTutorial: 
   ID: IDTutoMove
 --- !u!65 &1867083379
 BoxCollider:
@@ -63932,6 +63930,9 @@ MonoBehaviour:
   _wallMask:
     serializedVersion: 2
     m_Bits: 2147483647
+  _EnemyMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!54 &1942853086
 Rigidbody:
   m_ObjectHideFlags: 0
