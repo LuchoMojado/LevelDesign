@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : Entity
 {
     //[SerializeField] Player _player;
-
+    bool _loading;
     void Start()
     {
         _hp = FlyweightPointer.Enemy.maxHp;
@@ -59,5 +59,43 @@ public class Enemy : Entity
     public override void Die()
     {
         Destroy(gameObject);
+    }
+
+    public override void Save()
+    {
+        if (_loading)
+            return;
+        _mementoState.Rec(transform.position, transform.rotation);
+    }
+
+    public override void Load()
+    {
+        //if(_mementoState.IsRemember())
+        //{
+        //    var data = _mementoState.Remember();
+        //    //Pongo en el array la pos que se donde lo puse lo que quiero
+        //    transform.position = (Vector3)data.parameters[0];
+        //    transform.rotation = (Quaternion)data.parameters[1];
+        //}
+        if (_mementoState.IsRemember())
+        {
+            StartCoroutine(CoroutineLoad());
+        }
+    }
+
+    IEnumerator CoroutineLoad()
+    {
+        var WaitForSeconds = new WaitForSeconds(0.01f);
+        while (_mementoState.IsRemember())
+        {
+            var data = _mementoState.Remember();
+            _loading = true;
+            //Pongo en el array la pos que se donde lo puse lo que quiero
+            transform.position = (Vector3)data.parameters[0];
+            transform.rotation = (Quaternion)data.parameters[1];
+
+            yield return WaitForSeconds;
+        }
+        _loading = false;
     }
 }
