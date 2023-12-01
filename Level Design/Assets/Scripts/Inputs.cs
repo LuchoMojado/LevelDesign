@@ -38,7 +38,7 @@ public class Inputs
         {
             _movement.Rotation(_inputMouseX, _inputMouseY, false);
         }
-        
+
 
         /*if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -48,6 +48,11 @@ public class Inputs
             //UIManager.instance.SetPauseMenu(true);
             inputUpdate = Paused;
         }*/
+
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            GameManager.gameManager.LoadGame();
+        }
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
