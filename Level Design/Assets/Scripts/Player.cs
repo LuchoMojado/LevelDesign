@@ -260,6 +260,7 @@ public class Player : Entity
     {
         var WaitForSeconds = new WaitForSeconds(0.01f);
         _loading = true;
+        _myRB.constraints = RigidbodyConstraints.FreezeAll;
         while (_mementoState.IsRemember())
         {
             var data = _mementoState.Remember();
@@ -270,6 +271,7 @@ public class Player : Entity
 
             yield return WaitForSeconds;
         }
+        _myRB.constraints = RigidbodyConstraints.FreezeRotationX|RigidbodyConstraints.FreezeRotationZ;
         _loading = false;
     }
 }
