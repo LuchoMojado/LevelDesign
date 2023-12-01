@@ -8,7 +8,7 @@ public class Movement
     public event FloatsDelegate OnRotation;
     public event FloatsDelegate OnWallRunRotation;
 
-    float _currentSpeed, _normalSpeed, _sprintSpeed, _airSpeed, _xRotation, _mouseSensitivity, _jumpStrength, _maxVel, _groundDrag, _airDrag, _wallRunSpeed;
+    float _normalSpeed, _sprintSpeed, _airSpeed, _xRotation, _mouseSensitivity, _jumpStrength, _maxVel, _groundDrag, _airDrag, _slideDrag, _wallRunSpeed;
     Transform _playerTransform;
     Rigidbody _myRB;
     /*public LayerMask whatisWall;
@@ -16,15 +16,15 @@ public class Movement
     bool isWallRunning = false;*/
     public bool isSliding = false, isSprinting = false;
     bool _isWalling = false;
-    public float slideForce = 30;
+    public float slideForce = 30, currentSpeed, currentDrag, currentGroundDrag;
     bool _wallJumpRight;
+    IMovementType _moveType;
 
-
-    public Movement(Transform transform, Rigidbody rigidbody, float speed, float mouseSensitivity, float jumpStrength, float gdrag, float adrag, float wallSpd)
+    public Movement(Transform transform, Rigidbody rigidbody, float speed, float mouseSensitivity, float jumpStrength, float gdrag, float adrag, float sDrag, float wallSpd)
     {
         _playerTransform = transform;
         _myRB = rigidbody;
-        _currentSpeed = speed;
+        currentSpeed = speed;
         _normalSpeed = speed;
         _sprintSpeed = speed * 1.3f;
         _airSpeed = speed * 0.3f;
@@ -33,47 +33,13 @@ public class Movement
         _jumpStrength = jumpStrength;
         _groundDrag = gdrag;
         _airDrag = adrag;
+        _slideDrag = sDrag;
         _wallRunSpeed = wallSpd;
     }
 
-    public void Move(float horizontalInput, float verticalInput)
+    public void Move()
     {
-        Vector3 direction = _playerTransform.forward * verticalInput + _playerTransform.right * horizontalInput;
-
-        if (direction.sqrMagnitude > 1)
-        {
-            direction.Normalize();
-        }
-
-        if (!_isWalling)
-        {
-            if (GroundedCheck())
-            {
-                if (!isSliding)
-                {
-                    _myRB.drag = _groundDrag;
-                    _myRB.AddForce(direction * _currentSpeed * Time.deltaTime, ForceMode.Force);
-                }
-                else
-                {
-                    _myRB.AddForce(direction * _normalSpeed * Time.deltaTime, ForceMode.Force);
-                }
-                
-                //_myRB.AddForce(direction * _currentSpeed, ForceMode.Force);
-            }
-            else
-            {
-                _myRB.drag = _airDrag;
-                _myRB.AddForce(direction * _airSpeed * Time.deltaTime, ForceMode.Force);
-                //_myRB.AddForce(direction * _normalSpeed, ForceMode.Force);
-            }
-        }
-        
-        
-
-        //_myRB.MovePosition(_playerTransform.position + direction * _currentSpeed * Time.fixedDeltaTime);
-        //_myRB.AddForce(direction * _currentSpeed * 5f, ForceMode.Force);
-        //Debug.Log("La velocidad es " + _currentSpeed + " y su velocidad max es " + _maxSpeed);
+        _moveType.MoveType();
     }
 
     public void Rotation(float horizontalMouse, float verticalMouse, bool wallRunning)
@@ -92,36 +58,23 @@ public class Movement
             _playerTransform.rotation = Quaternion.Euler(0, _xRotation, 0);
 
             OnRotation(_xRotation, verticalMouse);
-            Debug.Log("kkkkk");
         }
         else
         {
             OnWallRunRotation(_xRotation, verticalMouse);
-            Debug.Log("yea");
         }
             
-    }
-    void SpeedLimit(Vector3 dir, float spd, float limitValue)
-    {
-        float oldSpd = _myRB.velocity.magnitude;
-        
-        _myRB.AddForce(dir * spd, ForceMode.Force);
-
-        if (_myRB.velocity.magnitude > oldSpd && oldSpd > limitValue)
-        {
-            _myRB.AddForce(-dir * spd, ForceMode.Force);
-        }
     }
 
     public void Sprint()
     {
-        _currentSpeed = _sprintSpeed;
+        currentSpeed = _sprintSpeed;
         isSprinting = true;
     }
 
     public void StopSprint()
     {
-        _currentSpeed = _normalSpeed;
+        currentSpeed = _normalSpeed;
         isSprinting = false;
     }
 
@@ -183,28 +136,14 @@ public class Movement
         if (start)
         {
             isSliding = true;
-            _myRB.drag = 0.02f;
+            currentGroundDrag = _slideDrag;
             _myRB.AddForce(Vector3.forward * slideForce);
         }
         else
         {
             isSliding = false;
+            currentGroundDrag = _groundDrag;
         }
-    }
-
-    public void Walling(bool running)
-    {
-        if (running)
-        {
-            _myRB.AddForce(_playerTransform.forward * _wallRunSpeed * Time.deltaTime);
-            _myRB.drag = _groundDrag;
-        }
-        else
-        {
-            _myRB.drag = _groundDrag * 2;
-        }
-
-        _myRB.AddForce(-_playerTransform.up * 0.5f);
     }
 
     public void StartWall()
@@ -216,5 +155,10 @@ public class Movement
     {
         _isWalling = false;
         _myRB.useGravity = true;
+    }
+
+    public void ChangeMoveType(IMovementType type)
+    {
+        _moveType = type;
     }
 }

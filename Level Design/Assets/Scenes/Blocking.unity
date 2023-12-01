@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0.0022290787, b: 0.015113915, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0.0022290174, b: 0.0151136, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -23605,6 +23605,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 150
   _speed: 800
+  _airSpeed: 600
   _jumpStrength: 300
   _grappleRange: 25
   _hookSpeed: 0.07
@@ -23615,6 +23616,7 @@ MonoBehaviour:
   _minWallRunSpd: 1
   _gDrag: 1.4
   _aDrag: 0.1
+  _sDrag: 0.2
   _wallRunSpeed: 700
   _mouseSensitivity: 200
   _crosshair: {fileID: 1429087606}
@@ -23623,6 +23625,9 @@ MonoBehaviour:
   _leftRay: {fileID: 545457811}
   _rightRay: {fileID: 1617959050}
   _camera: {fileID: 1354687477}
+  canGrapple: 0
+  isWallRunning: 0
+  isWallGrabbing: 0
   _hookMask:
     serializedVersion: 2
     m_Bits: 256
@@ -27679,6 +27684,7 @@ MonoBehaviour:
   player: {fileID: 659294561}
   checkPointPos: {x: 0, y: 0, z: 0}
   countObjects: 0
+  rewinds: []
 --- !u!4 &859802691
 Transform:
   m_ObjectHideFlags: 0
@@ -63828,6 +63834,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 150
   _speed: 800
+  _airSpeed: 0
   _jumpStrength: 300
   _grappleRange: 25
   _hookSpeed: 0.07
@@ -63838,6 +63845,7 @@ MonoBehaviour:
   _minWallRunSpd: 1
   _gDrag: 1.4
   _aDrag: 0.1
+  _sDrag: 0
   _wallRunSpeed: 700
   _mouseSensitivity: 500
   _crosshair: {fileID: 1429087606}
@@ -63846,6 +63854,9 @@ MonoBehaviour:
   _leftRay: {fileID: 1557273746}
   _rightRay: {fileID: 832067400}
   _camera: {fileID: 1354687477}
+  canGrapple: 0
+  isWallRunning: 0
+  isWallGrabbing: 0
   _hookMask:
     serializedVersion: 2
     m_Bits: 2147483647

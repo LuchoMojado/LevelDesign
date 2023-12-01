@@ -5,13 +5,14 @@ using UnityEngine;
 public class Inputs
 {
     public System.Action inputUpdate;
-    public float _inputHorizontal;
-    public float _inputVertical;
+    public float _inputHorizontal { get; private set; }
+    public float _inputVertical { get; private set; }
     float _inputMouseX, _inputMouseY;
     Movement _movement;
     Player _player;
     bool _jump;
     public bool wallGrab;
+    public IMovementType normalMove, airMove;
 
     public Inputs(Movement movement, Player player)
     {
@@ -117,7 +118,6 @@ public class Inputs
 
         if (_player.isWallRunning && _inputVertical == 1)
         {
-            _movement.Walling(true);
             if (_movement.GroundedCheck())
             {
                 _player.WallFinished();
@@ -134,7 +134,6 @@ public class Inputs
 
         if (_player.isWallGrabbing)
         {
-            _movement.Walling(false);
             if (_movement.GroundedCheck() || !wallGrab)
             {
                 _player.WallFinished();
@@ -156,8 +155,6 @@ public class Inputs
 
     public void InputFixedUpdate()
     {
-        _movement.Move(_inputHorizontal, _inputVertical);
-
         if (_jump)
         {
             Debug.Log("si");

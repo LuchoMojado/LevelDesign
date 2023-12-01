@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : Entity
 {
-    [SerializeField] float maxHp, _speed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _wallRunSpeed;
+    [SerializeField] float maxHp, _speed, _airSpeed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _sDrag, _wallRunSpeed;
 
     [Range(200, 1000), SerializeField]
     float _mouseSensitivity;
@@ -37,9 +37,11 @@ public class Player : Entity
         _myRB = GetComponent<Rigidbody>();
         _cameraTransform = Camera.main.transform;
 
-        movement = new Movement(transform, _myRB, _speed, _mouseSensitivity, _jumpStrength, _gDrag, _aDrag, _wallRunSpeed);
+        movement = new Movement(transform, _myRB, _speed, _mouseSensitivity, _jumpStrength, _gDrag, _aDrag, _sDrag, _wallRunSpeed);
         _inputs = new Inputs(movement, this);
         _wallrun = new WallrunController(transform, _leftRay, _rightRay, _wallMask, _myRB, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd);
+        movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
+        movement.currentGroundDrag = _gDrag;
     }
 
     private void Start()
@@ -74,29 +76,54 @@ public class Player : Entity
         {
             canGrapple = false;
         }
+
         if (!isWallRunning && !isWallGrabbing)
         {
-            if (!movement.GroundedCheck() && !_grapplingHook.grappled)
+            if (!movement.GroundedCheck())
             {
-                if (movement.isSprinting)
+                if (!_grapplingHook.grappled)
                 {
-                    if(_wallrun.WallCheckStart(true, out bool right, out float angle))
+                    if (movement.isSprinting)
                     {
-                        _wallrun.StartWall(_camera, right, true, angle);
-                        isWallRunning = true;
-                        WallStarted(right);
+                        if (_wallrun.WallCheckStart(true, out bool right, out float angle))
+                        {
+                            _wallrun.StartWall(_camera, right, true, angle);
+                            isWallRunning = true;
+                            WallStarted(right);
+                            movement.ChangeMoveType(new WallrunMove(_myRB, transform, _gDrag, _wallRunSpeed));
+                        }
+                        else
+                        {
+                            movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
+                            movement.currentDrag = _aDrag;
+                        }
+                    }
+                    else if (_inputs.wallGrab)
+                    {
+                        if (_wallrun.WallCheckStart(false, out bool right, out float angle))
+                        {
+                            _wallrun.StartWall(_camera, right, false, angle);
+                            isWallGrabbing = true;
+                            _wallingRight = right;
+                            WallStarted(right);
+                            movement.ChangeMoveType(new WallGrabMove(_myRB, transform, _gDrag * 1.8f));
+                        }
+                        else
+                        {
+                            movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
+                            movement.currentDrag = _aDrag;
+                        }
                     }
                 }
-                else if (_inputs.wallGrab)
+                else
                 {
-                    if (_wallrun.WallCheckStart(false, out bool right, out float angle))
-                    {
-                        _wallrun.StartWall(_camera, right, false, angle);
-                        isWallGrabbing = true;
-                        _wallingRight = right;
-                        WallStarted(right);
-                    }
+                    movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
                 }
+            }
+            else
+            {
+                movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
+                movement.currentDrag = movement.currentGroundDrag;
             }
         }
         else
@@ -112,6 +139,8 @@ public class Player : Entity
     private void FixedUpdate()
     {
         _inputs.InputFixedUpdate();
+
+        movement.Move();
     }
 
     /*public void HealUp(float heal)
