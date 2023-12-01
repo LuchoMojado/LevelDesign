@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     {
         checkPointPos = player.transform.position;
         gameManager = this;
+        StartCoroutine(CoroutineSave());
     }
 
     // Update is called once per frame
@@ -48,6 +49,19 @@ public class GameManager : MonoBehaviour
         foreach (var item in rewinds)
         {
             item.Load();
+        }
+    }
+    IEnumerator CoroutineSave()
+    {
+        var WaitForSeconds = new WaitForSeconds(0.01f);
+        while(true)
+        {
+            foreach (var item in rewinds)
+            {
+                item.Save();
+            }
+
+            yield return WaitForSeconds;
         }
     }
 }

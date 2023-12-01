@@ -8,6 +8,8 @@ public class MementoState
     List<ParamsMemento> _parameters = new List<ParamsMemento>();
     public void Rec(params object[] parameter)
     {
+        if (_parameters.Count >= 1000)
+            _parameters.RemoveAt(0);
         var remember = new ParamsMemento(parameter);
         _parameters.Add(remember);
     }
