@@ -38,9 +38,10 @@ public class ImportantObjects : Rewind
     {
         if(_mementoState.IsRemember())
         {
+            var data = _mementoState.Remember();
             //Pongo en el array la pos que se donde lo puse lo que quiero
-            transform.position = (Vector3)_mementoState.data[0];
-            transform.rotation = (Quaternion)_mementoState.data[1];
+            transform.position = (Vector3)data.parameters[0];
+            transform.rotation = (Quaternion)data.parameters[1];
         }
     }
 }

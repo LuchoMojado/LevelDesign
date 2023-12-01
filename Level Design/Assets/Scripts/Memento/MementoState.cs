@@ -4,15 +4,32 @@ using UnityEngine;
 
 public class MementoState
 {
-    public object[] data;
+    //VOLVER TIEMPO ATRAS
+    List<ParamsMemento> _parameters = new List<ParamsMemento>();
     public void Rec(params object[] parameter)
     {
-        data = parameter;
+        var remember = new ParamsMemento(parameter);
+        _parameters.Add(remember);
     }
 
     //No guardo nada todavia
     public bool IsRemember()
     {
-        return data.Length > 0;
+        return _parameters.Count > 0;
+    }
+
+    public ParamsMemento Remember()
+    {
+        //Cuando vos cargas la partida se borra
+        //var x = _parameters;
+        //_parameters = null;
+        //return x;
+
+        var x = _parameters[_parameters.Count - 1];
+        _parameters.RemoveAt(_parameters.Count - 1);
+        return x;
+
+        //Normal
+        //return _parameters;
     }
 }
