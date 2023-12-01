@@ -9,6 +9,11 @@ public class GameManager : MonoBehaviour
     public Vector3 checkPointPos;
     public float countObjects = 0;
     public Rewind[] rewinds;
+    void Awake()
+    {
+        if (gameManager == null) gameManager = this;
+        else Destroy(this);
+    }
     void Start()
     {
         checkPointPos = player.transform.position;
