@@ -192,6 +192,9 @@ public class Player : Entity
         }
     }
 
-    
+    public bool CheckWallRunSpeed()
+    {
+        return _myRB.velocity.magnitude > _minWallRunSpd;
+    }
 }
 
