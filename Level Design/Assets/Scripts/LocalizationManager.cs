@@ -24,15 +24,6 @@ public class LocalizationManager : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            ChangeLang(SystemLanguage.Spanish);
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-            ChangeLang(SystemLanguage.English);
-    }
-
     public void ChangeLang(SystemLanguage newLang)
     {
         if(language != newLang)

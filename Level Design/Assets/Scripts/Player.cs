@@ -50,9 +50,9 @@ public class Player : Entity
 
     private void Start()
     {
+        _inputs.InputStart();
         EventManager.Subscribe("MakeSound", MakeSound);
         _hp = maxHp;
-        _inputs.inputUpdate = _inputs.Unpaused;
     }
 
     void Update()

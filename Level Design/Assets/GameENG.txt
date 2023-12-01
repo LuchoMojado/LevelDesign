@@ -5,5 +5,7 @@
 "IDTutoWallgrab" : "To perform a wallgrab jump against a wall and hold ctrl, then press space to jump in the opposite direction of the wall"|
 "IDTutoWallRun" : "To perform a wallrun aim slightly at a wall and jump against it while running"|
 "IDTutoHook" : "To use the hook aim at a hookable surface highlighted in black and press Right Click. You can use R and F to adjust the length of the rope"|
-"IDTutoSlide" : "To slide press ctrl while moving"
+"IDTutoSlide" : "To slide press ctrl while moving"|
+"IDBResume" : "Resume" |
+"IDBOptions" : "Options"
 }

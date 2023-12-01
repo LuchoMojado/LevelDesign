@@ -19,7 +19,11 @@ public class Inputs
         _movement = movement;
         _player = player;
     }
-
+    public void InputStart()
+    {
+        inputUpdate = Unpaused;
+        GameManager.instance.Pause = Unpause;
+    }
     public void Unpaused()
     {
         _inputMouseX = Input.GetAxisRaw("Mouse X");
@@ -40,19 +44,16 @@ public class Inputs
         }
 
 
-        /*if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Time.timeScale = 0;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            //UIManager.instance.SetPauseMenu(true);
+            GameManager.instance.PauseGame();
             inputUpdate = Paused;
-        }*/
+        }
 
         if (Input.GetKeyDown(KeyCode.T))
         {
             Debug.Log("T");
-            GameManager.gameManager.LoadGame();
+            GameManager.instance.LoadGame();
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
@@ -147,17 +148,14 @@ public class Inputs
         }
     }
 
-    /*public void Paused()
+    public void Paused()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Time.timeScale = 1;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            //UIManager.instance.SetPauseMenu(false);
+            GameManager.instance.UnpauseGame();
             inputUpdate = Unpaused;
         }
-    }*/
+    }
 
     public void InputFixedUpdate()
     {
@@ -174,5 +172,9 @@ public class Inputs
             }
             _jump = false;
         }
+    }
+    public void Unpause()
+    {
+        inputUpdate = Unpaused;
     }
 }

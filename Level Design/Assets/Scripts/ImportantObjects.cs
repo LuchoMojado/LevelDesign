@@ -15,10 +15,10 @@ public class ImportantObjects : Rewind
     // Update is called once per frame
     void Update()
     {
-        if(Vector3.Distance(transform.position,GameManager.gameManager.player.transform.position) <= 2f)
+        if(Vector3.Distance(transform.position,GameManager.instance.player.transform.position) <= 2f)
         {
-            GameManager.gameManager.checkPointPos = GameManager.gameManager.player.transform.position;
-            GameManager.gameManager.takeObject();
+            GameManager.instance.checkPointPos = GameManager.instance.player.transform.position;
+            GameManager.instance.takeObject();
             _objectPool.RefillStock(this);
         }
     }

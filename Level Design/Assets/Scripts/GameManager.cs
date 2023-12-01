@@ -4,20 +4,21 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager gameManager;
+    public static GameManager instance;
+    public System.Action Pause;
     public Player player;
     public Vector3 checkPointPos;
     public float countObjects = 0;
     public Rewind[] rewinds;
     void Awake()
     {
-        if (gameManager == null) gameManager = this;
+        if (instance == null) instance = this;
         else Destroy(this);
     }
     void Start()
     {
         checkPointPos = player.transform.position;
-        gameManager = this;
+        instance = this;
         StartCoroutine(CoroutineSave());
     }
 
@@ -76,5 +77,20 @@ public class GameManager : MonoBehaviour
 
             yield return WaitForSeconds;
         }
+    }
+    public void PauseGame()
+    {
+        Time.timeScale = 0;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        UIManager.instance.SetPauseMenu(true);
+    }
+    public void UnpauseGame()
+    {
+        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        UIManager.instance.SetPauseMenu(false);
+        Pause();
     }
 }
