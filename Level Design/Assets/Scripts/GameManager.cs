@@ -59,7 +59,8 @@ public class GameManager : MonoBehaviour
     IEnumerator CoroutineSave()
     {
         var WaitForSeconds = new WaitForSeconds(0.01f);
-        while(true)
+
+        while (true)
         {
             foreach (var item in rewinds)
             {

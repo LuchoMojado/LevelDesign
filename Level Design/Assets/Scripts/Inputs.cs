@@ -49,7 +49,7 @@ public class Inputs
             inputUpdate = Paused;
         }*/
 
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             GameManager.gameManager.LoadGame();
         }

@@ -235,11 +235,9 @@ public class Player : Entity
     }
     public override void Save()
     {
-        Debug.Log("PLAYERENTRO");
         if (_loading)
             return;
-
-        _mementoState.Rec(this.transform.position, this.transform.rotation);
+        _mementoState.Rec(transform.position, transform.rotation);
     }
 
     public override void Load()
