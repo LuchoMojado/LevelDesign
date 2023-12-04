@@ -16,7 +16,7 @@ public class Movement
     bool isWallRunning = false;*/
     public bool isSliding = false, isSprinting = false;
     bool _isWalling = false;
-    public float slideForce = 30, currentSpeed, currentDrag, currentGroundDrag;
+    public float slideForce = 30, currentSpeed, currentDrag, currentGroundDrag, currentGroundSpeed;
     bool _wallJumpRight;
     IMovementType _moveType;
 
@@ -68,13 +68,13 @@ public class Movement
 
     public void Sprint()
     {
-        currentSpeed = _sprintSpeed;
+        currentGroundSpeed = _sprintSpeed;
         isSprinting = true;
     }
 
     public void StopSprint()
     {
-        currentSpeed = _normalSpeed;
+        currentGroundSpeed = _normalSpeed;
         isSprinting = false;
     }
 

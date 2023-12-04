@@ -46,6 +46,7 @@ public class Player : Entity
         _wallrun = new WallrunController(transform, _leftRay, _rightRay, _wallMask, _myRB, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd);
         movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
         movement.currentGroundDrag = _gDrag;
+        movement.currentGroundSpeed = _speed;
     }
 
     private void Start()
@@ -85,6 +86,10 @@ public class Player : Entity
         {
             if (!movement.GroundedCheck())
             {
+                movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
+                movement.currentDrag = _aDrag;
+                movement.currentSpeed = _airSpeed;
+
                 if (!_grapplingHook.grappled)
                 {
                     if (movement.isSprinting)
@@ -94,12 +99,7 @@ public class Player : Entity
                             _wallrun.StartWall(_camera, right, true, angle);
                             isWallRunning = true;
                             WallStarted(right);
-                            movement.ChangeMoveType(new WallrunMove(_myRB, transform, _gDrag, _wallRunSpeed));
-                        }
-                        else
-                        {
-                            movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
-                            movement.currentDrag = _aDrag;
+                            movement.ChangeMoveType(new WallrunMove(_myRB, transform, _gDrag, _wallRunSpeed, 150));
                         }
                     }
                     else if (_inputs.wallGrab)
@@ -110,12 +110,7 @@ public class Player : Entity
                             isWallGrabbing = true;
                             _wallingRight = right;
                             WallStarted(right);
-                            movement.ChangeMoveType(new WallGrabMove(_myRB, transform, _gDrag * 1.8f));
-                        }
-                        else
-                        {
-                            movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
-                            movement.currentDrag = _aDrag;
+                            movement.ChangeMoveType(new WallGrabMove(_myRB, transform, _gDrag, 100));
                         }
                     }
                 }
@@ -128,6 +123,7 @@ public class Player : Entity
             {
                 movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
                 movement.currentDrag = movement.currentGroundDrag;
+                movement.currentSpeed = movement.currentGroundSpeed;
             }
         }
         else
