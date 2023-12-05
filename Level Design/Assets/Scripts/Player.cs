@@ -68,7 +68,7 @@ public class Player : Entity
 
         if (!_grapplingHook.shot)
         {
-            if (Physics.Raycast(transform.position, _cameraTransform.forward, out hookHit, _grappleRange, _hookMask))
+            if (Physics.Raycast(_cameraTransform.position, _cameraTransform.forward, out hookHit, _grappleRange, _hookMask))
             {
                 canGrapple = true;
             }
