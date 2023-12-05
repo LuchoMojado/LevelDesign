@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0.0022290174, b: 0.0151136, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0.0022290787, b: 0.015113915, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -39072,7 +39072,7 @@ MonoBehaviour:
   _climbSpeed: 6
   _wallCheckRange: 0.9
   _wallrunMinAngle: 100
-  _minWallRunSpd: 1.5
+  _minWallRunSpd: 1.25
   _gDrag: 1.4
   _aDrag: 0.3
   _sDrag: 0.2
