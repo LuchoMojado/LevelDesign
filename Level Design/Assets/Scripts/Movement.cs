@@ -26,8 +26,8 @@ public class Movement
         _myRB = rigidbody;
         currentSpeed = speed;
         _normalSpeed = speed;
-        _sprintSpeed = speed * 1.3f;
-        _crouchSpeed = speed * 0.3f;
+        _sprintSpeed = sprintSpeed;
+        _crouchSpeed = crouchSpeed;
         _mouseSensitivity = mouseSensitivity;
         _jumpStrength = jumpStrength;
         _groundDrag = gdrag;

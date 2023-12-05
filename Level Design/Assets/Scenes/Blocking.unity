@@ -22504,25 +22504,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!1 &397914543 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 15c38a1dd723d174a8fef62e1420d3dd, type: 3}
-  m_PrefabInstance: {fileID: 1428199950}
-  m_PrefabAsset: {fileID: 0}
---- !u!64 &397914545
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 397914543}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1001 &397932072
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39082,8 +39063,8 @@ MonoBehaviour:
   maxHp: 150
   _speed: 700
   _sprintSpeed: 1100
-  _crouchSpeed: 300
-  _airSpeed: 300
+  _crouchSpeed: 250
+  _airSpeed: 275
   _jumpStrength: 300
   _grappleRange: 25
   _hookSpeed: 0.07
@@ -39091,10 +39072,10 @@ MonoBehaviour:
   _climbSpeed: 6
   _wallCheckRange: 0.9
   _wallrunMinAngle: 100
-  _minWallRunSpd: 1
+  _minWallRunSpd: 1.5
   _gDrag: 1.4
-  _aDrag: 0.4
-  _sDrag: 0.3
+  _aDrag: 0.3
+  _sDrag: 0.2
   _wallRunSpeed: 1000
   _mouseSensitivity: 200
   _crosshair: {fileID: 1429087606}
@@ -39190,7 +39171,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 659294560}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -70.18, y: 29.97, z: -46.6}
+  m_LocalPosition: {x: 58.22, y: 18.81, z: -31.28}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -41564,6 +41545,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 247
   m_LocalEulerAnglesHint: {x: 1.586, y: 357.49, z: -89.505}
+--- !u!1 &703747220 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8164078558771037576, guid: 15c38a1dd723d174a8fef62e1420d3dd, type: 3}
+  m_PrefabInstance: {fileID: 1428199950}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &703747224
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703747220}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 15c38a1dd723d174a8fef62e1420d3dd, type: 3}
 --- !u!1 &705433708
 GameObject:
   m_ObjectHideFlags: 0
@@ -43879,6 +43879,10 @@ PrefabInstance:
     - target: {fileID: 1151388028547126963, guid: 15c38a1dd723d174a8fef62e1420d3dd, type: 3}
       propertyPath: m_LocalPosition.z
       value: -2.3562946
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 15c38a1dd723d174a8fef62e1420d3dd, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15c38a1dd723d174a8fef62e1420d3dd, type: 3}
@@ -48161,7 +48165,6 @@ MonoBehaviour:
   rewinds:
   - {fileID: 1313111073}
   - {fileID: 944115681}
-  - {fileID: 0}
   - {fileID: 1279792049}
   - {fileID: 635691391}
   - {fileID: 1081165431}
@@ -81720,6 +81723,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: H Beam (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 15c38a1dd723d174a8fef62e1420d3dd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1151388028547126963, guid: 15c38a1dd723d174a8fef62e1420d3dd, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.516806
@@ -81743,6 +81750,10 @@ PrefabInstance:
     - target: {fileID: 1151388028547126963, guid: 15c38a1dd723d174a8fef62e1420d3dd, type: 3}
       propertyPath: m_LocalPosition.z
       value: -2.3562946
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 15c38a1dd723d174a8fef62e1420d3dd, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15c38a1dd723d174a8fef62e1420d3dd, type: 3}
