@@ -26,7 +26,7 @@ public class PlayerCamera : MonoBehaviour
 
     void Movement()
     {
-        transform.position = _player.transform.position + new Vector3 (0, 0.5f,0);
+        transform.position = _player.transform.position + new Vector3 (0, 0.75f,0);
         if (_yChange != 0)
         {
             transform.position = _player.transform.position + new Vector3(0, _yChange, 0);

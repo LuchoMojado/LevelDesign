@@ -208,7 +208,7 @@ public class Player : Entity
         if (movement.GroundedCheck())
         {
             movement.Slide(true);
-            _camera.ChangeCameraY(-0.1f);
+            _camera.ChangeCameraY(0.25f);
         }
     }
 
