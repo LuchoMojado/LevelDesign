@@ -8,7 +8,7 @@ public class Movement
     public event FloatsDelegate OnRotation;
     public event FloatsDelegate OnWallRunRotation;
 
-    float _normalSpeed, _sprintSpeed, _airSpeed, _xRotation, _mouseSensitivity, _jumpStrength, _maxVel, _groundDrag, _airDrag, _slideDrag, _wallRunSpeed;
+    float _normalSpeed, _sprintSpeed, _crouchSpeed, _xRotation, _mouseSensitivity, _jumpStrength, _maxVel, _groundDrag, _airDrag, _slideDrag, _wallRunSpeed;
     Transform _playerTransform;
     Rigidbody _myRB;
     /*public LayerMask whatisWall;
@@ -20,21 +20,18 @@ public class Movement
     bool _wallJumpRight;
     IMovementType _moveType;
 
-    public Movement(Transform transform, Rigidbody rigidbody, float speed, float mouseSensitivity, float jumpStrength, float gdrag, float adrag, float sDrag, float wallSpd)
+    public Movement(Transform transform, Rigidbody rigidbody, float speed, float sprintSpeed, float crouchSpeed, float mouseSensitivity, float jumpStrength, float gdrag, float adrag, float sDrag, float wallSpd)
     {
         _playerTransform = transform;
         _myRB = rigidbody;
         currentSpeed = speed;
         _normalSpeed = speed;
         _sprintSpeed = speed * 1.3f;
-        _airSpeed = speed * 0.3f;
-        _maxVel = 1;
+        _crouchSpeed = speed * 0.3f;
         _mouseSensitivity = mouseSensitivity;
         _jumpStrength = jumpStrength;
         _groundDrag = gdrag;
-        _airDrag = adrag;
         _slideDrag = sDrag;
-        _wallRunSpeed = wallSpd;
     }
 
     public void Move()
@@ -120,7 +117,7 @@ public class Movement
     public bool GroundedCheck()
     {
         Ray groundedRay = new Ray(_playerTransform.position, -_playerTransform.up);
-        bool grounded = Physics.Raycast(groundedRay, 1.1f, 1 << 6);
+        bool grounded = Physics.SphereCast(groundedRay, 0.5f, 1.1f, 1 << 6);
 
         return grounded;
     }
@@ -137,12 +134,13 @@ public class Movement
         {
             isSliding = true;
             currentGroundDrag = _slideDrag;
-            _myRB.AddForce(Vector3.forward * slideForce);
+            currentGroundSpeed = _normalSpeed * 0.5f;
         }
         else
         {
             isSliding = false;
             currentGroundDrag = _groundDrag;
+            currentGroundSpeed = _normalSpeed;
         }
     }
 

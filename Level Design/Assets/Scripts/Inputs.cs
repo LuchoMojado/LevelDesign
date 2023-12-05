@@ -82,7 +82,7 @@ public class Inputs
             }
         }
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && !_movement.isSliding)
         {
             if (_inputVertical <= 0)
             {
@@ -107,7 +107,7 @@ public class Inputs
             _jump = true;
         }
 
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetKey(KeyCode.LeftControl) && !_movement.isSprinting)
         {
             wallGrab = true;
 

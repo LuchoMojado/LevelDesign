@@ -28680,7 +28680,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 150
-  _speed: 800
+  _speed: 700
   _airSpeed: 300
   _jumpStrength: 300
   _grappleRange: 25
@@ -28692,7 +28692,7 @@ MonoBehaviour:
   _minWallRunSpd: 1
   _gDrag: 1.4
   _aDrag: 0.4
-  _sDrag: 0.5
+  _sDrag: 0.3
   _wallRunSpeed: 1000
   _mouseSensitivity: 200
   _crosshair: {fileID: 1429087606}

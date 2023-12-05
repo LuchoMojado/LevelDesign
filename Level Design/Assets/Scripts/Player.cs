@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : Entity
 {
-    [SerializeField] float maxHp, _speed, _airSpeed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _sDrag, _wallRunSpeed;
+    [SerializeField] float maxHp, _speed, _sprintSpeed, _crouchSpeed, _airSpeed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _sDrag, _wallRunSpeed;
 
     [Range(200, 1000), SerializeField]
     float _mouseSensitivity;
@@ -41,7 +41,7 @@ public class Player : Entity
         _myRB = GetComponent<Rigidbody>();
         _cameraTransform = Camera.main.transform;
 
-        movement = new Movement(transform, _myRB, _speed, _mouseSensitivity, _jumpStrength, _gDrag, _aDrag, _sDrag, _wallRunSpeed);
+        movement = new Movement(transform, _myRB, _speed, _sprintSpeed, _crouchSpeed, _mouseSensitivity, _jumpStrength, _gDrag, _aDrag, _sDrag, _wallRunSpeed);
         _inputs = new Inputs(movement, this);
         _wallrun = new WallrunController(transform, _leftRay, _rightRay, _wallMask, _myRB, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd);
         movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));
