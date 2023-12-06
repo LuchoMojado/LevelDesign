@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     {
         if(player.transform.position.y < -75)
         {
-            player.transform.position = checkPointPos;
+            Respawn();
         }
         //if (Input.GetKeyDown(KeyCode.T))
         //{
@@ -48,6 +48,11 @@ public class GameManager : MonoBehaviour
         //    }
         //    countDownSave = 0;
         //}
+    }
+
+    public void Respawn()
+    {
+        player.transform.position = checkPointPos;
     }
 
     public void takeObject()
