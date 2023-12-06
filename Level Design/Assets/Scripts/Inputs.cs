@@ -53,7 +53,7 @@ public class Inputs
         if (Input.GetKeyDown(KeyCode.T))
         {
             Debug.Log("T");
-            GameManager.instance.LoadGame();
+            //GameManager.instance.LoadGame();
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
