@@ -100,6 +100,7 @@ public class GrapplingHook : MonoBehaviour
 
     public IEnumerator Ungrapple(float speed)
     {
+        if (!shot) yield break;
         float time = 0;
         Vector3 oldPos = _hook.transform.position;
         float distance = (_hook.transform.position - _return.position).magnitude;

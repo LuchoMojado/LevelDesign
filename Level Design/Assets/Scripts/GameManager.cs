@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
     public void Respawn()
     {
         player.transform.position = checkPointPos;
+        player.UseUngrapple();
     }
 
     public void takeObject()
