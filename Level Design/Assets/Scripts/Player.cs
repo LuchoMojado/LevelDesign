@@ -26,7 +26,7 @@ public class Player : Entity
     public Transform _cameraTransform;
     public bool canGrapple, isWallRunning, isWallGrabbing;
     bool _wallingRight;
-    [SerializeField] LayerMask _hookMask, _wallMask,_EnemyMask;
+    [SerializeField] LayerMask _hookMask, _wallMask,_EnemyMask, _groundMask;
     //bool lisen = false;
 
 

@@ -19,8 +19,9 @@ public class Movement
     public float slideForce = 30, currentSpeed, currentDrag, currentGroundDrag, currentGroundSpeed;
     bool _wallJumpRight;
     IMovementType _moveType;
+    LayerMask _groundedLayer;
 
-    public Movement(Transform transform, Rigidbody rigidbody, float speed, float sprintSpeed, float crouchSpeed, float mouseSensitivity, float jumpStrength, float gdrag, float adrag, float sDrag, float wallSpd)
+    public Movement(Transform transform, Rigidbody rigidbody, float speed, float sprintSpeed, float crouchSpeed, float mouseSensitivity, float jumpStrength, float gdrag, float adrag, float sDrag, float wallSpd, LayerMask groundedMask)
     {
         _playerTransform = transform;
         _myRB = rigidbody;
@@ -32,6 +33,7 @@ public class Movement
         _jumpStrength = jumpStrength;
         _groundDrag = gdrag;
         _slideDrag = sDrag;
+        _groundedLayer = groundedMask;
     }
 
     public void Move()
