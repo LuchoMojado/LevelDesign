@@ -41,7 +41,7 @@ public class Player : Entity
         _myRB = GetComponent<Rigidbody>();
         _cameraTransform = Camera.main.transform;
 
-        movement = new Movement(transform, _myRB, _speed, _sprintSpeed, _crouchSpeed, _mouseSensitivity, _jumpStrength, _gDrag, _aDrag, _sDrag, _wallRunSpeed);
+        movement = new Movement(transform, _myRB, _speed, _sprintSpeed, _crouchSpeed, _mouseSensitivity, _jumpStrength, _gDrag, _aDrag, _sDrag, _wallRunSpeed, _groundMask);
         _inputs = new Inputs(movement, this);
         _wallrun = new WallrunController(transform, _leftRay, _rightRay, _wallMask, _myRB, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd);
         movement.ChangeMoveType(new NormalMove(_myRB, transform, _inputs, movement));

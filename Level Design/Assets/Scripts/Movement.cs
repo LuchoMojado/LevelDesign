@@ -119,7 +119,7 @@ public class Movement
     public bool GroundedCheck()
     {
         Ray groundedRay = new Ray(_playerTransform.position, -_playerTransform.up);
-        bool grounded = Physics.SphereCast(groundedRay, 0.5f, 1.1f, 1 << 6);
+        bool grounded = Physics.SphereCast(groundedRay, 0.5f, 1.1f, _groundedLayer);
 
         return grounded;
     }
