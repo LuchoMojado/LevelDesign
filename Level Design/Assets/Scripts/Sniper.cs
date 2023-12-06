@@ -8,9 +8,11 @@ public class Sniper : Entity
     [SerializeField] float _fovRadius, _fovAngle, _killTime;
     LineRenderer _line;
     [SerializeField] LayerMask _obstacleLayer;
+    AudioSource _AS;
 
     void Start()
     {
+        _AS = GetComponent<AudioSource>();
         _line = GetComponent<LineRenderer>();
         _line.SetPosition(0, transform.position);
     }
@@ -28,6 +30,7 @@ public class Sniper : Entity
             if (_aiming >= _killTime)
             {
                 GameManager.instance.Respawn();
+                _AS.Play();
             }
         }
         else
