@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
     public void takeObject()
     {
         countObjects++;
-        if(countObjects >= 9)
+        if(countObjects >= 10)
         {
             Debug.Log("GANASTE");
             SceneManager.LoadScene(sceneToLoad);
