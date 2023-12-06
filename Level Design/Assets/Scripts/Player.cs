@@ -23,7 +23,7 @@ public class Player : Entity
     [SerializeField] Transform _leftRay, _rightRay;
     [HideInInspector] public RaycastHit hookHit;
     [SerializeField] PlayerCamera _camera;
-    Transform _cameraTransform;
+    public Transform _cameraTransform;
     public bool canGrapple, isWallRunning, isWallGrabbing;
     bool _wallingRight;
     [SerializeField] LayerMask _hookMask, _wallMask,_EnemyMask;

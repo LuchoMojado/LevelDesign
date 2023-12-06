@@ -12,19 +12,19 @@ public class Sniper : Entity
     void Start()
     {
         _line = GetComponent<LineRenderer>();
+        _line.SetPosition(0, transform.position);
     }
 
     void Update()
     {
-        Vector3 playerPos = GameManager.instance.player.transform.position;
+        Player player = GameManager.instance.player;
+        Vector3 playerPos = player.transform.position;
 
         if (InFieldOfView(playerPos))
         {
-            print("yea");
             _aiming += Time.deltaTime;
             _line.enabled = true;
-            _line.SetPosition(0, transform.position);
-            _line.SetPosition(1, playerPos + new Vector3(0, 0.6f, 0));
+            _line.SetPosition(1, player.transform.position);
             if (_aiming >= _killTime)
             {
                 GameManager.instance.Respawn();
@@ -32,7 +32,6 @@ public class Sniper : Entity
         }
         else
         {
-            print("yean't");
             _line.enabled = false;
             _aiming = 0;
         }
@@ -55,7 +54,7 @@ public class Sniper : Entity
 
     public override void Die()
     {
-        Destroy(this);
+        Destroy(gameObject);
     }
 
     public override void Load()
