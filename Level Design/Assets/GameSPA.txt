@@ -4,7 +4,7 @@
 "IDTutoMove" : "WASD para moverse, Espacio para saltar y Shift para correr"|
 "IDTutoWallgrab" : "Para realizar un wallgrab salta contra una pared y mantene ctrl, luego presiona espacio para saltar en direccion contraria a la pared"|
 "IDTutoWallRun" : "Para realizar un wallrun apunta levemente hacia la pared y mientras corres salta contra ella"|
-"IDTutoHook" : "Para usar el gancho apunta hacia una superficie enganchable resaltadas con negro y presiona click derecho. Podes usar la R y la F para ajustar el largo de la cuerda"|
+"IDTutoHook" : "Para usar el gancho apunta hacia una superficie enganchable (Vigas) y presiona click derecho. Podes usar la R y la F para ajustar el largo de la cuerda, con la Q sueltas el gancho"|
 "IDTutoSlide" : "Para deslizarse presiona ctrl mientras estas en movimiento"|
 "IDBResume" : "Continuar" |
 "IDBOptions" : "Opciones"

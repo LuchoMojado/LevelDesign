@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour
     public Vector3 checkPointPos;
     public float countObjects = 0;
     public Rewind[] rewinds;
+    public string sceneToLoad;
     void Awake()
     {
         if (instance == null) instance = this;
@@ -54,6 +56,7 @@ public class GameManager : MonoBehaviour
         if(countObjects >= 9)
         {
             Debug.Log("GANASTE");
+            SceneManager.LoadScene(sceneToLoad);
         }
     }
 
