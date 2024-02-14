@@ -1044,7 +1044,7 @@ MonoBehaviour:
   isWallGrabbing: 0
   _hookMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 4352
   _wallMask:
     serializedVersion: 2
     m_Bits: 2147483647

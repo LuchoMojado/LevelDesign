@@ -82,6 +82,11 @@ public class Player : Entity
             canGrapple = false;
         }
 
+        if (_grapplingHook.grappled && _grapplingHook.grappledTo.layer != 8 && _grapplingHook.grappledTo.layer != 12)
+        {
+            UseUngrapple();
+        }
+
         if (!isWallRunning && !isWallGrabbing)
         {
             if (!movement.GroundedCheck())

@@ -13,41 +13,17 @@ public class GrapplingHook : MonoBehaviour
     public Factory<Chain> factory;
     ObjectPool<Chain> myPool;
     public List<Chain> allChains = new List<Chain>();
-
+    
     public ConfigurableJoint chainJoint;
 
     [HideInInspector] public bool shot, grappled;
+    [HideInInspector] public GameObject grappledTo;
 
     private void Awake()
     {
         _lineR = GetComponent<LineRenderer>();
     }
     bool listo = true;
-    private void Update()
-    {
-        /*if(shot)
-        {
-            if(listo)
-            {
-                float separation = 1f;
-                float totalDis = Vector3.Distance(_hook.transform.position, _return.position);
-                int cantChains = Mathf.FloorToInt(totalDis / separation) + 1;
-                int lastChain = allChains.Count;
-                Debug.Log(lastChain);
-                for (int i = 0; i < cantChains; i++)
-                {
-                    float t = i / cantChains - 1;
-                    Vector3 newPos = Vector3.Lerp(_hook.transform.position, _return.position, t);
-                    SpawnChain(newPos);
-                }
-                if (Vector3.Distance(allChains[lastChain - 1].transform.position, _return.position) <= 0)
-                    allChains[lastChain - 1].Refil(allChains[lastChain - 1]);
-                
-            }
-            //listo = false;
-
-        }*/
-    }
 
     public void Start()
     {
@@ -80,6 +56,7 @@ public class GrapplingHook : MonoBehaviour
                 float jointLimit = (player.transform.position - hit.point).magnitude + 0.6f;
                 _hook.transform.rotation = Quaternion.Euler(hit.normal + new Vector3(90, 0, 0));
                 grappled = true;
+                grappledTo = hit.collider.gameObject;
                 limitConfig.limit = jointLimit;
                 _playerJoint = player.AddComponent<ConfigurableJoint>();
                 JointSetUp(_playerJoint, hit.point, limitConfig);
@@ -105,6 +82,7 @@ public class GrapplingHook : MonoBehaviour
         Vector3 oldPos = _hook.transform.position;
         float distance = (_hook.transform.position - _return.position).magnitude;
         grappled = false;
+        grappledTo = null;
         Destroy(_playerJoint);
 
         while (time < distance * speed * 0.5f)
@@ -141,7 +119,7 @@ public class GrapplingHook : MonoBehaviour
         joint.zMotion = ConfigurableJointMotion.Limited;
     }
 
-    public void SpawnChain(Vector3 newP)
+    /*public void SpawnChain(Vector3 newP)
     {
         var x = myPool.Get();
         x.Initialize(myPool);
@@ -161,5 +139,5 @@ public class GrapplingHook : MonoBehaviour
             //x.transform.forward = transform.position;
         }
         //desde donde choca la cadena poner el primer punto, y si es mayor la distancia a tanto a comparacion del return spawnee otra 
-    }
+    }*/
 }
