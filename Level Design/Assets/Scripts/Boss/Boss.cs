@@ -6,12 +6,14 @@ public class Boss : MonoBehaviour
 {
     FiniteStateMachine _fsm;
 
-    public List<GameObject> tiles;
-    [SerializeField] BossHands[] _hands;
+    public List<Renderer> tiles;
+    [SerializeField] Material _damagedTileMat;
     [SerializeField] HookDisabler _hookDisabler;
+    [SerializeField] float _tileDestroyDelay;
 
     [Header("Hands")]
-    [SerializeField] float _prepareSpeed, _slamSpeed, _sweepSpeed, _prepareTime, _recoverTime;
+    [SerializeField] BossHands[] _hands;
+    [SerializeField] float _prepareSpeed, _slamSpeed, _sweepSpeed, _retractSpeed, _prepareTime, _recoverTime;
     [SerializeField] Transform[] _prepareSlamTransform, _idleTransform;
     [SerializeField] Vector3 _sweepStartPos, _sweepEndPos;
 
@@ -66,25 +68,17 @@ public class Boss : MonoBehaviour
             yield return null;
         }
 
-        List<GameObject> destroy = new List<GameObject>();
-
         foreach (var item in tiles)
         {
             if (Vector3.Distance(item.transform.position, _hands[handIndex].transform.position) <= 8)
             {
-                destroy.Add(item);
+                StartCoroutine(DestroyTile(item));
             }
-        }
-
-        for (int i = 0; i < destroy.Count; i++)
-        {
-            tiles.Remove(destroy[i]);
-            Destroy(destroy[i]);
         }
 
         yield return new WaitForSeconds(_recoverTime);
 
-        StartCoroutine(_hands[handIndex].MoveAndRotate(_idleTransform[handIndex], _slamSpeed));
+        StartCoroutine(_hands[handIndex].MoveAndRotate(_idleTransform[handIndex], _retractSpeed));
 
         while (_hands[handIndex].moving)
         {
@@ -109,5 +103,16 @@ public class Boss : MonoBehaviour
         {
             return 1;
         }
+    }
+
+    IEnumerator DestroyTile(Renderer tile)
+    {
+        tile.material = _damagedTileMat;
+
+        yield return new WaitForSeconds(_tileDestroyDelay);
+
+        tiles.Remove(tile);
+        //spawneo particulas
+        Destroy(tile.gameObject);
     }
 }
