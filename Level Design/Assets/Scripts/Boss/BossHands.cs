@@ -6,16 +6,34 @@ public class BossHands : MonoBehaviour
 {
     [HideInInspector] public bool moving { get; private set; }
     [HideInInspector] public bool busy;
-
-    //usar lookup table para el calculo de distancia
-    public IEnumerator MoveAndRotate(Transform goalTransform, float speed)
+    
+    public IEnumerator MoveAndRotate(Transform goalTransform, float speed, bool rotate)
     {
         moving = true;
 
         while (transform.position != goalTransform.position)
         {
             transform.position = Vector3.MoveTowards(transform.position, goalTransform.position, Time.deltaTime * speed);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, goalTransform.rotation, Time.deltaTime * speed);
+
+            if (rotate)
+            {
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, goalTransform.rotation, Time.deltaTime * speed);
+            }
+
+            yield return null;
+        }
+
+        moving = false;
+    }
+
+    public IEnumerator MoveAndRotate(Vector3 goalPosition, Quaternion goalRotation, float speed)
+    {
+        moving = true;
+
+        while (transform.position != goalPosition)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, goalPosition, Time.deltaTime * speed);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, goalRotation, Time.deltaTime * speed);
 
             yield return null;
         }
@@ -30,7 +48,6 @@ public class BossHands : MonoBehaviour
         while (transform.position != goalPosition)
         {
             transform.position = Vector3.MoveTowards(transform.position, goalPosition, Time.deltaTime * speed);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.identity, Time.deltaTime * speed);
 
             yield return null;
         }

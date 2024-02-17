@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : Entity
 {
-    [SerializeField] float maxHp, _speed, _sprintSpeed, _crouchSpeed, _airSpeed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _sDrag, _wallRunSpeed;
+    [SerializeField] float maxHp, _speed, _sprintSpeed, _crouchSpeed, _airSpeed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _sDrag, _wallRunSpeed, _knockbackStr, _knockbackY;
 
     [Range(200, 1000), SerializeField]
     float _mouseSensitivity;
@@ -24,7 +24,7 @@ public class Player : Entity
     [HideInInspector] public RaycastHit hookHit;
     [SerializeField] PlayerCamera _camera;
     public Transform _cameraTransform;
-    public bool canGrapple, isWallRunning, isWallGrabbing;
+    [HideInInspector] public bool canGrapple, isWallRunning, isWallGrabbing;
     bool _wallingRight;
     [SerializeField] LayerMask _hookMask, _wallMask,_EnemyMask, _groundMask;
     //bool lisen = false;
@@ -297,7 +297,7 @@ public class Player : Entity
 
         var dir = new Vector3(transform.position.x - hazardX, 0, transform.position.z - hazardZ).normalized;
 
-        _myRB.AddForce((dir + Vector3.up * 0.5f) * 700);
+        _myRB.AddForce((dir + Vector3.up * _knockbackY) * _knockbackStr);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -306,6 +306,7 @@ public class Player : Entity
         {
             // takedamage
             Knockback(other.transform.position.x, other.transform.position.z);
+            UseUngrapple();
         }
     }
 }

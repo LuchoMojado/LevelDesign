@@ -32,7 +32,8 @@ public class FirstPhaseState : State
 
         if (_timer <= 0)
         {
-            _takeAction();
+            //_takeAction();
+            _boss.StartCoroutine(_boss.SpawnProyectiles(UnityEngine.Random.Range(0,2)));
             _timer = _boss.restTime;
         }
         else
