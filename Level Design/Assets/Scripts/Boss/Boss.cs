@@ -13,9 +13,9 @@ public class Boss : MonoBehaviour
 
     [Header("Hands")]
     [SerializeField] BossHands[] _hands;
-    [SerializeField] float _prepareSpeed, _slamSpeed, _sweepSpeed, _retractSpeed, _prepareTime, _recoverTime;
+    [SerializeField] float _slamPrepareSpeed, _slamSpeed, _sweepPrepareSpeed, _sweepSpeed, _retractSpeed, _slamPrepareTime, _sweepPrepareTime, _recoverTime;
     [SerializeField] Transform[] _prepareSlamTransform, _idleTransform;
-    [SerializeField] Vector3 _sweepStartPos, _sweepEndPos;
+    [SerializeField] Transform _sweepLimitRight, _sweepLimitLeft, _sweepLimitFront, _sweepLimitBack;
 
     public float restTime;
 
@@ -35,7 +35,7 @@ public class Boss : MonoBehaviour
         _fsm = new FiniteStateMachine();
 
         _fsm.AddState(BossStates.Waiting, new WaitingState(this));
-        _fsm.AddState(BossStates.FirstPhase, new FirstPhaseState(this));
+        _fsm.AddState(BossStates.FirstPhase, new FirstPhaseState(this, UseFirstPhaseAction));
         _fsm.AddState(BossStates.SecondPhase, new SecondPhaseState(this));
         _fsm.AddState(BossStates.ThirdPhase, new ThirdPhaseState(this));
         _fsm.ChangeState(BossStates.Waiting);
@@ -52,14 +52,14 @@ public class Boss : MonoBehaviour
     {
         takingAction = true;
 
-        StartCoroutine(_hands[handIndex].MoveAndRotate(_prepareSlamTransform[handIndex], _prepareSpeed));
+        StartCoroutine(_hands[handIndex].MoveAndRotate(_prepareSlamTransform[handIndex], _slamPrepareSpeed));
 
         while (_hands[handIndex].moving)
         {
             yield return null;
         }
 
-        yield return new WaitForSeconds(_prepareTime);
+        yield return new WaitForSeconds(_slamPrepareTime);
 
         StartCoroutine(_hands[handIndex].MoveAndRotate(new Vector3(playerPos.x, 49, playerPos.z), _slamSpeed));
 
@@ -88,21 +88,90 @@ public class Boss : MonoBehaviour
         takingAction = false;
     }
 
-    void HandSweep(int handIndex)
+    public IEnumerator HandSweep(int handIndex)
     {
+        takingAction = true;
+        bool right = handIndex % 2 == 0 ? true : false;
+        float xStart, xEnd, zEnd;
 
+        if (right)
+        {
+            xStart = _sweepLimitRight.position.x;
+            xEnd = _sweepLimitLeft.position.x;
+        }
+        else
+        {
+            xStart = _sweepLimitLeft.position.x;
+            xEnd = _sweepLimitRight.position.x;
+        }
+
+        StartCoroutine(_hands[handIndex].MoveAndRotate(new Vector3(xStart, 49, playerPos.z), _sweepPrepareSpeed));
+
+        while (_hands[handIndex].moving)
+        {
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(_sweepPrepareTime);
+
+        zEnd = _hands[handIndex].transform.position.z < playerPos.z ? _sweepLimitBack.position.z : _sweepLimitFront.position.z;
+
+        StartCoroutine(_hands[handIndex].Sweep(playerPos, xEnd, zEnd, _sweepSpeed));
+
+        while (_hands[handIndex].moving)
+        {
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(_recoverTime);
+
+        StartCoroutine(_hands[handIndex].MoveAndRotate(_idleTransform[handIndex], _retractSpeed));
+
+        while (_hands[handIndex].moving)
+        {
+            yield return null;
+        }
+
+        takingAction = false;
+    }
+
+    public void UseFirstPhaseAction()
+    {
+        int action = Random.Range(0, 2);
+
+        switch (action)
+        {
+            case 0:
+                StartCoroutine(FistSlam(PickHand()));
+                break;
+            case 1:
+                StartCoroutine(HandSweep(PickHand()));
+                break;
+            default:
+                break;
+        }
     }
 
     public int PickHand()
     {
+        int index;
+
         if (playerPos.x <= transform.position.x)
         {
-            return 0;
+            do
+            {
+                index = Random.Range(0, _hands.Length);
+            } while (index % 2 != 0);
         }
         else
         {
-            return 1;
+            do
+            {
+                index = Random.Range(0, _hands.Length);
+            } while (index % 2 == 0);
         }
+        
+        return index;
     }
 
     IEnumerator DestroyTile(Renderer tile)

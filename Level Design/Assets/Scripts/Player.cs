@@ -290,5 +290,23 @@ public class Player : Entity
         _myRB.constraints = RigidbodyConstraints.FreezeRotationX|RigidbodyConstraints.FreezeRotationZ;
         _loading = false;
     }
+
+    void Knockback(float hazardX, float hazardZ)
+    {
+        _myRB.velocity = Vector3.zero;
+
+        var dir = new Vector3(transform.position.x - hazardX, 0, transform.position.z - hazardZ).normalized;
+
+        _myRB.AddForce((dir + Vector3.up * 0.5f) * 700);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == 13)
+        {
+            // takedamage
+            Knockback(other.transform.position.x, other.transform.position.z);
+        }
+    }
 }
 

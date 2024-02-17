@@ -1,19 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class FirstPhaseState : State
 {
-    public FirstPhaseState(Boss b)
+    public FirstPhaseState(Boss b, Action firstPhaseActions)
     {
         _boss = b;
+        _takeAction = firstPhaseActions;
     }
 
     float _timer;
+    Action _takeAction;
 
     public override void OnEnter()
     {
-        Debug.Log("first phase");
         _timer = _boss.restTime;
     }
 
@@ -30,7 +32,7 @@ public class FirstPhaseState : State
 
         if (_timer <= 0)
         {
-            _boss.StartCoroutine(_boss.FistSlam(_boss.PickHand()));
+            _takeAction();
             _timer = _boss.restTime;
         }
         else
