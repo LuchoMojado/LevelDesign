@@ -5,7 +5,8 @@ using UnityEngine;
 public class BossHands : MonoBehaviour
 {
     [HideInInspector] public bool moving { get; private set; }
-    
+    [HideInInspector] public bool busy;
+
     public IEnumerator MoveAndRotate(Transform goalTransform, float speed, bool rotate)
     {
         moving = true;

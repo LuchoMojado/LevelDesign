@@ -11,7 +11,7 @@ public class FirstPhaseState : State
         _takeAction = firstPhaseActions;
     }
 
-    float _timer, _hookedTime, _hookThreshold;
+    float _timer, _hookedTime;
     Action _takeAction;
     Player _player;
 
@@ -32,9 +32,9 @@ public class FirstPhaseState : State
         {
             _hookedTime += Time.deltaTime;
 
-            if(_hookedTime >= _hookThreshold)
+            if(_hookedTime >= _boss.hookTimeToDisable)
             {
-                // use hook disabler
+                _boss.StartCoroutine(_boss.DisableHook(_boss.PickFreeHand()));
 
                 _hookedTime = 0;
             }

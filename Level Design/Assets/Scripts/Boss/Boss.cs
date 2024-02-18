@@ -16,9 +16,9 @@ public class Boss : MonoBehaviour
     [SerializeField] BossHands[] _hands;
     [SerializeField] float _slamPrepareSpeed, _slamSpeed, _sweepPrepareSpeed, _sweepSpeed, _retractSpeed, _slamPrepareTime, _sweepPrepareTime, _recoverTime, _spawnProyectileSpeed, _spawnPrepareTime, _spawnPrepareSpeed;
     [SerializeField] Transform[] _prepareSlamTransform, _idleTransform, _proyectileSpawnTransform;
-    [SerializeField] Transform _sweepLimitRight, _sweepLimitLeft, _sweepLimitFront, _sweepLimitBack;
+    [SerializeField] Transform _sweepLimitRight, _sweepLimitLeft, _sweepLimitFront, _sweepLimitBack, _disablerSpawnTransform;
 
-    public float restTime;
+    public float restTime, hookTimeToDisable;
 
     public Vector3 playerPos;
     public bool takingAction;
@@ -51,27 +51,39 @@ public class Boss : MonoBehaviour
 
     public IEnumerator FistSlam(int handIndex)
     {
+        int index;
+
+        if (_hands[handIndex].busy)
+        {
+            index = PickFreeHand();
+        }
+        else
+        {
+            index = handIndex;
+        }
+
+        _hands[index].busy = true;
         takingAction = true;
 
-        StartCoroutine(_hands[handIndex].MoveAndRotate(_prepareSlamTransform[handIndex], _slamPrepareSpeed, true));
+        StartCoroutine(_hands[index].MoveAndRotate(_prepareSlamTransform[index], _slamPrepareSpeed, true));
 
-        while (_hands[handIndex].moving)
+        while (_hands[index].moving)
         {
             yield return null;
         }
 
         yield return new WaitForSeconds(_slamPrepareTime);
 
-        StartCoroutine(_hands[handIndex].MoveAndRotate(new Vector3(playerPos.x, 49, playerPos.z), Quaternion.identity, _slamSpeed));
+        StartCoroutine(_hands[index].MoveAndRotate(new Vector3(playerPos.x, 49, playerPos.z), Quaternion.identity, _slamSpeed));
 
-        while (_hands[handIndex].moving)
+        while (_hands[index].moving)
         {
             yield return null;
         }
 
         foreach (var item in tiles)
         {
-            if (Vector3.Distance(item.transform.position, _hands[handIndex].transform.position) <= 8)
+            if (Vector3.Distance(item.transform.position, _hands[index].transform.position) <= 8)
             {
                 StartCoroutine(DestroyTile(item));
             }
@@ -79,20 +91,33 @@ public class Boss : MonoBehaviour
 
         yield return new WaitForSeconds(_recoverTime);
 
-        StartCoroutine(_hands[handIndex].MoveAndRotate(_idleTransform[handIndex], _retractSpeed, true));
+        StartCoroutine(_hands[index].MoveAndRotate(_idleTransform[index], _retractSpeed, true));
 
-        while (_hands[handIndex].moving)
+        while (_hands[index].moving)
         {
             yield return null;
         }
 
+        _hands[index].busy = false;
         takingAction = false;
     }
 
     public IEnumerator HandSweep(int handIndex)
     {
+        int index;
+
+        if (_hands[handIndex].busy)
+        {
+            index = PickFreeHand();
+        }
+        else
+        {
+            index = handIndex;
+        }
+
+        _hands[index].busy = true;
         takingAction = true;
-        bool right = handIndex % 2 == 0 ? true : false;
+        bool right = index % 2 == 0 ? true : false;
         float xStart, xEnd, zEnd;
 
         if (right)
@@ -106,44 +131,46 @@ public class Boss : MonoBehaviour
             xEnd = _sweepLimitRight.position.x;
         }
 
-        StartCoroutine(_hands[handIndex].MoveAndRotate(new Vector3(xStart, 49, playerPos.z), Quaternion.identity, _sweepPrepareSpeed));
+        StartCoroutine(_hands[index].MoveAndRotate(new Vector3(xStart, 49, playerPos.z), Quaternion.identity, _sweepPrepareSpeed));
 
-        while (_hands[handIndex].moving)
+        while (_hands[index].moving)
         {
             yield return null;
         }
 
         yield return new WaitForSeconds(_sweepPrepareTime);
 
-        zEnd = _hands[handIndex].transform.position.z < playerPos.z ? _sweepLimitBack.position.z : _sweepLimitFront.position.z;
+        zEnd = _hands[index].transform.position.z < playerPos.z ? _sweepLimitBack.position.z : _sweepLimitFront.position.z;
 
-        StartCoroutine(_hands[handIndex].Sweep(playerPos, xEnd, zEnd, _sweepSpeed));
+        StartCoroutine(_hands[index].Sweep(playerPos, xEnd, zEnd, _sweepSpeed));
 
-        while (_hands[handIndex].moving)
+        while (_hands[index].moving)
         {
             yield return null;
         }
 
         yield return new WaitForSeconds(_recoverTime);
 
-        StartCoroutine(_hands[handIndex].MoveAndRotate(_idleTransform[handIndex], _retractSpeed, true));
+        StartCoroutine(_hands[index].MoveAndRotate(_idleTransform[index], _retractSpeed, true));
 
-        while (_hands[handIndex].moving)
+        while (_hands[index].moving)
         {
             yield return null;
         }
 
+        _hands[index].busy = false;
         takingAction = false;
     }
 
     public IEnumerator SpawnProyectiles(int handIndex)
     {
+        _hands[handIndex].busy = true;
         takingAction = true;
         bool right = handIndex % 2 == 0 ? true : false;
 
         Vector3 startPos = right ? _proyectileSpawnTransform[0].position : _proyectileSpawnTransform[_proyectileSpawnTransform.Length - 1].position;
         startPos += Vector3.forward * 5;
-        Quaternion rotation = right ? new Quaternion(90, 90, 0, 0) : new Quaternion(90, -90, 0, 0);
+        Quaternion rotation = right ? _proyectileSpawnTransform[0].rotation : _proyectileSpawnTransform[_proyectileSpawnTransform.Length - 1].rotation;
 
         StartCoroutine(_hands[handIndex].MoveAndRotate(startPos, rotation, _spawnPrepareSpeed));
 
@@ -196,7 +223,46 @@ public class Boss : MonoBehaviour
             yield return null;
         }
 
+        _hands[handIndex].busy = false;
         takingAction = false;
+    }
+
+    public IEnumerator DisableHook(int handIndex)
+    {
+        _hands[handIndex].busy = true;
+        bool right = handIndex % 2 == 0 ? true : false;
+
+        Vector3 startPos = _disablerSpawnTransform.position - Vector3.up * 4;
+        Quaternion rotation = right ? _disablerSpawnTransform.rotation : _disablerSpawnTransform.rotation * new Quaternion(1, 1, -1, 1);
+
+        StartCoroutine(_hands[handIndex].MoveAndRotate(startPos, rotation, _spawnPrepareSpeed));
+
+        while (_hands[handIndex].moving)
+        {
+            yield return null;
+        }
+
+        var disabler = Instantiate(_hookDisabler, _disablerSpawnTransform.position, Quaternion.identity);
+
+        yield return new WaitForSeconds(4);
+
+        StartCoroutine(_hands[handIndex].MoveAndRotate(disabler.transform.position, _spawnPrepareSpeed));
+
+        while (_hands[handIndex].moving)
+        {
+            yield return null;
+        }
+
+        disabler.Die();
+
+        StartCoroutine(_hands[handIndex].MoveAndRotate(_idleTransform[handIndex], _retractSpeed, true));
+
+        while (_hands[handIndex].moving)
+        {
+            yield return null;
+        }
+
+        _hands[handIndex].busy = false;
     }
 
     public void UseFirstPhaseAction()
@@ -212,7 +278,7 @@ public class Boss : MonoBehaviour
                 StartCoroutine(HandSweep(PickHandBySide()));
                 break;
             case 2:
-                StartCoroutine(SpawnProyectiles(Random.Range(0, _hands.Length)));
+                StartCoroutine(SpawnProyectiles(PickFreeHand()));
                 break;
             default:
                 break;
@@ -238,6 +304,18 @@ public class Boss : MonoBehaviour
             } while (index % 2 == 0);
         }
         
+        return index;
+    }
+
+    public int PickFreeHand()
+    {
+        int index;
+
+        do
+        {
+            index = Random.Range(0, _hands.Length);
+        } while (_hands[index].busy == true);
+
         return index;
     }
 

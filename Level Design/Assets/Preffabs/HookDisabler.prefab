@@ -110,9 +110,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3273841fa771b4479d8ed68f84fa82f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _firstDisableDelay: 0
+  _disableDelay: 1
   _disableDuration: 2.5
-  _disableCooldown: 7
-  _disableRadius: 70
+  _disableCooldown: 6
+  _disableRadius: 50
   _ghostHookableLayer:
     serializedVersion: 2
     m_Bits: 4096

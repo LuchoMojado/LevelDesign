@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HookDisabler : Entity
 {
-    [SerializeField] float _disableDuration, _disableCooldown, _disableRadius;
+    [SerializeField] float _firstDisableDelay, _disableDelay, _disableDuration, _disableCooldown, _disableRadius;
     [SerializeField] LayerMask _ghostHookableLayer;
     [SerializeField] Material _normalHookable, _disabledHookable;
 
@@ -20,30 +20,31 @@ public class HookDisabler : Entity
         {
             _hookables.Add(item.gameObject.GetComponent<Renderer>());
         }
+
+        StartCoroutine(DisableCycle());
+
+        _firstDisableDelay = 0;
     }
 
-    void Update()
+    IEnumerator DisableCycle()
     {
-        if (_timer <= 0)
-        {
-            ActivateAbility(ref _disable);
+        yield return new WaitForSeconds(_disableDelay + _firstDisableDelay);
 
-            _timer = _disable ? _disableCooldown : _disableDuration;
-        }
-        else
-        {
-            _timer -= Time.deltaTime;
-        }
-    }
-
-    void ActivateAbility(ref bool disable)
-    {
         foreach (var item in _hookables)
         {
-            ChangeHookable(item, disable);
+            ChangeHookable(item, true);
         }
 
-        disable = !disable;
+        yield return new WaitForSeconds(_disableDuration);
+
+        foreach (var item in _hookables)
+        {
+            ChangeHookable(item, false);
+        }
+
+        yield return new WaitForSeconds(_disableCooldown);
+
+        StartCoroutine(DisableCycle());
     }
 
     void ChangeHookable(Renderer hookable, bool disable)
@@ -63,9 +64,9 @@ public class HookDisabler : Entity
 
     public override void Die()
     {
-        if (!_disable)
+        foreach (var item in _hookables)
         {
-            ActivateAbility(ref _disable);
+            ChangeHookable(item, false);
         }
 
         Destroy(gameObject);
