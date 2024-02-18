@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4744407826944877340}
   - component: {fileID: 1028481070757355566}
   - component: {fileID: 3491673912668552623}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Proyectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 5607744436117964214}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb5870e6f6e5004db527b59e086765f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 15
+  _speed: 25
   _shootDelay: 2.5
   _despawnTime: 10
   boss: {fileID: 0}

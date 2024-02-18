@@ -30,23 +30,21 @@ public class Proyectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Player player))
+        /*if (other.TryGetComponent(out Player player))
         {
             player.TakeDamage(1);
             Destroy(gameObject);
             return;
-        }
+        }*/
 
         foreach (var item in boss.tiles)
         {
-            if (Vector3.Distance(item.transform.position, transform.position) <= 2)
+            if (Vector3.Distance(item.transform.position, transform.position) <= 3.25f)
             {
-                StartCoroutine(boss.DestroyTile(item));
+                boss.StartCoroutine(boss.DestroyTile(item));
                 Destroy(gameObject);
                 return;
             }
         }
-
-        Destroy(gameObject);
     }
 }

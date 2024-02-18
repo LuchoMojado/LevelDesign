@@ -306,7 +306,10 @@ public class Player : Entity
         {
             // takedamage
             Knockback(other.transform.position.x, other.transform.position.z);
-            UseUngrapple();
+            if (_grapplingHook.grappled)
+            {
+                UseUngrapple();
+            }
         }
     }
 }

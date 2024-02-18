@@ -5,22 +5,36 @@ using UnityEngine;
 public class BossHands : MonoBehaviour
 {
     [HideInInspector] public bool moving { get; private set; }
-    [HideInInspector] public bool busy;
     
     public IEnumerator MoveAndRotate(Transform goalTransform, float speed, bool rotate)
     {
         moving = true;
 
-        while (transform.position != goalTransform.position)
+        if (rotate)
         {
-            transform.position = Vector3.MoveTowards(transform.position, goalTransform.position, Time.deltaTime * speed);
+            float startDist = Vector3.Distance(transform.position, goalTransform.position);
 
-            if (rotate)
+            while (transform.position != goalTransform.position)
             {
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, goalTransform.rotation, Time.deltaTime * speed);
-            }
+                transform.position = Vector3.MoveTowards(transform.position, goalTransform.position, Time.deltaTime * speed);
 
-            yield return null;
+                float currentDist = Vector3.Distance(transform.position, goalTransform.position);
+
+                float delta = 1 - Mathf.Pow(currentDist / startDist, 5.0f / 9.0f);
+
+                transform.rotation = Quaternion.Slerp(transform.rotation, goalTransform.rotation, delta / currentDist);
+
+                yield return null;
+            }
+        }
+        else
+        {
+            while (transform.position != goalTransform.position)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, goalTransform.position, Time.deltaTime * speed);
+
+                yield return null;
+            }
         }
 
         moving = false;
@@ -29,11 +43,16 @@ public class BossHands : MonoBehaviour
     public IEnumerator MoveAndRotate(Vector3 goalPosition, Quaternion goalRotation, float speed)
     {
         moving = true;
-
+        float startDist = Vector3.Distance(transform.position, goalPosition);
+        
         while (transform.position != goalPosition)
         {
+            float currentDist = Vector3.Distance(transform.position, goalPosition);
+
+            float delta = 1 - Mathf.Pow(currentDist / startDist, 5.0f / 9.0f);
+
             transform.position = Vector3.MoveTowards(transform.position, goalPosition, Time.deltaTime * speed);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, goalRotation, Time.deltaTime * speed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, goalRotation, delta / startDist);
 
             yield return null;
         }

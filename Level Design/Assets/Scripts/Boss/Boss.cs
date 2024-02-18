@@ -14,7 +14,7 @@ public class Boss : MonoBehaviour
 
     [Header("Hands")]
     [SerializeField] BossHands[] _hands;
-    [SerializeField] float _slamPrepareSpeed, _slamSpeed, _sweepPrepareSpeed, _sweepSpeed, _retractSpeed, _slamPrepareTime, _sweepPrepareTime, _recoverTime, _spawnProyectileSpeed;
+    [SerializeField] float _slamPrepareSpeed, _slamSpeed, _sweepPrepareSpeed, _sweepSpeed, _retractSpeed, _slamPrepareTime, _sweepPrepareTime, _recoverTime, _spawnProyectileSpeed, _spawnPrepareTime, _spawnPrepareSpeed;
     [SerializeField] Transform[] _prepareSlamTransform, _idleTransform, _proyectileSpawnTransform;
     [SerializeField] Transform _sweepLimitRight, _sweepLimitLeft, _sweepLimitFront, _sweepLimitBack;
 
@@ -62,7 +62,7 @@ public class Boss : MonoBehaviour
 
         yield return new WaitForSeconds(_slamPrepareTime);
 
-        StartCoroutine(_hands[handIndex].MoveAndRotate(new Vector3(playerPos.x, 49, playerPos.z), _slamSpeed));
+        StartCoroutine(_hands[handIndex].MoveAndRotate(new Vector3(playerPos.x, 49, playerPos.z), Quaternion.identity, _slamSpeed));
 
         while (_hands[handIndex].moving)
         {
@@ -106,7 +106,7 @@ public class Boss : MonoBehaviour
             xEnd = _sweepLimitRight.position.x;
         }
 
-        StartCoroutine(_hands[handIndex].MoveAndRotate(new Vector3(xStart, 49, playerPos.z), _sweepPrepareSpeed));
+        StartCoroutine(_hands[handIndex].MoveAndRotate(new Vector3(xStart, 49, playerPos.z), Quaternion.identity, _sweepPrepareSpeed));
 
         while (_hands[handIndex].moving)
         {
@@ -143,16 +143,16 @@ public class Boss : MonoBehaviour
 
         Vector3 startPos = right ? _proyectileSpawnTransform[0].position : _proyectileSpawnTransform[_proyectileSpawnTransform.Length - 1].position;
         startPos += Vector3.forward * 5;
-        Quaternion rotation = new Quaternion(90, 0, 90, 0);
+        Quaternion rotation = right ? new Quaternion(90, 90, 0, 0) : new Quaternion(90, -90, 0, 0);
 
-        StartCoroutine(_hands[handIndex].MoveAndRotate(startPos, rotation, _spawnProyectileSpeed));
+        StartCoroutine(_hands[handIndex].MoveAndRotate(startPos, rotation, _spawnPrepareSpeed));
 
         while (_hands[handIndex].moving)
         {
             yield return null;
         }
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(_spawnPrepareTime);
 
         if (right)
         {
@@ -189,7 +189,7 @@ public class Boss : MonoBehaviour
             }
         }
 
-        StartCoroutine(_hands[handIndex].MoveAndRotate(_idleTransform[handIndex], _spawnProyectileSpeed, true));
+        StartCoroutine(_hands[handIndex].MoveAndRotate(_idleTransform[handIndex], _retractSpeed, true));
 
         while (_hands[handIndex].moving)
         {
@@ -201,7 +201,7 @@ public class Boss : MonoBehaviour
 
     public void UseFirstPhaseAction()
     {
-        int action = Random.Range(0, 2);
+        int action = Random.Range(0, 3);
 
         switch (action)
         {
@@ -210,6 +210,9 @@ public class Boss : MonoBehaviour
                 break;
             case 1:
                 StartCoroutine(HandSweep(PickHandBySide()));
+                break;
+            case 2:
+                StartCoroutine(SpawnProyectiles(Random.Range(0, _hands.Length)));
                 break;
             default:
                 break;

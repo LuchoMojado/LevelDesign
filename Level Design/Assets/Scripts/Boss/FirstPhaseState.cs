@@ -11,19 +11,34 @@ public class FirstPhaseState : State
         _takeAction = firstPhaseActions;
     }
 
-    float _timer;
+    float _timer, _hookedTime, _hookThreshold;
     Action _takeAction;
+    Player _player;
 
     public override void OnEnter()
     {
         _timer = _boss.restTime;
+
+        _player = GameManager.instance.player;
     }
 
     public override void OnUpdate()
     {
-        _boss.playerPos = GameManager.instance.player.transform.position;
+        _boss.playerPos = _player.transform.position;
 
         _boss.transform.forward = _boss.playerPos - _boss.transform.position;
+
+        if (_player._grapplingHook.grappled)
+        {
+            _hookedTime += Time.deltaTime;
+
+            if(_hookedTime >= _hookThreshold)
+            {
+                // use hook disabler
+
+                _hookedTime = 0;
+            }
+        }
 
         if (_boss.takingAction)
         {
@@ -32,8 +47,14 @@ public class FirstPhaseState : State
 
         if (_timer <= 0)
         {
-            //_takeAction();
-            _boss.StartCoroutine(_boss.SpawnProyectiles(UnityEngine.Random.Range(0,2)));
+            if (_boss.tiles.Count <= 20)
+            {
+                // destroys remaining tiles (into state change?)
+                
+                fsm.ChangeState(Boss.BossStates.SecondPhase);
+            }
+
+            _takeAction();
             _timer = _boss.restTime;
         }
         else
@@ -41,10 +62,7 @@ public class FirstPhaseState : State
             _timer -= Time.deltaTime;
         }
 
-        if (_boss.tiles.Count <= 0)
-        {
-            fsm.ChangeState(Boss.BossStates.SecondPhase);
-        }
+        
     }
 
     public override void OnExit()
