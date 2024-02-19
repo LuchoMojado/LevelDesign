@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : Entity
 {
-    [SerializeField] float maxHp, _speed, _sprintSpeed, _crouchSpeed, _airSpeed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _sDrag, _wallRunSpeed, _knockbackStr, _knockbackY;
+    [SerializeField] float maxHp, _speed, _sprintSpeed, _crouchSpeed, _airSpeed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _sDrag, _wallRunSpeed, _baseKnockbackStr, _knockbackIncreaseRate, _knockbackY;
 
     [Range(200, 1000), SerializeField]
     float _mouseSensitivity;
@@ -29,7 +29,7 @@ public class Player : Entity
     [SerializeField] LayerMask _hookMask, _wallMask,_EnemyMask, _groundMask;
     //bool lisen = false;
 
-
+    int _hitsReceived;
     bool _loading;
 
     protected override void Awake()
@@ -302,7 +302,9 @@ public class Player : Entity
 
         var dir = new Vector3(transform.position.x - hazardX, 0, transform.position.z - hazardZ).normalized;
 
-        _myRB.AddForce((dir + Vector3.up * _knockbackY) * _knockbackStr);
+        _myRB.AddForce((dir + Vector3.up * _knockbackY) * (_baseKnockbackStr + _knockbackIncreaseRate * _hitsReceived));
+
+        _hitsReceived++;
     }
 
     private void OnTriggerEnter(Collider other)

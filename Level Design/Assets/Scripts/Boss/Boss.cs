@@ -12,11 +12,15 @@ public class Boss : MonoBehaviour
     [SerializeField] float _tileDestroyDelay, _tileExplodeStartingInterval, _explosionRadius,_hookTimeToDisable, _restTime;
     [SerializeField] int _tilesToSecondPhase;
     [SerializeField] Proyectile _proyectile;
+    [SerializeField] GameObject[] _secondPhasePaths;
+
+    [SerializeField] Transform _secondPhasePos;
+    [SerializeField] float _obstacleSpawnInterval;
 
     [Header("Hands")]
     [SerializeField] BossHands[] _hands;
     [SerializeField] float _slamPrepareSpeed, _slamSpeed, _sweepPrepareSpeed, _sweepSpeed, _retractSpeed, _slamPrepareTime, _sweepPrepareTime, _recoverTime, _spawnProyectileSpeed, _spawnPrepareTime, _spawnPrepareSpeed;
-    [SerializeField] Transform[] _prepareSlamTransform, _idleTransform, _proyectileSpawnTransform;
+    [SerializeField] Transform[] _prepareSlamTransform, _idleTransform, _proyectileSpawnTransform, _secondPhaseTransform;
     [SerializeField] Transform _sweepLimitRight, _sweepLimitLeft, _sweepLimitFront, _sweepLimitBack, _disablerSpawnTransform;
 
     public Vector3 playerPos;
@@ -36,7 +40,7 @@ public class Boss : MonoBehaviour
 
         _fsm.AddState(BossStates.Waiting, new WaitingState(this));
         _fsm.AddState(BossStates.FirstPhase, new FirstPhaseState(this, UseFirstPhaseAction, _hookTimeToDisable, _tilesToSecondPhase, _restTime));
-        _fsm.AddState(BossStates.SecondPhase, new SecondPhaseState(this));
+        _fsm.AddState(BossStates.SecondPhase, new SecondPhaseState(this, _obstacleSpawnInterval));
         _fsm.AddState(BossStates.ThirdPhase, new ThirdPhaseState(this));
         _fsm.ChangeState(BossStates.Waiting);
     }
@@ -362,5 +366,25 @@ public class Boss : MonoBehaviour
         tiles.Remove(tile);
         //spawneo particulas
         Destroy(tile.gameObject);
+    }
+
+    public IEnumerator SecondPhaseTransition()
+    {
+        for (int i = 0; i < _hands.Length; i++)
+        {
+            StartCoroutine(_hands[i].MoveAndRotate(_secondPhaseTransform[i], _retractSpeed, true));
+        }
+
+        while (transform.position != _secondPhasePos.position)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, _secondPhasePos.position, Time.deltaTime * _retractSpeed);
+
+            yield return null;
+        }
+
+        for (int i = 0; i < _secondPhasePaths.Length; i++)
+        {
+            _secondPhasePaths[i].SetActive(true);
+        }
     }
 }
