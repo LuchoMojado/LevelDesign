@@ -9,7 +9,8 @@ public class Boss : MonoBehaviour
     public List<Renderer> tiles;
     [SerializeField] Material _damagedTileMat;
     [SerializeField] HookDisabler _hookDisabler;
-    [SerializeField] float _tileDestroyDelay;
+    [SerializeField] float _tileDestroyDelay, _tileExplodeStartingInterval, _explosionRadius,_hookTimeToDisable, _restTime;
+    [SerializeField] int _tilesToSecondPhase;
     [SerializeField] Proyectile _proyectile;
 
     [Header("Hands")]
@@ -17,8 +18,6 @@ public class Boss : MonoBehaviour
     [SerializeField] float _slamPrepareSpeed, _slamSpeed, _sweepPrepareSpeed, _sweepSpeed, _retractSpeed, _slamPrepareTime, _sweepPrepareTime, _recoverTime, _spawnProyectileSpeed, _spawnPrepareTime, _spawnPrepareSpeed;
     [SerializeField] Transform[] _prepareSlamTransform, _idleTransform, _proyectileSpawnTransform;
     [SerializeField] Transform _sweepLimitRight, _sweepLimitLeft, _sweepLimitFront, _sweepLimitBack, _disablerSpawnTransform;
-
-    public float restTime, hookTimeToDisable;
 
     public Vector3 playerPos;
     public bool takingAction;
@@ -36,7 +35,7 @@ public class Boss : MonoBehaviour
         _fsm = new FiniteStateMachine();
 
         _fsm.AddState(BossStates.Waiting, new WaitingState(this));
-        _fsm.AddState(BossStates.FirstPhase, new FirstPhaseState(this, UseFirstPhaseAction));
+        _fsm.AddState(BossStates.FirstPhase, new FirstPhaseState(this, UseFirstPhaseAction, _hookTimeToDisable, _tilesToSecondPhase, _restTime));
         _fsm.AddState(BossStates.SecondPhase, new SecondPhaseState(this));
         _fsm.AddState(BossStates.ThirdPhase, new ThirdPhaseState(this));
         _fsm.ChangeState(BossStates.Waiting);
@@ -265,6 +264,14 @@ public class Boss : MonoBehaviour
         _hands[handIndex].busy = false;
     }
 
+    public void ExplodeRemainingTiles()
+    {
+        foreach (var item in tiles)
+        {
+            StartCoroutine(ExplodeTile(item));
+        }
+    }
+
     public void UseFirstPhaseAction()
     {
         int action = Random.Range(0, 3);
@@ -324,6 +331,33 @@ public class Boss : MonoBehaviour
         tile.material = _damagedTileMat;
 
         yield return new WaitForSeconds(_tileDestroyDelay);
+
+        tiles.Remove(tile);
+        //spawneo particulas
+        Destroy(tile.gameObject);
+    }
+
+    public IEnumerator ExplodeTile(Renderer tile)
+    {
+        var normalMat = tile.material;
+        float time = _tileExplodeStartingInterval;
+
+        while (time > 0.03f)
+        {
+            tile.material = _damagedTileMat;
+
+            yield return new WaitForSeconds(0.1f);
+
+            tile.material = normalMat;
+
+            yield return new WaitForSeconds(time);
+            time *= 0.75f;
+        }
+
+        if (Vector3.Distance(tile.transform.position, playerPos) <= _explosionRadius)
+        {
+            GameManager.instance.player.Knockback(tile.transform.position.x, tile.transform.position.z);
+        }
 
         tiles.Remove(tile);
         //spawneo particulas

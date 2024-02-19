@@ -291,8 +291,13 @@ public class Player : Entity
         _loading = false;
     }
 
-    void Knockback(float hazardX, float hazardZ)
+    public void Knockback(float hazardX, float hazardZ)
     {
+        if (_grapplingHook.grappled)
+        {
+            UseUngrapple();
+        }
+
         _myRB.velocity = Vector3.zero;
 
         var dir = new Vector3(transform.position.x - hazardX, 0, transform.position.z - hazardZ).normalized;
@@ -306,10 +311,6 @@ public class Player : Entity
         {
             // takedamage
             Knockback(other.transform.position.x, other.transform.position.z);
-            if (_grapplingHook.grappled)
-            {
-                UseUngrapple();
-            }
         }
     }
 }

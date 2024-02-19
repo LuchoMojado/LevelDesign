@@ -5,19 +5,23 @@ using System;
 
 public class FirstPhaseState : State
 {
-    public FirstPhaseState(Boss b, Action firstPhaseActions)
+    public FirstPhaseState(Boss b, Action firstPhaseActions, float maxHookTime, int minTiles, float restDuration)
     {
         _boss = b;
         _takeAction = firstPhaseActions;
+        _hookThreshold = maxHookTime;
+        _tilesThreshold = minTiles;
+        _actionCD = restDuration;
     }
 
-    float _timer, _hookedTime;
+    float _timer, _hookedTime, _hookThreshold, _actionCD;
+    int _tilesThreshold;
     Action _takeAction;
     Player _player;
 
     public override void OnEnter()
     {
-        _timer = _boss.restTime;
+        _timer = _actionCD;
 
         _player = GameManager.instance.player;
     }
@@ -32,7 +36,7 @@ public class FirstPhaseState : State
         {
             _hookedTime += Time.deltaTime;
 
-            if(_hookedTime >= _boss.hookTimeToDisable)
+            if(_hookedTime >= _hookThreshold)
             {
                 _boss.StartCoroutine(_boss.DisableHook(_boss.PickFreeHand()));
 
@@ -47,15 +51,17 @@ public class FirstPhaseState : State
 
         if (_timer <= 0)
         {
-            if (_boss.tiles.Count <= 20)
+            if (_boss.tiles.Count <= _tilesThreshold)
             {
-                // destroys remaining tiles (into state change?)
-                
+                _boss.ExplodeRemainingTiles();
+
                 fsm.ChangeState(Boss.BossStates.SecondPhase);
             }
-
-            _takeAction();
-            _timer = _boss.restTime;
+            else
+            {
+                _takeAction();
+                _timer = _actionCD;
+            }
         }
         else
         {
