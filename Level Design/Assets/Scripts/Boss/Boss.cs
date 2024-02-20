@@ -6,25 +6,40 @@ public class Boss : MonoBehaviour
 {
     FiniteStateMachine _fsm;
 
-    public List<Renderer> tiles;
-    [SerializeField] Material _damagedTileMat;
-    [SerializeField] HookDisabler _hookDisabler;
-    [SerializeField] float _tileDestroyDelay, _tileExplodeStartingInterval, _explosionRadius,_hookTimeToDisable, _restTime;
-    [SerializeField] int _tilesToSecondPhase;
-    [SerializeField] Proyectile _proyectile;
-    [SerializeField] GameObject[] _secondPhasePaths;
-
-    [SerializeField] Transform _secondPhasePos;
-    [SerializeField] float _obstacleSpawnInterval;
-
     [Header("Hands")]
     [SerializeField] BossHands[] _hands;
     [SerializeField] float _slamPrepareSpeed, _slamSpeed, _sweepPrepareSpeed, _sweepSpeed, _retractSpeed, _slamPrepareTime, _sweepPrepareTime, _recoverTime, _spawnProyectileSpeed, _spawnPrepareTime, _spawnPrepareSpeed;
     [SerializeField] Transform[] _prepareSlamTransform, _idleTransform, _proyectileSpawnTransform, _secondPhaseTransform;
     [SerializeField] Transform _sweepLimitRight, _sweepLimitLeft, _sweepLimitFront, _sweepLimitBack, _disablerSpawnTransform;
 
-    public Vector3 playerPos;
-    public bool takingAction;
+    [Header("First Phase")]
+    [SerializeField] Proyectile _proyectile;
+    ObjectPool<Proyectile> _proyectilePool;
+    Factory<Proyectile> _proyectileFactory;
+
+    ObjectPool<HookDisabler> _disablerPool;
+    Factory<HookDisabler> _disablerFactory;
+    [SerializeField] HookDisabler _hookDisabler;
+    [SerializeField] Transform[] _hookDisablerInLevel;
+
+    [SerializeField] Dictionary<GameObject, Transform[]> yea;
+
+    public List<Renderer> tiles;
+    [SerializeField] Material _damagedTileMat;
+    [SerializeField] float _tileDestroyDelay, _tileExplodeStartingInterval, _explosionRadius,_hookTimeToDisable, _restTime;
+    [SerializeField] int _tilesToSecondPhase;
+
+    [Header("Second phase")]
+    [SerializeField] GameObject[] _secondPhasePaths;
+    [SerializeField] Transform _secondPhasePos;
+    [SerializeField] Obstacle _obstacle;
+
+    [SerializeField] float _obstacleSpawnInterval;
+    [SerializeField] Vector3[] _possibleObstacleScales;
+    [SerializeField] Vector3[] _obstacle1Pos, _obstacle2Pos, _obstacle3Pos;
+
+    [HideInInspector] public Vector3 playerPos;
+    [HideInInspector] public bool takingAction { get; private set; }
 
     public enum BossStates
     {
@@ -43,12 +58,24 @@ public class Boss : MonoBehaviour
         _fsm.AddState(BossStates.SecondPhase, new SecondPhaseState(this, _obstacleSpawnInterval));
         _fsm.AddState(BossStates.ThirdPhase, new ThirdPhaseState(this));
         _fsm.ChangeState(BossStates.Waiting);
+
+        _proyectileFactory = new Factory<Proyectile>(_proyectile);
+        _proyectilePool = new ObjectPool<Proyectile>(_proyectileFactory.GetObject, Proyectile.TurnOff, Proyectile.TurnOn, _proyectileSpawnTransform.Length);
+
+        _disablerFactory = new Factory<HookDisabler>(_hookDisabler);
+        _disablerPool = new ObjectPool<HookDisabler>(_disablerFactory.GetObject, HookDisabler.TurnOff, HookDisabler.TurnOn, 2);
+
+        var firstDisabler = _disablerPool.Get();
+        firstDisabler.transform.position = _hookDisablerInLevel[0].position;
+        firstDisabler.Initialize(_disablerPool, 70);
+
+        var secondDisabler = _disablerPool.Get();
+        secondDisabler.transform.position = _hookDisablerInLevel[1].position;
+        secondDisabler.Initialize(_disablerPool, 60, 3, 4);
     }
 
     void Update()
     {
-        playerPos = GameManager.instance.player.transform.position;
-
         _fsm.Update();
     }
 
@@ -188,7 +215,7 @@ public class Boss : MonoBehaviour
         {
             for (int i = 0; i < _proyectileSpawnTransform.Length; i++)
             {
-                Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 5;
+                Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 6;
 
                 StartCoroutine(_hands[handIndex].MoveAndRotate(goal, _spawnProyectileSpeed));
 
@@ -197,15 +224,16 @@ public class Boss : MonoBehaviour
                     yield return null;
                 }
 
-                var proyectile = Instantiate(_proyectile, _proyectileSpawnTransform[i]);
-                proyectile.boss = this;
+                var proyectile = _proyectilePool.Get();
+                proyectile.Initialize(_proyectilePool, this);
+                proyectile.transform.position = _proyectileSpawnTransform[i].position;
             }
         }
         else
         {
             for (int i = _proyectileSpawnTransform.Length - 1; i >= 0; i--)
             {
-                Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 5;
+                Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 6;
 
                 StartCoroutine(_hands[handIndex].MoveAndRotate(goal, _spawnProyectileSpeed));
 
@@ -214,8 +242,9 @@ public class Boss : MonoBehaviour
                     yield return null;
                 }
 
-                var proyectile = Instantiate(_proyectile, _proyectileSpawnTransform[i]);
-                proyectile.boss = this;
+                var proyectile = _proyectilePool.Get();
+                proyectile.Initialize(_proyectilePool, this);
+                proyectile.transform.position = _proyectileSpawnTransform[i].position;
             }
         }
 
@@ -245,7 +274,9 @@ public class Boss : MonoBehaviour
             yield return null;
         }
 
-        var disabler = Instantiate(_hookDisabler, _disablerSpawnTransform.position, Quaternion.identity);
+        var disabler = _disablerPool.Get();
+        disabler.transform.position = _disablerSpawnTransform.position;
+        disabler.Initialize(_disablerPool);
 
         yield return new WaitForSeconds(4);
 

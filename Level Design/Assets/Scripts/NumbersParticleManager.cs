@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class NumbersParticleManager : MonoBehaviour
 {
-    ObjectPool<NumbersParticle> myPool;
-    [SerializeField] NumbersParticle particle;
-    [SerializeField] Factory<NumbersParticle> factory;
+    ObjectPool<NumbersParticle> _myPool;
+    [SerializeField] NumbersParticle _particle;
+    [SerializeField] Factory<NumbersParticle> _factory;
 
     [SerializeField] float _spawnCooldown;
     float _currentCooldown = 0;
@@ -15,16 +15,16 @@ public class NumbersParticleManager : MonoBehaviour
 
     void Start()
     {
-        factory = new Factory<NumbersParticle>(particle);
-        myPool = new ObjectPool<NumbersParticle>(factory.GetObject, NumbersParticle.TurnOff, NumbersParticle.TurnOn, 20);
+        _factory = new Factory<NumbersParticle>(_particle);
+        _myPool = new ObjectPool<NumbersParticle>(_factory.GetObject, NumbersParticle.TurnOff, NumbersParticle.TurnOn, 20);
     }
 
     private void Update()
     {
         if (_currentCooldown <= 0)
         {
-            var x = myPool.Get();
-            x.Initialize(myPool);
+            var x = _myPool.Get();
+            x.Initialize(_myPool);
             x.transform.position = GetSpawnPos();
             _currentCooldown = _spawnCooldown;
         }

@@ -4,13 +4,9 @@ using UnityEngine;
 
 public class Proyectile : MonoBehaviour
 {
+    ObjectPool<Proyectile> _objectPool;
     [SerializeField] float _speed, _shootDelay, _despawnTime;
-    [HideInInspector] public Boss boss;
-
-    void Start()
-    {
-        StartCoroutine(Shoot());
-    }
+    Boss _boss;
 
     IEnumerator Shoot()
     {
@@ -22,29 +18,43 @@ public class Proyectile : MonoBehaviour
 
         while (timer > 0)
         {
+            timer -= Time.deltaTime;
+
             transform.position += dir * _speed * Time.deltaTime;
 
             yield return null;
         }
+
+        _objectPool.RefillStock(this);
+    }
+
+    public void Initialize(ObjectPool<Proyectile> op, Boss boss)
+    {
+        _objectPool = op;
+        _boss = boss;
+    }
+
+    public static void TurnOff(Proyectile x)
+    {
+        x.gameObject.SetActive(false);
+    }
+    public static void TurnOn(Proyectile x)
+    {
+        x.gameObject.SetActive(true);
+
+        x.StartCoroutine(x.Shoot());
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        /*if (other.TryGetComponent(out Player player))
-        {
-            player.TakeDamage(1);
-            Destroy(gameObject);
-            return;
-        }*/
-
-        foreach (var item in boss.tiles)
+        foreach (var item in _boss.tiles)
         {
             if (Vector3.Distance(item.transform.position, transform.position) <= 3.25f)
             {
-                boss.StartCoroutine(boss.DestroyTile(item));
-                Destroy(gameObject);
-                return;
+                _boss.StartCoroutine(_boss.DestroyTile(item));
             }
         }
+
+        _objectPool.RefillStock(this);
     }
 }

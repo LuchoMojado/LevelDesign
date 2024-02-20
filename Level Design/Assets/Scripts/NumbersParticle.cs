@@ -9,6 +9,11 @@ public class NumbersParticle : MonoBehaviour
     ParticleSystem _particles;
     float _timer;
 
+    private void Awake()
+    {
+        _particles = GetComponent<ParticleSystem>();
+    }
+
     void Update()
     {
         transform.position -= transform.up * _speed * Time.deltaTime;
@@ -20,8 +25,6 @@ public class NumbersParticle : MonoBehaviour
 
             if (_timer <= -6.5f)
             {
-                _particles.Play();
-                _timer = _lifetime;
                 _objectPool.RefillStock(this);
             }
         }
@@ -29,9 +32,7 @@ public class NumbersParticle : MonoBehaviour
 
     public void Initialize(ObjectPool<NumbersParticle> op)
     {
-        _particles = GetComponent<ParticleSystem>();
         _objectPool = op;
-        _timer = _lifetime;
     }
 
     public static void TurnOff(NumbersParticle x)
@@ -40,7 +41,8 @@ public class NumbersParticle : MonoBehaviour
     }
     public static void TurnOn(NumbersParticle x)
     {
-        
+        x._timer = x._lifetime;
+        x._particles.Play();
         x.gameObject.SetActive(true);
     }
 }

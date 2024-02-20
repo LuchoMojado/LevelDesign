@@ -4,27 +4,15 @@ using UnityEngine;
 
 public class HookDisabler : Entity
 {
-    [SerializeField] float _firstDisableDelay, _disableDelay, _disableDuration, _disableCooldown, _disableRadius;
+    ObjectPool<HookDisabler> _objectPool;
+    float _firstDisableDelay, _disableDuration, _disableCooldown, _disableRadius;
+    [SerializeField] float _disableDelay;
     [SerializeField] LayerMask _ghostHookableLayer;
     [SerializeField] Material _normalHookable, _disabledHookable;
 
-    float _timer;
-    bool _disable = true;
+    /*float _timer;
+    bool _disable = true;*/
     List<Renderer> _hookables = new List<Renderer>();
-
-    void Start()
-    {
-        var hookableCols = Physics.OverlapSphere(transform.position, _disableRadius, _ghostHookableLayer);
-
-        foreach (var item in hookableCols)
-        {
-            _hookables.Add(item.gameObject.GetComponent<Renderer>());
-        }
-
-        StartCoroutine(DisableCycle());
-
-        _firstDisableDelay = 0;
-    }
 
     IEnumerator DisableCycle()
     {
@@ -62,6 +50,35 @@ public class HookDisabler : Entity
         
     }
 
+    public void Initialize(ObjectPool<HookDisabler> op, float radius = 50, float duration = 2.5f, float firstDelay = 0, float cooldown = 6)
+    {
+        _objectPool = op;
+        _disableRadius = radius;
+        _firstDisableDelay = firstDelay;
+        _disableDuration = duration;
+        _disableCooldown = cooldown;
+
+        var hookableCols = Physics.OverlapSphere(transform.position, _disableRadius, _ghostHookableLayer);
+
+        foreach (var item in hookableCols)
+        {
+            _hookables.Add(item.gameObject.GetComponent<Renderer>());
+        }
+
+        StartCoroutine(DisableCycle());
+
+        _firstDisableDelay = 0;
+    }
+
+    public static void TurnOff(HookDisabler x)
+    {
+        x.gameObject.SetActive(false);
+    }
+    public static void TurnOn(HookDisabler x)
+    {
+        x.gameObject.SetActive(true);
+    }
+
     public override void Die()
     {
         foreach (var item in _hookables)
@@ -69,7 +86,7 @@ public class HookDisabler : Entity
             ChangeHookable(item, false);
         }
 
-        Destroy(gameObject);
+        _objectPool.RefillStock(this);
     }
 
     public override void Load()
