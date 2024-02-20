@@ -32,6 +32,7 @@ public class Proyectile : MonoBehaviour
     {
         _objectPool = op;
         _boss = boss;
+        StartCoroutine(Shoot());
     }
 
     public static void TurnOff(Proyectile x)
@@ -41,8 +42,6 @@ public class Proyectile : MonoBehaviour
     public static void TurnOn(Proyectile x)
     {
         x.gameObject.SetActive(true);
-
-        x.StartCoroutine(x.Shoot());
     }
 
     private void OnTriggerEnter(Collider other)

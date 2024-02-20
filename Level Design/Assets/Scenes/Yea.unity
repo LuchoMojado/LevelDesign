@@ -9531,6 +9531,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4c365dec0fb2c14d8c4e5c542bbc4a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _hands:
+  - {fileID: 1169910415}
+  - {fileID: 619009063}
+  _slamPrepareSpeed: 20
+  _slamSpeed: 48
+  _sweepPrepareSpeed: 35
+  _sweepSpeed: 1.2
+  _retractSpeed: 33
+  _slamPrepareTime: 0.5
+  _sweepPrepareTime: 1
+  _recoverTime: 1.75
+  _spawnProyectileSpeed: 18
+  _spawnPrepareTime: 0.15
+  _spawnPrepareSpeed: 25
+  _prepareSlamTransform:
+  - {fileID: 2081356960}
+  - {fileID: 1210618732}
+  _idleTransform:
+  - {fileID: 1602828368}
+  - {fileID: 147122105}
+  _proyectileSpawnTransform:
+  - {fileID: 624268942}
+  - {fileID: 759292533}
+  - {fileID: 2083577657}
+  - {fileID: 76359674}
+  - {fileID: 999718221}
+  - {fileID: 1127371353}
+  - {fileID: 175002990}
+  - {fileID: 1399691567}
+  - {fileID: 1506030346}
+  _secondPhaseTransform:
+  - {fileID: 1720465628}
+  - {fileID: 1025093642}
+  _sweepLimitRight: {fileID: 1592783543}
+  _sweepLimitLeft: {fileID: 1047115475}
+  _sweepLimitFront: {fileID: 1568366051}
+  _sweepLimitBack: {fileID: 71484499}
+  _disablerSpawnTransform: {fileID: 33794752}
   _proyectile: {fileID: 1028481070757355566, guid: 4d6b840b117c2d74e875641fdb877e9e, type: 3}
   _hookDisabler: {fileID: 1385358746470660377, guid: 9d746389cfb11fb41b473fa5adc7ef3f, type: 3}
   _hookDisablerInLevel:
@@ -9661,7 +9699,7 @@ MonoBehaviour:
   _damagedTileMat: {fileID: 2100000, guid: 8cb5d2936a6475148942b0a6de3b1a5e, type: 2}
   _tileDestroyDelay: 0.95
   _tileExplodeStartingInterval: 2
-  _explosionRadius: 7
+  _explosionRadius: 8.5
   _hookTimeToDisable: 6
   _restTime: 2
   _tilesToSecondPhase: 30
@@ -9670,47 +9708,25 @@ MonoBehaviour:
   - {fileID: 762484522}
   - {fileID: 1774436143}
   _secondPhasePos: {fileID: 885597715}
-  _obstacleSpawnInterval: 2
-  _hands:
-  - {fileID: 1169910415}
-  - {fileID: 619009063}
-  _slamPrepareSpeed: 20
-  _slamSpeed: 48
-  _sweepPrepareSpeed: 35
-  _sweepSpeed: 1.2
-  _retractSpeed: 33
-  _slamPrepareTime: 0.5
-  _sweepPrepareTime: 1
-  _recoverTime: 1.75
-  _spawnProyectileSpeed: 18
-  _spawnPrepareTime: 0.15
-  _spawnPrepareSpeed: 25
-  _prepareSlamTransform:
-  - {fileID: 2081356960}
-  - {fileID: 1210618732}
-  _idleTransform:
-  - {fileID: 1602828368}
-  - {fileID: 147122105}
-  _proyectileSpawnTransform:
-  - {fileID: 624268942}
-  - {fileID: 759292533}
-  - {fileID: 2083577657}
-  - {fileID: 76359674}
-  - {fileID: 999718221}
-  - {fileID: 1127371353}
-  - {fileID: 175002990}
-  - {fileID: 1399691567}
-  - {fileID: 1506030346}
-  _secondPhaseTransform:
-  - {fileID: 1720465628}
-  - {fileID: 1025093642}
-  _sweepLimitRight: {fileID: 1592783543}
-  _sweepLimitLeft: {fileID: 1047115475}
-  _sweepLimitFront: {fileID: 1568366051}
-  _sweepLimitBack: {fileID: 71484499}
-  _disablerSpawnTransform: {fileID: 33794752}
-  playerPos: {x: 0, y: 0, z: 0}
-  takingAction: 0
+  _obstacle: {fileID: -4768118300774847195, guid: a556559d5fc50584bb18386662ba2eb0, type: 3}
+  _transitionSpeed: 68
+  _transitionTime: 5
+  _pathActivateDelay: 12
+  _obstacleSpawnInterval: 6
+  _possibleObstacleScales:
+  - {x: 20, y: 33.5, z: 1}
+  - {x: 32, y: 33.5, z: 1}
+  - {x: 74, y: 17.5, z: 1}
+  _obstacle1Pos:
+  - {x: -93, y: 64.5, z: 0}
+  - {x: -118, y: 64.5, z: 0}
+  - {x: -143, y: 64.5, z: 0}
+  _obstacle2Pos:
+  - {x: -105.5, y: 64.5, z: 0}
+  - {x: -130.5, y: 64.5, z: 0}
+  _obstacle3Pos:
+  - {x: -118, y: 72.5, z: 0}
+  - {x: -118, y: 56.5, z: 0}
 --- !u!1 &1087459458
 GameObject:
   m_ObjectHideFlags: 0

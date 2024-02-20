@@ -101,9 +101,22 @@ public class GrapplingHook : MonoBehaviour
         _lineR.enabled = false;
     }
 
-    public SoftJointLimit ChangeJointDistance(float dir)
+    public SoftJointLimit ChangeJointDistance(float dir, float maxRange)
     {
-        limitConfig.limit += dir * Time.deltaTime;
+        float previewResult = limitConfig.limit + dir * Time.deltaTime;
+
+        if (previewResult > 0.5f && previewResult <= maxRange)
+        {
+            limitConfig.limit = previewResult;
+        }
+        else if (previewResult >= maxRange && previewResult < limitConfig.limit)
+        {
+            limitConfig.limit = previewResult;
+        }
+        else if (previewResult < 0.5f && previewResult > limitConfig.limit)
+        {
+            limitConfig.limit = previewResult;
+        }
 
         return limitConfig;
     }

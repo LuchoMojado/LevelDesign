@@ -34,11 +34,11 @@ public class Boss : MonoBehaviour
     [SerializeField] Transform _secondPhasePos;
     [SerializeField] Obstacle _obstacle;
 
-    [SerializeField] float _obstacleSpawnInterval;
+    [SerializeField] float _transitionSpeed, _transitionTime, _pathActivateDelay, _obstacleSpawnInterval;
     [SerializeField] Vector3[] _possibleObstacleScales;
     [SerializeField] Vector3[] _obstacle1Pos, _obstacle2Pos, _obstacle3Pos;
 
-    [HideInInspector] public Vector3 playerPos;
+    [HideInInspector] public Vector3 playerPos { get; private set; }
     [HideInInspector] public bool takingAction { get; private set; }
 
     public enum BossStates
@@ -53,9 +53,16 @@ public class Boss : MonoBehaviour
     {
         _fsm = new FiniteStateMachine();
 
+        var secondPhaseDictionary = new Dictionary<Vector3, Vector3[]>
+        {
+            [_possibleObstacleScales[0]] = _obstacle1Pos,
+            [_possibleObstacleScales[1]] = _obstacle2Pos,
+            [_possibleObstacleScales[2]] = _obstacle3Pos
+        };
+
         _fsm.AddState(BossStates.Waiting, new WaitingState(this));
         _fsm.AddState(BossStates.FirstPhase, new FirstPhaseState(this, UseFirstPhaseAction, _hookTimeToDisable, _tilesToSecondPhase, _restTime));
-        _fsm.AddState(BossStates.SecondPhase, new SecondPhaseState(this, _obstacleSpawnInterval));
+        _fsm.AddState(BossStates.SecondPhase, new SecondPhaseState(this, _transitionTime, _obstacleSpawnInterval, secondPhaseDictionary, _obstacle, _secondPhasePos.position.z - 20));
         _fsm.AddState(BossStates.ThirdPhase, new ThirdPhaseState(this));
         _fsm.ChangeState(BossStates.Waiting);
 
@@ -76,6 +83,8 @@ public class Boss : MonoBehaviour
 
     void Update()
     {
+        playerPos = GameManager.instance.player.transform.position;
+
         _fsm.Update();
     }
 
@@ -403,15 +412,17 @@ public class Boss : MonoBehaviour
     {
         for (int i = 0; i < _hands.Length; i++)
         {
-            StartCoroutine(_hands[i].MoveAndRotate(_secondPhaseTransform[i], _retractSpeed, true));
+            StartCoroutine(_hands[i].MoveAndRotate(_secondPhaseTransform[i], _transitionSpeed, true));
         }
 
         while (transform.position != _secondPhasePos.position)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _secondPhasePos.position, Time.deltaTime * _retractSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, _secondPhasePos.position, Time.deltaTime * _transitionSpeed);
 
             yield return null;
         }
+
+        yield return new WaitForSeconds(_pathActivateDelay);
 
         for (int i = 0; i < _secondPhasePaths.Length; i++)
         {

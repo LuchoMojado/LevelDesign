@@ -185,12 +185,10 @@ public class Player : Entity
 
     public void Climb(bool up)
     {
-        if (up && _grapplingHook.ChangeJointDistance(-_climbSpeed).limit > 0.5f)
-            joint.linearLimit = _grapplingHook.ChangeJointDistance(-_climbSpeed);
-        else if (_grapplingHook.ChangeJointDistance(_climbSpeed).limit < _grappleRange)
-        {
-            joint.linearLimit = _grapplingHook.ChangeJointDistance(_climbSpeed);
-        }
+        if (up)
+            joint.linearLimit = _grapplingHook.ChangeJointDistance(-_climbSpeed, _grappleRange);
+        else
+            joint.linearLimit = _grapplingHook.ChangeJointDistance(_climbSpeed, _grappleRange);
     }
 
     public void WallStarted(bool right)

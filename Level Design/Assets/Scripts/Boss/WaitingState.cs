@@ -16,7 +16,7 @@ public class WaitingState : State
 
     public override void OnUpdate()
     {
-        if (Vector3.Distance(_boss.transform.position, GameManager.instance.player.transform.position) <= 72)
+        if (Vector3.Distance(_boss.transform.position, _boss.playerPos) <= 72)
         {
             fsm.ChangeState(Boss.BossStates.FirstPhase);
         }

@@ -28,8 +28,6 @@ public class FirstPhaseState : State
 
     public override void OnUpdate()
     {
-        _boss.playerPos = _player.transform.position;
-
         _boss.transform.forward = _boss.playerPos - _boss.transform.position;
 
         if (_player._grapplingHook.grappled)
