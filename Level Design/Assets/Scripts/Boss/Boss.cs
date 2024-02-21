@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Boss : MonoBehaviour
 {
@@ -8,8 +9,9 @@ public class Boss : MonoBehaviour
 
     [Header("Hands")]
     [SerializeField] BossHands[] _hands;
-    [SerializeField] float _slamPrepareSpeed, _slamSpeed, _sweepPrepareSpeed, _sweepSpeed, _retractSpeed, _slamPrepareTime, _sweepPrepareTime, _recoverTime, _spawnProyectileSpeed, _spawnPrepareTime, _spawnPrepareSpeed;
-    [SerializeField] Transform[] _prepareSlamTransform, _idleTransform, _proyectileSpawnTransform, _secondPhaseTransform;
+    [SerializeField] Transform[] _prepareSlamTransform, _idleTransform, _proyectileSpawnTransform, _secondPhaseTransform, _thirdPhaseTransform;
+    [SerializeField] float _slamPrepareSpeed, _slamSpeed, _sweepPrepareSpeed, _sweepSpeed, _retractSpeed, _slamPrepareTime, _sweepPrepareTime, _recoverTime,
+        _spawnProyectileSpeed, _spawnPrepareTime, _spawnPrepareSpeed;
     [SerializeField] Transform _sweepLimitRight, _sweepLimitLeft, _sweepLimitFront, _sweepLimitBack, _disablerSpawnTransform;
 
     [Header("First Phase")]
@@ -33,10 +35,22 @@ public class Boss : MonoBehaviour
     [SerializeField] GameObject[] _secondPhasePaths;
     [SerializeField] Transform _secondPhasePos;
     [SerializeField] Obstacle _obstacle;
+    ObjectPool<Obstacle> _obstaclePool;
+    Factory<Obstacle> _obstacleFactory;
 
-    [SerializeField] float _transitionSpeed, _transitionTime, _pathActivateDelay, _obstacleSpawnInterval;
-    [SerializeField] Vector3[] _possibleObstacleScales;
-    [SerializeField] Vector3[] _obstacle1Pos, _obstacle2Pos, _obstacle3Pos;
+    [SerializeField] float _2ndPhaseTransitionSpeed, _2ndPhaseTransitionTime, _2ndPhaseObstacleInterval, _2ndPhaseRetreatSpawnInterval;
+    [SerializeField] Vector3[] _2ndPhaseObstacleScales, _2ndPhaseObstacle1Pos, _2ndPhaseObstacle2Pos, _2ndPhaseObstacle3Pos;
+
+    [Header("Third phase")]
+    [SerializeField] Transform _thirdPhasePos;
+    [SerializeField] Obstacle _wall;
+    ObjectPool<Obstacle> _wallPool;
+    Factory<Obstacle> _wallFactory;
+    [SerializeField] Transform[] _initialWallSpawns;
+
+    [SerializeField] float _3rdPhaseTransitionSpeed, _3rdPhaseTransitionTime, _3rdPhaseObstacleInterval, _3rdPhaseRetreatSpawnInterval,
+        _wallSpawnInterval, _wallMinY, _wallMaxY, _wallYOffset;
+    [SerializeField] Vector3[] _3rdPhaseObstacleScales, _3rdPhaseObstacle1Pos, _3rdPhaseObstacle2Pos, _3rdPhaseObstacle3Pos;
 
     [HideInInspector] public Vector3 playerPos { get; private set; }
     [HideInInspector] public bool takingAction { get; private set; }
@@ -55,19 +69,34 @@ public class Boss : MonoBehaviour
 
         var secondPhaseDictionary = new Dictionary<Vector3, Vector3[]>
         {
-            [_possibleObstacleScales[0]] = _obstacle1Pos,
-            [_possibleObstacleScales[1]] = _obstacle2Pos,
-            [_possibleObstacleScales[2]] = _obstacle3Pos
+            [_2ndPhaseObstacleScales[0]] = _2ndPhaseObstacle1Pos,
+            [_2ndPhaseObstacleScales[1]] = _2ndPhaseObstacle2Pos,
+            [_2ndPhaseObstacleScales[2]] = _2ndPhaseObstacle3Pos
+        };
+
+        var thirdPhaseDictionary = new Dictionary<Vector3, Vector3[]>
+        {
+            [_3rdPhaseObstacleScales[0]] = _3rdPhaseObstacle1Pos,
+            [_3rdPhaseObstacleScales[1]] = _3rdPhaseObstacle2Pos,
+            [_3rdPhaseObstacleScales[2]] = _3rdPhaseObstacle3Pos
         };
 
         _fsm.AddState(BossStates.Waiting, new WaitingState(this));
         _fsm.AddState(BossStates.FirstPhase, new FirstPhaseState(this, UseFirstPhaseAction, _hookTimeToDisable, _tilesToSecondPhase, _restTime));
-        _fsm.AddState(BossStates.SecondPhase, new SecondPhaseState(this, _transitionTime, _obstacleSpawnInterval, secondPhaseDictionary, _obstacle, _secondPhasePos.position.z - 20));
-        _fsm.AddState(BossStates.ThirdPhase, new ThirdPhaseState(this));
+        _fsm.AddState(BossStates.SecondPhase, new SecondPhaseState(this, _2ndPhaseTransitionTime, _2ndPhaseObstacleInterval, _2ndPhaseRetreatSpawnInterval, secondPhaseDictionary,
+            _secondPhaseTransform[0].position.z - 7.5f));
+        _fsm.AddState(BossStates.ThirdPhase, new ThirdPhaseState(this, _3rdPhaseTransitionTime, _wallSpawnInterval, _3rdPhaseObstacleInterval, _3rdPhaseRetreatSpawnInterval,
+            thirdPhaseDictionary, _thirdPhaseTransform[0].position.z - 19.5f, _thirdPhaseTransform[0].position.z - 7.5f, _initialWallSpawns));
         _fsm.ChangeState(BossStates.Waiting);
 
         _proyectileFactory = new Factory<Proyectile>(_proyectile);
         _proyectilePool = new ObjectPool<Proyectile>(_proyectileFactory.GetObject, Proyectile.TurnOff, Proyectile.TurnOn, _proyectileSpawnTransform.Length);
+
+        _obstacleFactory = new Factory<Obstacle>(_obstacle);
+        _obstaclePool = new ObjectPool<Obstacle>(_obstacleFactory.GetObject, Obstacle.TurnOff, Obstacle.TurnOn, 14);
+
+        _wallFactory = new Factory<Obstacle>(_wall);
+        _wallPool = new ObjectPool<Obstacle>(_wallFactory.GetObject, Obstacle.TurnOff, Obstacle.TurnOn, 10);
 
         _disablerFactory = new Factory<HookDisabler>(_hookDisabler);
         _disablerPool = new ObjectPool<HookDisabler>(_disablerFactory.GetObject, HookDisabler.TurnOff, HookDisabler.TurnOn, 2);
@@ -410,23 +439,77 @@ public class Boss : MonoBehaviour
 
     public IEnumerator SecondPhaseTransition()
     {
+        yield return new WaitForSeconds(_2ndPhaseTransitionTime);
+
         for (int i = 0; i < _hands.Length; i++)
         {
-            StartCoroutine(_hands[i].MoveAndRotate(_secondPhaseTransform[i], _transitionSpeed, true));
+            StartCoroutine(_hands[i].MoveAndRotate(_secondPhaseTransform[i], _2ndPhaseTransitionSpeed, true));
         }
-
+        
         while (transform.position != _secondPhasePos.position)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _secondPhasePos.position, Time.deltaTime * _transitionSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, _secondPhasePos.position, Time.deltaTime * _2ndPhaseTransitionSpeed);
 
             yield return null;
         }
-
-        yield return new WaitForSeconds(_pathActivateDelay);
 
         for (int i = 0; i < _secondPhasePaths.Length; i++)
         {
             _secondPhasePaths[i].SetActive(true);
         }
+    }
+
+    public void SpawnObstacle(int keyNumber, Dictionary<Vector3, Vector3[]> obsDictionary, float zValue, float startDelay = 1)
+    {
+        Vector3 scale = obsDictionary.ElementAt(keyNumber).Key;
+        Vector3 pos = obsDictionary[scale][Random.Range(0, obsDictionary[scale].Length)];
+        pos += Vector3.forward * zValue;
+
+        var obs = _obstaclePool.Get();
+        obs.transform.localScale = scale;
+        obs.transform.position = pos;
+        obs.startDelay = startDelay;
+        obs.Initialize(_obstaclePool);
+    }
+
+    public IEnumerator ThirdPhaseTransition()
+    {
+        for (int i = 0; i < _hands.Length; i++)
+        {
+            StartCoroutine(_hands[i].MoveAndRotate(new Vector3(_thirdPhaseTransform[i].position.x, _thirdPhaseTransform[i].position.y, _hands[i].transform.position.z),
+                _3rdPhaseTransitionSpeed));
+        }
+
+        while (_hands[0].moving)
+        {
+            yield return null;
+        }
+
+        for (int i = 0; i < _hands.Length; i++)
+        {
+            StartCoroutine(_hands[i].MoveAndRotate(_thirdPhaseTransform[i], _3rdPhaseTransitionSpeed, true));
+        }
+
+        while (transform.position != _thirdPhasePos.position)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, _thirdPhasePos.position, Time.deltaTime * _3rdPhaseTransitionSpeed);
+
+            yield return null;
+        }
+    }
+
+    public void SpawnWall(float zValue)
+    {
+        var pos = new Vector3(transform.position.x, Random.Range(_wallMinY, _wallMaxY), zValue);
+
+        var wall = _wallPool.Get();
+        wall.transform.position = pos;
+        wall.Initialize(_wallPool, _wall.transform.localScale.y);
+
+        var topWallPos = pos + Vector3.up * _wallYOffset;
+
+        var topWall = _wallPool.Get();
+        topWall.transform.position = topWallPos;
+        topWall.Initialize(_wallPool, topWall.transform.localScale.y);
     }
 }

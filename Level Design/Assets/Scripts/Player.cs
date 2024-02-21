@@ -12,6 +12,7 @@ public class Player : Entity
     [Range(200, 1000), SerializeField]
     float _mouseSensitivity;
     Rigidbody _myRB;
+    CapsuleCollider _myCol;
     [SerializeField] Image _crosshair;
 
     public Movement movement;
@@ -39,6 +40,7 @@ public class Player : Entity
         Cursor.visible = false;
 
         _myRB = GetComponent<Rigidbody>();
+        _myCol = GetComponent<CapsuleCollider>();
         _cameraTransform = Camera.main.transform;
 
         movement = new Movement(transform, _myRB, _speed, _sprintSpeed, _crouchSpeed, _mouseSensitivity, _jumpStrength, _gDrag, _aDrag, _sDrag, _wallRunSpeed, _groundMask);
@@ -212,6 +214,8 @@ public class Player : Entity
         {
             movement.Slide(true);
             _camera.ChangeCameraY(0.25f);
+            _myCol.height = 1;
+            _myCol.center = new Vector3(0, -0.5f, 0);
         }
     }
 
@@ -219,6 +223,8 @@ public class Player : Entity
     {
         movement.Slide(false);
         _camera.ChangeCameraY(0);
+        _myCol.height = 2;
+        _myCol.center = Vector3.zero;
     }
     public Collider[] colliders;
     public void MakeSound(params object[] makingSound)
@@ -310,7 +316,8 @@ public class Player : Entity
         if (other.gameObject.layer == 13)
         {
             // takedamage
-            Knockback(other.transform.position.x, other.transform.position.z);
+            var colPoint = other.ClosestPoint(transform.position);
+            Knockback(colPoint.x, colPoint.z);
         }
     }
 }

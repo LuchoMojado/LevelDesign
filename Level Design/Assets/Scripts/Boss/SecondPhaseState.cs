@@ -1,60 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class SecondPhaseState : State
 {
-    public SecondPhaseState(Boss b, float transitionT, float obstacleInterval, Dictionary<Vector3, Vector3[]> obsDictionary, Obstacle obs, float zSpawn)
+    public SecondPhaseState(Boss b, float transitionT, float obstacleInterval, float retreatInterval, Dictionary<Vector3, Vector3[]> obsDictionary, float zSpawn)
     {
         _boss = b;
         _spawnInterval = obstacleInterval;
+        _retreatInterval = retreatInterval;
         _obstacleDictionary = obsDictionary;
-        _obstacle = obs;
         _zSpawnValue = zSpawn;
         _transitionTime = transitionT;
     }
 
-    float _timer, _transitionTime, _spawnInterval, _zSpawnValue;
+    float _timer, _transitionTime, _spawnInterval, _retreatInterval, _zSpawnValue;
     Dictionary<Vector3, Vector3[]> _obstacleDictionary;
-    Obstacle _obstacle;
-    ObjectPool<Obstacle> _obstaclePool;
-    Factory<Obstacle> _obstacleFactory;
+    bool _transitioning;
 
     public override void OnEnter()
     {
-        _obstacleFactory = new Factory<Obstacle>(_obstacle);
-        _obstaclePool = new ObjectPool<Obstacle>(_obstacleFactory.GetObject, Obstacle.TurnOff, Obstacle.TurnOn, 14);
+        _timer = _transitionTime * 2 + _spawnInterval;
+        _transitioning = true;
 
         _boss.StartCoroutine(_boss.SecondPhaseTransition());
-
-        _timer = _transitionTime;
+        _boss.StartCoroutine(RetreatSpawn());
     }
 
     public override void OnUpdate()
     {
         if (Vector3.Distance(_boss.transform.position, _boss.playerPos) <= 40)
         {
-            fsm.ChangeState(Boss.BossStates.ThirdPhase);
+            if (!_transitioning)
+            {
+                fsm.ChangeState(Boss.BossStates.ThirdPhase);
+            }
         }
 
         if (_timer <= 0)
         {
-            int keyNumber = Random.Range(0, _obstacleDictionary.Count);
-
-            SpawnObstacle(keyNumber);
-
-            if (Random.Range(0,2) == 0)
-            {
-                int newKeyNumber;
-
-                do
-                {
-                    newKeyNumber = Random.Range(0, _obstacleDictionary.Count);
-                } while (newKeyNumber == keyNumber);
-
-                SpawnObstacle(newKeyNumber);
-            }
+            ObstacleSpawn(_zSpawnValue);
 
             _timer = _spawnInterval;
         }
@@ -66,18 +51,68 @@ public class SecondPhaseState : State
 
     public override void OnExit()
     {
-        Debug.Log("third phase");
+        
     }
 
-    void SpawnObstacle(int keyNumber)
+    IEnumerator RetreatSpawn()
     {
-        Vector3 scale = _obstacleDictionary.ElementAt(keyNumber).Key;
-        Vector3 pos = _obstacleDictionary[scale][Random.Range(0, _obstacleDictionary[scale].Length)];
-        pos += Vector3.forward * _zSpawnValue;
+        yield return new WaitForSeconds(_transitionTime);
 
-        var obs = _obstaclePool.Get();
-        obs.transform.localScale = scale;
-        obs.transform.position = pos;
-        obs.Initialize(_obstaclePool);
-    } 
+        float timer = 0;
+        int length = Mathf.FloorToInt(_transitionTime / _retreatInterval);
+
+        for (int i = 0; i < length; i++)
+        {
+            float currentGoal = _retreatInterval * (i + 1);
+
+            while (timer < currentGoal)
+            {
+                timer += Time.deltaTime;
+
+                yield return null;
+            }
+
+            ObstacleSpawn(_boss.transform.position.z - 20, _transitionTime - timer);
+        }
+
+        _transitioning = false;
+    }
+
+    void ObstacleSpawn(float zValue)
+    {
+        int keyNumber = Random.Range(0, _obstacleDictionary.Count);
+
+        _boss.SpawnObstacle(keyNumber, _obstacleDictionary, zValue);
+
+        if (Random.Range(0, 2) == 0)
+        {
+            int newKeyNumber;
+
+            do
+            {
+                newKeyNumber = Random.Range(0, _obstacleDictionary.Count);
+            } while (newKeyNumber == keyNumber);
+
+            _boss.SpawnObstacle(newKeyNumber, _obstacleDictionary, zValue);
+        }
+    }
+
+    void ObstacleSpawn(float zValue, float startDelay)
+    {
+        int keyNumber = Random.Range(0, _obstacleDictionary.Count);
+
+        _boss.SpawnObstacle(keyNumber, _obstacleDictionary, zValue, startDelay);
+
+        if (Random.Range(0, 2) == 0)
+        {
+            int newKeyNumber;
+
+            do
+            {
+                newKeyNumber = Random.Range(0, _obstacleDictionary.Count);
+            } while (newKeyNumber == keyNumber);
+
+            _boss.SpawnObstacle(newKeyNumber, _obstacleDictionary, zValue, startDelay);
+        }
+    }
 }

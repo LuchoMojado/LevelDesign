@@ -5,24 +5,36 @@ using UnityEngine;
 public class Obstacle : MonoBehaviour
 {
     ObjectPool<Obstacle> _objectPool;
-    [SerializeField] float _speed, _startDelay, _despawnTime;
+    [SerializeField] float _speed;
+    public float startDelay;
 
     IEnumerator Move()
     {
-        float timer = _despawnTime;
+        yield return new WaitForSeconds(startDelay);
 
-        yield return new WaitForSeconds(_startDelay);
-
-        while (timer >= 0)
+        while (true)
         {
-            timer -= Time.deltaTime;
-
             transform.position += Vector3.back * _speed * Time.deltaTime;
 
             yield return null;
         }
+    }
 
-        _objectPool.RefillStock(this);
+    IEnumerator ExpandY(float yEndValue)
+    {
+        float time = 0;
+        transform.localScale = new Vector3(transform.localScale.x, 0, transform.localScale.z);
+
+        while (transform.localScale.y < yEndValue)
+        {
+            time += Time.deltaTime;
+
+            transform.localScale = new Vector3(transform.localScale.x, Mathf.Lerp(0, yEndValue, time), transform.localScale.z);
+
+            yield return null;
+        }
+
+        StartCoroutine(Move());
     }
 
     public void Initialize(ObjectPool<Obstacle> op)
@@ -32,6 +44,13 @@ public class Obstacle : MonoBehaviour
         StartCoroutine(Move());
     }
 
+    public void Initialize(ObjectPool<Obstacle> op, float yScale)
+    {
+        _objectPool = op;
+
+        StartCoroutine(ExpandY(yScale));
+    }
+
     public static void TurnOff(Obstacle x)
     {
         x.gameObject.SetActive(false);
@@ -39,5 +58,13 @@ public class Obstacle : MonoBehaviour
     public static void TurnOn(Obstacle x)
     {
         x.gameObject.SetActive(true);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == 14)
+        {
+            _objectPool.RefillStock(this);
+        }
     }
 }

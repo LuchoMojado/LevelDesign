@@ -46,6 +46,11 @@ public class Proyectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.layer == 14)
+        {
+            return;
+        }
+
         foreach (var item in _boss.tiles)
         {
             if (Vector3.Distance(item.transform.position, transform.position) <= 3.25f)
