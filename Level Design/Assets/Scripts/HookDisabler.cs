@@ -50,7 +50,7 @@ public class HookDisabler : Entity
         
     }
 
-    public void Initialize(ObjectPool<HookDisabler> op, float radius = 50, float duration = 2.5f, float firstDelay = 0, float cooldown = 6)
+    public void Initialize(ObjectPool<HookDisabler> op, float radius, float duration, float firstDelay, float cooldown)
     {
         _objectPool = op;
         _disableRadius = radius;

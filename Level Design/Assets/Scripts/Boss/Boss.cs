@@ -6,6 +6,7 @@ using System.Linq;
 public class Boss : MonoBehaviour
 {
     FiniteStateMachine _fsm;
+    [SerializeField] LevelManager _lvlManager;
 
     [Header("Hands")]
     [SerializeField] BossHands[] _hands;
@@ -18,11 +19,6 @@ public class Boss : MonoBehaviour
     [SerializeField] Proyectile _proyectile;
     ObjectPool<Proyectile> _proyectilePool;
     Factory<Proyectile> _proyectileFactory;
-
-    ObjectPool<HookDisabler> _disablerPool;
-    Factory<HookDisabler> _disablerFactory;
-    [SerializeField] HookDisabler _hookDisabler;
-    [SerializeField] Transform[] _hookDisablerInLevel;
 
     [SerializeField] Dictionary<GameObject, Transform[]> yea;
 
@@ -51,6 +47,8 @@ public class Boss : MonoBehaviour
     [SerializeField] float _3rdPhaseTransitionSpeed, _3rdPhaseTransitionTime, _3rdPhaseObstacleInterval, _3rdPhaseRetreatSpawnInterval,
         _wallSpawnInterval, _wallMinY, _wallMaxY, _wallYOffset;
     [SerializeField] Vector3[] _3rdPhaseObstacleScales, _3rdPhaseObstacle1Pos, _3rdPhaseObstacle2Pos, _3rdPhaseObstacle3Pos;
+
+    [SerializeField] float _handsToHeadDestroyWait, _levelChangeDelay;
 
     [HideInInspector] public Vector3 playerPos { get; private set; }
     [HideInInspector] public bool takingAction { get; private set; }
@@ -97,17 +95,6 @@ public class Boss : MonoBehaviour
 
         _wallFactory = new Factory<Obstacle>(_wall);
         _wallPool = new ObjectPool<Obstacle>(_wallFactory.GetObject, Obstacle.TurnOff, Obstacle.TurnOn, 10);
-
-        _disablerFactory = new Factory<HookDisabler>(_hookDisabler);
-        _disablerPool = new ObjectPool<HookDisabler>(_disablerFactory.GetObject, HookDisabler.TurnOff, HookDisabler.TurnOn, 2);
-
-        var firstDisabler = _disablerPool.Get();
-        firstDisabler.transform.position = _hookDisablerInLevel[0].position;
-        firstDisabler.Initialize(_disablerPool, 70);
-
-        var secondDisabler = _disablerPool.Get();
-        secondDisabler.transform.position = _hookDisablerInLevel[1].position;
-        secondDisabler.Initialize(_disablerPool, 60, 3, 4);
     }
 
     void Update()
@@ -312,9 +299,7 @@ public class Boss : MonoBehaviour
             yield return null;
         }
 
-        var disabler = _disablerPool.Get();
-        disabler.transform.position = _disablerSpawnTransform.position;
-        disabler.Initialize(_disablerPool);
+        var disabler = _lvlManager.SpawnDisabler(_disablerSpawnTransform.position);
 
         yield return new WaitForSeconds(4);
 
@@ -511,5 +496,28 @@ public class Boss : MonoBehaviour
         var topWall = _wallPool.Get();
         topWall.transform.position = topWallPos;
         topWall.Initialize(_wallPool, topWall.transform.localScale.y);
+    }
+
+    public IEnumerator Die()
+    {
+        // alguna animacion o movimiento?
+
+        // yield return new WaitForSeconds(duracionDeAnimacion);
+
+        for (int i = 0; i < _hands.Length; i++)
+        {
+            // animacion o particula?
+            Destroy(_hands[i].gameObject);
+        }
+
+        yield return new WaitForSeconds(_handsToHeadDestroyWait);
+
+        // animacion o particula?
+        GetComponentInChildren<Renderer>().enabled = false;
+
+        yield return new WaitForSeconds(_levelChangeDelay);
+
+        _lvlManager.BeginPart2(transform.position);
+        Destroy(gameObject);
     }
 }

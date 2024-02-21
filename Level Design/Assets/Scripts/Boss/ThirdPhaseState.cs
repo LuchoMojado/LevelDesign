@@ -35,24 +35,26 @@ public class ThirdPhaseState : State
 
     public override void OnUpdate()
     {
-        if (Vector3.Distance(_boss.transform.position, _boss.playerPos) <= 20)
+        if (!_transitioning)
         {
-            if (!_transitioning)
+            if (Vector3.Distance(_boss.transform.position, _boss.playerPos) <= 20)
             {
-                Object.Destroy(_boss.gameObject);
+                _boss.StartCoroutine(_boss.Die());
+                _transitioning = true;
+            }
+
+            if (_timer <= 0)
+            {
+                _boss.SpawnObstacle(Random.Range(0, _obstacleDictionary.Count), _obstacleDictionary, _zObstacleSpawn);
+
+                _timer = _obstacleSpawnInterval;
+            }
+            else
+            {
+                _timer -= Time.deltaTime;
             }
         }
-
-        if (_timer <= 0)
-        {
-            _boss.SpawnObstacle(Random.Range(0, _obstacleDictionary.Count), _obstacleDictionary, _zObstacleSpawn);
-
-            _timer = _obstacleSpawnInterval;
-        }
-        else
-        {
-            _timer -= Time.deltaTime;
-        }
+        
     }
 
     public override void OnExit()
