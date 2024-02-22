@@ -20,7 +20,7 @@ public class LevelManager : MonoBehaviour
         SpawnDisabler(_hookDisablerInLevel[1].position, 60, 3, 4);
     }
 
-    public HookDisabler SpawnDisabler(Vector3 pos, float radius = 50, float duration = 2.5f, float firstDelay = 0, float cooldown = 6)
+    public HookDisabler SpawnDisabler(Vector3 pos, float radius = 50, float duration = 2.5f, float firstDelay = 0, float cooldown = 7)
     {
         var disabler = _disablerPool.Get();
         disabler.transform.position = pos;

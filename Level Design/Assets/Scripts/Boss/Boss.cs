@@ -502,7 +502,7 @@ public class Boss : MonoBehaviour
     {
         // alguna animacion o movimiento?
 
-        // yield return new WaitForSeconds(duracionDeAnimacion);
+        yield return new WaitForSeconds(2f);
 
         for (int i = 0; i < _hands.Length; i++)
         {

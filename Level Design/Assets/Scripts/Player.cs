@@ -319,6 +319,11 @@ public class Player : Entity
             var colPoint = other.ClosestPoint(transform.position);
             Knockback(colPoint.x, colPoint.z);
         }
+
+        if (other.gameObject.layer == 15)
+        {
+            print("ganaste");
+        }
     }
 }
 
