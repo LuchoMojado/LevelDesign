@@ -1159,11 +1159,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _particle: {fileID: 4660474660875404201, guid: 46ef678323b2ac340a06abe1086f510b, type: 3}
   _spawnCooldown: 2.5
-  _xMin: 0
-  _xMax: 165
-  _y: 75
-  _zMin: -70
-  _zMax: 170
+  _xMin: -160
+  _xMax: 30
+  _y: 85
+  _zMin: -30
+  _zMax: 630
 --- !u!4 &77552854
 Transform:
   m_ObjectHideFlags: 0
