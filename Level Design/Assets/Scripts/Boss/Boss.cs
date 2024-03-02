@@ -345,16 +345,22 @@ public class Boss : MonoBehaviour
 
         StartCoroutine(_hands[handIndex].MoveAndRotate(disabler.transform.position, _spawnPrepareSpeed));
 
+        //moviendo al disabler
+
         while (_hands[handIndex].moving)
         {
             yield return null;
         }
+
+        // cierra el puño y muere disabler
 
         _hands[handIndex].ChangeHandState(BossHands.HandStates.Closed);
 
         disabler.Die();
 
         StartCoroutine(_hands[handIndex].MoveAndRotate(_idleTransform[handIndex], _retractSpeed, true));
+
+        //volviendo
 
         while (_hands[handIndex].moving)
         {
