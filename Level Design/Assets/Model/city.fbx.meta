@@ -3,7 +3,37 @@ guid: 047c8febca8d2d74980fa8a23228aa5d
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: base
+    second: {fileID: 2100000, guid: 199ced1d7f05df04eaf62f7035714fe8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: details
+    second: {fileID: 2100000, guid: 890be67d8b23880418a5f5f32c383ba5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: fasades
+    second: {fileID: 2100000, guid: 5a79b6e7bec61df4fa91008d71ad0cdc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: fasades2
+    second: {fileID: 2100000, guid: dbe6fa3e226ac3241a407fbdb059a2b7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: rails
+    second: {fileID: 2100000, guid: 81c033dd18f4683409806ee326a490ef, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: vehicles
+    second: {fileID: 2100000, guid: eae2a6a3c4f061147886acddf9a6ef0c, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
