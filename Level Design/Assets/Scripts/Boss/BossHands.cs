@@ -6,6 +6,14 @@ public class BossHands : MonoBehaviour
 {
     [HideInInspector] public bool moving { get; private set; }
     [HideInInspector] public bool busy;
+    [SerializeField] GameObject[] _handState;
+
+    public enum HandStates
+    {
+        Closed,
+        Open,
+        Idle
+    }
 
     public IEnumerator MoveAndRotate(Transform goalTransform, float speed, bool rotate)
     {
@@ -89,5 +97,29 @@ public class BossHands : MonoBehaviour
         }
 
         moving = false;
+    }
+
+    public void ChangeHandState(HandStates newState)
+    {
+        switch (newState)
+        {
+            case HandStates.Closed:
+                _handState[0].SetActive(true);
+                _handState[1].SetActive(false);
+                _handState[2].SetActive(false);
+                break;
+            case HandStates.Open:
+                _handState[0].SetActive(false);
+                _handState[1].SetActive(true);
+                _handState[2].SetActive(false);
+                break;
+            case HandStates.Idle:
+                _handState[0].SetActive(false);
+                _handState[1].SetActive(false);
+                _handState[2].SetActive(true);
+                break;
+            default:
+                break;
+        }
     }
 }
