@@ -28,6 +28,13 @@ public class WallrunController
 
         if (rightSide)
         {
+            if (rightWallHit.collider.isTrigger)
+            {
+                angle = default;
+                right = default;
+                return false;
+            }
+
             right = true;
             angle = Vector3.Angle(_transform.forward, Vector3.Reflect(_transform.forward, rightWallHit.normal));
             if (running)
@@ -44,6 +51,13 @@ public class WallrunController
         }
         else if (leftSide)
         {
+            if (leftWallHit.collider.isTrigger)
+            {
+                angle = default;
+                right = default;
+                return false;
+            }
+
             right = false;
             angle = Vector3.Angle(_transform.forward, Vector3.Reflect(_transform.forward, leftWallHit.normal));
             if (running)

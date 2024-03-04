@@ -20,7 +20,11 @@ public class Boss : MonoBehaviour
     ObjectPool<Proyectile> _proyectilePool;
     Factory<Proyectile> _proyectileFactory;
 
-    [SerializeField] Dictionary<GameObject, Transform[]> yea;
+    [SerializeField] GameObject[] _shield;
+    [SerializeField] ShieldEnergy _shieldEnergy;
+    [SerializeField] float _energySpeed;
+    int _currentShieldState = 0;
+    int[] _tilesThreshold = { 0, 30, 60, 90 };
 
     public List<Renderer> tiles;
     [SerializeField] Material _damagedTileMat;
@@ -316,6 +320,8 @@ public class Boss : MonoBehaviour
             yield return null;
         }
 
+        yield return new WaitForSeconds(_recoverTime);
+
         _hands[handIndex].busy = false;
         takingAction = false;
     }
@@ -326,7 +332,7 @@ public class Boss : MonoBehaviour
         bool right = handIndex % 2 == 0 ? true : false;
 
         Vector3 startPos = _disablerSpawnTransform.position - Vector3.up * 3;
-        Quaternion rotation = right ? _disablerSpawnTransform.rotation : _disablerSpawnTransform.rotation * new Quaternion(1, 1, -1, 1);
+        Quaternion rotation = right ? _disablerSpawnTransform.rotation : Quaternion.Inverse(_disablerSpawnTransform.rotation);
 
         _hands[handIndex].ChangeHandState(BossHands.HandStates.Open);
 
@@ -340,6 +346,7 @@ public class Boss : MonoBehaviour
         }
 
         var disabler = _lvlManager.SpawnDisabler(_disablerSpawnTransform.position);
+        disabler.transform.forward = -Vector3.forward;
 
         yield return new WaitForSeconds(4);
 
@@ -443,6 +450,11 @@ public class Boss : MonoBehaviour
         tiles.Remove(tile);
         //spawneo particulas
         Destroy(tile.gameObject);
+
+        if (tiles.Count <= _tilesThreshold[_currentShieldState])
+        {
+            ChangeShield(false);
+        }
     }
 
     public IEnumerator ExplodeTile(Renderer tile)
@@ -472,6 +484,67 @@ public class Boss : MonoBehaviour
         Destroy(tile.gameObject);
     }
 
+    void ChangeShield(bool grow)
+    {
+        _shield[_currentShieldState].SetActive(false);
+
+        _currentShieldState += grow ? 1 : -1;
+
+        if (_currentShieldState < 0)
+        {
+            _currentShieldState = 0;
+            return;
+        }
+        else if (_currentShieldState >= _shield.Length)
+            _currentShieldState = _shield.Length - 1;
+
+        _shield[_currentShieldState].SetActive(true);
+    }
+
+    public IEnumerator FirstPhaseTransition()
+    {
+        takingAction = true;
+
+        List<ShieldEnergy> energies = new List<ShieldEnergy>();
+
+        for (int i = 0; i < tiles.Count; i++)
+        {
+            var energy = Instantiate(_shieldEnergy, tiles[i].transform.position, Quaternion.identity);
+            energy.currentGoal = tiles[i].transform.position + Vector3.up * 2;
+            energy.finalGoal = _shield[0].transform.position - Vector3.up * 13;
+            energy.speed = _energySpeed * 0.1f;
+            energies.Add(energy);
+        }
+
+        yield return new WaitForSeconds(4);
+
+        foreach (var item in energies)
+        {
+            item.currentGoal = item.finalGoal;
+            item.speed = _energySpeed;
+        }
+
+        yield return new WaitForSeconds(1.9f);
+
+        _shield[0].SetActive(true);
+
+        yield return new WaitForSeconds(1.4f);
+
+        ChangeShield(true);
+
+        yield return new WaitForSeconds(1.4f);
+
+        ChangeShield(true);
+
+        yield return new WaitForSeconds(1.4f);
+
+        ChangeShield(true);
+
+        yield return new WaitForSeconds(1);
+
+        takingAction = false;
+    }
+
     public IEnumerator SecondPhaseTransition()
     {
         yield return new WaitForSeconds(_2ndPhaseTransitionTime);
@@ -486,7 +559,7 @@ public class Boss : MonoBehaviour
         while (transform.position != _secondPhasePos.position)
         {
             transform.position = Vector3.MoveTowards(transform.position, _secondPhasePos.position, Time.deltaTime * _2ndPhaseTransitionSpeed);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, _secondPhasePos.rotation, Time.deltaTime * 2);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, _secondPhasePos.rotation, Time.deltaTime * 20);
 
             yield return null;
         }

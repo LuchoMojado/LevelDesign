@@ -21,8 +21,6 @@ public class FirstPhaseState : State
 
     public override void OnEnter()
     {
-        _timer = _actionCD;
-
         _player = GameManager.instance.player;
     }
 

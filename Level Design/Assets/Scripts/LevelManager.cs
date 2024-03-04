@@ -16,8 +16,18 @@ public class LevelManager : MonoBehaviour
         _disablerFactory = new Factory<HookDisabler>(_hookDisabler);
         _disablerPool = new ObjectPool<HookDisabler>(_disablerFactory.GetObject, HookDisabler.TurnOff, HookDisabler.TurnOn, 2);
 
-        SpawnDisabler(_hookDisablerInLevel[0].position, 70, 1.75f);
-        SpawnDisabler(_hookDisablerInLevel[1].position, 60, 1.75f, 4);
+        SpawnDisabler(_hookDisablerInLevel[0], 70, 1.75f);
+        SpawnDisabler(_hookDisablerInLevel[1], 60, 1.75f, 4);
+    }
+
+    public HookDisabler SpawnDisabler(Transform transform, float radius = 50, float duration = 2.5f, float firstDelay = 0, float cooldown = 7)
+    {
+        var disabler = _disablerPool.Get();
+        disabler.transform.position = transform.position;
+        disabler.transform.rotation = transform.rotation;
+        disabler.Initialize(_disablerPool, radius, duration, firstDelay, cooldown);
+
+        return disabler;
     }
 
     public HookDisabler SpawnDisabler(Vector3 pos, float radius = 50, float duration = 2.5f, float firstDelay = 0, float cooldown = 7)

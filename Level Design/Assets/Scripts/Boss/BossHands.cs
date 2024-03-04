@@ -31,7 +31,7 @@ public class BossHands : MonoBehaviour
 
                 float delta = 1 - Mathf.Pow(currentDist / startDist, 5.0f / 9.0f);
 
-                transform.rotation = Quaternion.Slerp(transform.rotation, goalTransform.rotation, delta / currentDist);
+                transform.rotation = Quaternion.Slerp(transform.rotation, goalTransform.rotation, (delta / currentDist) * Time.deltaTime * speed);
 
                 yield return null;
             }
