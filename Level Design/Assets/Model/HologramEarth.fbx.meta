@@ -1,0 +1,214 @@
+fileFormatVersion: 2
+guid: c0429338072e64c4785ee9b43a2adc51
+ModelImporter:
+  serializedVersion: 21300
+  internalIDToNameTable:
+  - first:
+      74: -6644647018664873518
+    second: Circle|Action.002
+  - first:
+      74: 2107403664151594297
+    second: Circle|Action.003
+  - first:
+      74: 5618155646553066948
+    second: Circle|Action.004
+  - first:
+      74: -6967002802812510710
+    second: Circle|Action.005
+  - first:
+      74: 6362321558170824934
+    second: Circle|Action.006
+  - first:
+      74: -8593866254830423415
+    second: Circle|Action.007
+  - first:
+      74: -2017971887763915780
+    second: Icosphere.002|Action.002
+  - first:
+      74: -7161157893990584857
+    second: Icosphere.002|Action.003
+  - first:
+      74: -9046085749793416871
+    second: Icosphere.002|Action.004
+  - first:
+      74: -6482054460882897348
+    second: Icosphere.002|Action.005
+  - first:
+      74: -7073558467281154412
+    second: Icosphere.002|Action.006
+  - first:
+      74: 8504466600281502966
+    second: Icosphere.002|Action.007
+  - first:
+      74: 4472982049913968137
+    second: Circle.455|Action.002
+  - first:
+      74: -3906128094891933452
+    second: Circle.455|Action.003
+  - first:
+      74: 6404762940693823384
+    second: Circle.455|Action.004
+  - first:
+      74: -7963966665053465413
+    second: Circle.455|Action.005
+  - first:
+      74: -7443239676961925361
+    second: Circle.455|Action.006
+  - first:
+      74: -5921794421829193870
+    second: Circle.455|Action.007
+  - first:
+      74: -1907097883592951025
+    second: Circle.643|Action.002
+  - first:
+      74: -7500240005664593132
+    second: Circle.643|Action.003
+  - first:
+      74: 141051799526625090
+    second: Circle.643|Action.004
+  - first:
+      74: -1478286315674873457
+    second: Circle.643|Action.005
+  - first:
+      74: 8532438342393714145
+    second: Circle.643|Action.006
+  - first:
+      74: -2459251720204811400
+    second: Circle.643|Action.007
+  - first:
+      74: -888588389905852818
+    second: Sphere.002|Action.002
+  - first:
+      74: 5293058168343956267
+    second: Sphere.002|Action.003
+  - first:
+      74: 6938787813150330002
+    second: Sphere.002|Action.004
+  - first:
+      74: 3018681288914759274
+    second: Sphere.002|Action.005
+  - first:
+      74: -795496094899151242
+    second: Sphere.002|Action.006
+  - first:
+      74: -6128366557948340485
+    second: Sphere.002|Action.007
+  - first:
+      74: -8661540876422338865
+    second: TERRE1|Action.002
+  - first:
+      74: -8961133512222275489
+    second: TERRE1|Action.003
+  - first:
+      74: 7795605878877114372
+    second: TERRE1|Action.004
+  - first:
+      74: -3386197583054845462
+    second: TERRE1|Action.005
+  - first:
+      74: -5430779669521497521
+    second: TERRE1|Action.006
+  - first:
+      74: 1611044494639139623
+    second: TERRE1|Action.007
+  externalObjects: {}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 1
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
