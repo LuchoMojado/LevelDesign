@@ -8,7 +8,7 @@ public class BlackHole : MonoBehaviour
 
     void Update()
     {
-        transform.localScale += transform.localScale * _growRate * Time.deltaTime;
+        transform.localScale += Vector3.one * _growRate * Time.deltaTime;
     }
 
     private void OnTriggerEnter(Collider other)

@@ -482,6 +482,11 @@ public class Boss : MonoBehaviour
         tiles.Remove(tile);
         //spawneo particulas
         Destroy(tile.gameObject);
+
+        if (tiles.Count <= _tilesThreshold[_currentShieldState])
+        {
+            ChangeShield(false);
+        }
     }
 
     void ChangeShield(bool grow)
