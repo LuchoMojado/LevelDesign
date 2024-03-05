@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public Vector3 checkPointPos;
     public float countObjects = 0;
     public Rewind[] rewinds;
+    public Rewind[] rewinds2;
     public string sceneToLoad;
     void Awake()
     {
@@ -21,7 +22,7 @@ public class GameManager : MonoBehaviour
     {
         checkPointPos = player.transform.position;
         instance = this;
-        StartCoroutine(CoroutineSave());
+        //StartCoroutine(CoroutineSave());
     }
 
     // Update is called once per frame
@@ -69,6 +70,13 @@ public class GameManager : MonoBehaviour
     public void LoadGame()
     {
         foreach (var item in rewinds)
+        {
+            item.Load();
+        }
+    }
+    public void LoadGame2()
+    {
+        foreach (var item in rewinds2)
         {
             item.Load();
         }

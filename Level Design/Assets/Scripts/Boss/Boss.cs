@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Boss : MonoBehaviour
+public class Boss : Rewind
 {
     FiniteStateMachine _fsm;
     [SerializeField] LevelManager _lvlManager;
@@ -27,7 +27,9 @@ public class Boss : MonoBehaviour
     int[] _tilesThreshold = { 0, 30, 60, 90 };
 
     public List<Renderer> tiles;
+    private List<Renderer> tilesDestroy=new List<Renderer>();
     [SerializeField] Material _damagedTileMat;
+    [SerializeField] Material _nonDamagedTileMat;
     [SerializeField] float _tileDestroyDelay, _tileExplodeStartingInterval, _explosionRadius,_hookTimeToDisable, _restTime;
     [SerializeField] int _tilesToSecondPhase;
 
@@ -56,6 +58,8 @@ public class Boss : MonoBehaviour
 
     [HideInInspector] public Vector3 playerPos { get; private set; }
     [HideInInspector] public bool takingAction { get; private set; }
+    bool _loading;
+    BossStates currentState;
 
     public enum BossStates
     {
@@ -90,7 +94,7 @@ public class Boss : MonoBehaviour
         _fsm.AddState(BossStates.ThirdPhase, new ThirdPhaseState(this, _3rdPhaseTransitionTime, _wallSpawnInterval, _3rdPhaseObstacleInterval, _3rdPhaseRetreatSpawnInterval,
             thirdPhaseDictionary, _thirdPhaseTransform[0].position.z - 19.5f, _thirdPhaseTransform[0].position.z - 7.5f, _initialWallSpawns));
         _fsm.ChangeState(BossStates.Waiting);
-
+        currentState = BossStates.Waiting;
         _proyectileFactory = new Factory<Proyectile>(_proyectile);
         _proyectilePool = new ObjectPool<Proyectile>(_proyectileFactory.GetObject, Proyectile.TurnOff, Proyectile.TurnOn, _proyectileSpawnTransform.Length);
 
@@ -449,8 +453,9 @@ public class Boss : MonoBehaviour
 
         tiles.Remove(tile);
         //spawneo particulas
-        Destroy(tile.gameObject);
-
+        //Destroy(tile.gameObject);
+        tile.gameObject.SetActive(false);
+        tilesDestroy.Add(tile);
         if (tiles.Count <= _tilesThreshold[_currentShieldState])
         {
             ChangeShield(false);
@@ -459,7 +464,7 @@ public class Boss : MonoBehaviour
 
     public IEnumerator ExplodeTile(Renderer tile)
     {
-        var normalMat = tile.material;
+        
         float time = _tileExplodeStartingInterval;
 
         while (time > 0.03f)
@@ -468,7 +473,7 @@ public class Boss : MonoBehaviour
 
             yield return new WaitForSeconds(0.1f);
 
-            tile.material = normalMat;
+            tile.material = _nonDamagedTileMat;
 
             yield return new WaitForSeconds(time);
             time *= 0.75f;
@@ -509,7 +514,11 @@ public class Boss : MonoBehaviour
     public IEnumerator FirstPhaseTransition()
     {
         takingAction = true;
-
+        Save();
+        foreach (var item in _hands)
+        {
+            item.Save();
+        }
         List<ShieldEnergy> energies = new List<ShieldEnergy>();
 
         for (int i = 0; i < tiles.Count; i++)
@@ -548,6 +557,7 @@ public class Boss : MonoBehaviour
         yield return new WaitForSeconds(1);
 
         takingAction = false;
+        currentState = BossStates.FirstPhase;
     }
 
     public IEnumerator SecondPhaseTransition()
@@ -572,6 +582,12 @@ public class Boss : MonoBehaviour
         for (int i = 0; i < _secondPhasePaths.Length; i++)
         {
             _secondPhasePaths[i].SetActive(true);
+        }
+        currentState = BossStates.SecondPhase;
+        Save();
+        foreach (var item in _hands)
+        {
+            item.Save();
         }
     }
 
@@ -612,6 +628,12 @@ public class Boss : MonoBehaviour
 
             yield return null;
         }
+        currentState = BossStates.ThirdPhase;
+        Save();
+        foreach(var item in _hands)
+        {
+            item.Save();
+        }
     }
 
     public void SpawnWall(float zValue)
@@ -650,5 +672,56 @@ public class Boss : MonoBehaviour
 
         _lvlManager.BeginPart2(transform.position);
         Destroy(gameObject);
+    }
+
+    public override void Save()
+    {
+        if (_loading)
+            return;
+        _mementoState.Rec(currentState,transform.position,transform.rotation);
+    }
+
+    public override void Load()
+    {
+        foreach(var item in _shield)
+        {
+            item.SetActive(false);
+        }
+        _currentShieldState = 0;
+        StopAllCoroutines();
+        takingAction = false;
+        if (currentState == BossStates.FirstPhase)
+            ActiveAllPlatforms();
+        if (_mementoState.IsRemember())
+        {
+            StartCoroutine(CoroutineLoad());
+        }
+    }
+    IEnumerator CoroutineLoad()
+    {
+        var WaitForSeconds = new WaitForSeconds(0.01f);
+        _loading = true;
+        //_myRB.constraints = RigidbodyConstraints.FreezeAll;
+        while (_mementoState.IsRemember())
+        {
+            var data = _mementoState.Remember();
+            //_loading = true;
+            //Pongo en el array la pos que se donde lo puse lo que quiero
+            _fsm.ChangeState((BossStates)data.parameters[0]);
+            transform.position = (Vector3)data.parameters[1];
+            transform.rotation = (Quaternion)data.parameters[2];
+            yield return WaitForSeconds;
+        }
+        //_myRB.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        _loading = false;
+    }
+    public void ActiveAllPlatforms()
+    {
+        foreach(var item in tilesDestroy)
+        {
+            item.gameObject.SetActive(true);
+            item.material = _nonDamagedTileMat;
+            tiles.Add(item);
+        }
     }
 }

@@ -162,10 +162,12 @@ public class Player : Entity
 
     public override void Die()
     {
-        Time.timeScale = 0;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        _inputs.inputUpdate = null;
+        GameManager.instance.LoadGame2();
+        _hitsReceived = 0;
+        //Time.timeScale = 0;
+        //Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
+        //_inputs.inputUpdate = null;
         //UIManager.instance.GameOver();
     }
 
@@ -323,6 +325,12 @@ public class Player : Entity
         if (other.gameObject.layer == 15)
         {
             print("ganaste");
+        }
+        if (other.gameObject.layer == 16)
+        {
+            // takedamage
+            Die();
+            //GameManager.instance.Respawn();
         }
     }
 }

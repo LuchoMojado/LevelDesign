@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossHands : MonoBehaviour
+public class BossHands : Rewind
 {
     [HideInInspector] public bool moving { get; private set; }
     [HideInInspector] public bool busy;
     [SerializeField] GameObject[] _handState;
+    bool _loading;
 
     public enum HandStates
     {
@@ -121,5 +122,41 @@ public class BossHands : MonoBehaviour
             default:
                 break;
         }
+    }
+    
+    public override void Save()
+    {
+        if (_loading)
+            return;
+        _mementoState.Rec(transform.position,transform.rotation);
+    }
+
+    public override void Load()
+    {
+        StopAllCoroutines();
+        moving = false;
+        if (_mementoState.IsRemember())
+        {
+            StartCoroutine(CoroutineLoad());
+        }
+    }
+
+    IEnumerator CoroutineLoad()
+    {
+        var WaitForSeconds = new WaitForSeconds(0.01f);
+        _loading = true;
+        //_myRB.constraints = RigidbodyConstraints.FreezeAll;
+        while (_mementoState.IsRemember())
+        {
+            var data = _mementoState.Remember();
+            //_loading = true;
+            //Pongo en el array la pos que se donde lo puse lo que quiero
+            transform.position = (Vector3)data.parameters[0];
+            transform.rotation = (Quaternion)data.parameters[1];
+
+            yield return WaitForSeconds;
+        }
+        //_myRB.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        _loading = false;
     }
 }
