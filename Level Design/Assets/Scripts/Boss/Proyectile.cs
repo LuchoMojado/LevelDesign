@@ -8,6 +8,12 @@ public class Proyectile : MonoBehaviour
     [SerializeField] float _speed, _shootDelay, _despawnTime;
     Boss _boss;
 
+    public void Update()
+    {
+        if (_boss._loading)
+            _objectPool.RefillStock(this);
+    }
+
     IEnumerator Shoot()
     {
         float timer = _despawnTime;

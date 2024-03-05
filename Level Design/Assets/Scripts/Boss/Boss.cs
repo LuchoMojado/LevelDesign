@@ -58,7 +58,7 @@ public class Boss : Rewind
 
     [HideInInspector] public Vector3 playerPos { get; private set; }
     [HideInInspector] public bool takingAction { get; private set; }
-    bool _loading;
+    public bool _loading;
     BossStates currentState;
 
     public enum BossStates
@@ -691,7 +691,12 @@ public class Boss : Rewind
         StopAllCoroutines();
         takingAction = false;
         if (currentState == BossStates.FirstPhase)
+        {
             ActiveAllPlatforms();
+            foreach (var item in _hands)
+                item.ChangeHandState(BossHands.HandStates.Idle);
+        }
+            
         if (_mementoState.IsRemember())
         {
             StartCoroutine(CoroutineLoad());
@@ -719,9 +724,13 @@ public class Boss : Rewind
     {
         foreach(var item in tilesDestroy)
         {
-            item.gameObject.SetActive(true);
-            item.material = _nonDamagedTileMat;
             tiles.Add(item);
         }
+        foreach (var item in tiles)
+        {
+            item.gameObject.SetActive(true);
+            item.material = _nonDamagedTileMat;
+        }
+        tilesDestroy.Clear();
     }
 }
