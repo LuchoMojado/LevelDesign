@@ -11,6 +11,7 @@ public class Boss : Rewind, IPlaySound
     public AudioClip audioClip2;
     public AudioClip audioClip3;
     public AudioClip audioClip4;
+    public AudioClip audioClip5;
     FiniteStateMachine _fsm;
     [SerializeField] LevelManager _lvlManager;
 
@@ -235,13 +236,13 @@ public class Boss : Rewind, IPlaySound
         StartCoroutine(_hands[index].Sweep(playerPos, xEnd, zEnd, _sweepSpeed));
 
         //haciendo sweep
-
+        PlaySound(audioClip1);
         while (_hands[index].moving)
         {
             
             yield return null;
         }
-        PlaySound(audioClip1);
+        StopSound(audioClip1);
         yield return new WaitForSeconds(_recoverTime);
 
         _hands[index].ChangeHandState(BossHands.HandStates.Idle);
@@ -289,7 +290,7 @@ public class Boss : Rewind, IPlaySound
             for (int i = 0; i < _proyectileSpawnTransform.Length; i++)
             {
                 Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 4;
-
+                PlaySound(audioClip5);
                 StartCoroutine(_hands[handIndex].MoveAndRotate(goal, _spawnProyectileSpeed));
 
                 while (_hands[handIndex].moving)
@@ -307,7 +308,7 @@ public class Boss : Rewind, IPlaySound
             for (int i = _proyectileSpawnTransform.Length - 1; i >= 0; i--)
             {
                 Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 4;
-
+                PlaySound(audioClip5);
                 StartCoroutine(_hands[handIndex].MoveAndRotate(goal, _spawnProyectileSpeed));
 
                 while (_hands[handIndex].moving)
@@ -750,5 +751,9 @@ public class Boss : Rewind, IPlaySound
         {
             audioSource.PlayOneShot(clip);
         }
+    }
+    public void StopSound(AudioClip clip)
+    {
+        audioSource.Stop();
     }
 }

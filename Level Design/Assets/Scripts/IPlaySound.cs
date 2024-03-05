@@ -8,4 +8,8 @@ public interface IPlaySound
     {
 
     }
+    public void StopSound(AudioClip clip)
+    {
+
+    }
 }
