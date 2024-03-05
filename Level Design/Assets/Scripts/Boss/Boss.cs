@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Boss : Rewind
+public class Boss : Rewind, IPlaySound
 {
-    AudioManager audioManager;
+    [SerializeField] AudioSource audioSource;
+    public AudioClip audioClip;
+    public AudioClip audioClip1;
+    public AudioClip audioClip2;
+    public AudioClip audioClip3;
+    public AudioClip audioClip4;
     FiniteStateMachine _fsm;
     [SerializeField] LevelManager _lvlManager;
 
@@ -143,7 +148,7 @@ public class Boss : Rewind
         yield return new WaitForSeconds(_slamPrepareTime);
 
         //mano lista para atacar
-
+        PlaySound(audioClip2);
         StartCoroutine(_hands[index].MoveAndRotate(new Vector3(playerPos.x, 49, playerPos.z), Quaternion.identity, _slamSpeed));
 
         // moviendo mano hacia player
@@ -159,7 +164,7 @@ public class Boss : Rewind
         {
             if (Vector3.Distance(item.transform.position, _hands[index].transform.position) <= 8)
             {
-                audioManager.PlaySweepSound();
+                PlaySound(audioClip);
                 StartCoroutine(DestroyTile(item));
             }
         }
@@ -233,10 +238,10 @@ public class Boss : Rewind
 
         while (_hands[index].moving)
         {
-            audioManager.PlayDamageFloorSound();
+            
             yield return null;
         }
-
+        PlaySound(audioClip1);
         yield return new WaitForSeconds(_recoverTime);
 
         _hands[index].ChangeHandState(BossHands.HandStates.Idle);
@@ -609,6 +614,7 @@ public class Boss : Rewind
 
     public IEnumerator ThirdPhaseTransition()
     {
+        PlaySound(audioClip3);
         for (int i = 0; i < _hands.Length; i++)
         {
             StartCoroutine(_hands[i].MoveAndRotate(new Vector3(_thirdPhaseTransform[i].position.x, _thirdPhaseTransform[i].position.y, _hands[i].transform.position.z),
@@ -656,6 +662,7 @@ public class Boss : Rewind
 
     public IEnumerator Die()
     {
+        PlaySound(audioClip4); //Donde lo pongo esto
         // alguna animacion o movimiento?
 
         yield return new WaitForSeconds(2f);
@@ -735,5 +742,12 @@ public class Boss : Rewind
             item.material = _nonDamagedTileMat;
         }
         tilesDestroy.Clear();
+    }
+    public void PlaySound(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
     }
 }
