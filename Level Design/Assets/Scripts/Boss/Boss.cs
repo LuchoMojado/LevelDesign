@@ -705,6 +705,7 @@ public class Boss : Rewind, IPlaySound
             ActiveAllPlatforms();
             foreach (var item in _hands)
                 item.ChangeHandState(BossHands.HandStates.Idle);
+            currentState = BossStates.Waiting;
         }
             
         if (_mementoState.IsRemember())
