@@ -5,6 +5,7 @@ using System.Linq;
 
 public class Boss : Rewind
 {
+    AudioManager audioManager;
     FiniteStateMachine _fsm;
     [SerializeField] LevelManager _lvlManager;
 
@@ -158,6 +159,7 @@ public class Boss : Rewind
         {
             if (Vector3.Distance(item.transform.position, _hands[index].transform.position) <= 8)
             {
+                audioManager.PlaySweepSound();
                 StartCoroutine(DestroyTile(item));
             }
         }
@@ -231,6 +233,7 @@ public class Boss : Rewind
 
         while (_hands[index].moving)
         {
+            audioManager.PlayDamageFloorSound();
             yield return null;
         }
 
