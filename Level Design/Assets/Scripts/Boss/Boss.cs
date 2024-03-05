@@ -24,7 +24,7 @@ public class Boss : Rewind
     [SerializeField] ShieldEnergy _shieldEnergy;
     [SerializeField] float _energySpeed;
     int _currentShieldState = 0;
-    int[] _tilesThreshold = { 0, 30, 60, 90 };
+    [SerializeField] int[] _tilesThreshold;
 
     public List<Renderer> tiles;
     private List<Renderer> tilesDestroy=new List<Renderer>();
@@ -258,7 +258,7 @@ public class Boss : Rewind
         bool right = handIndex % 2 == 0 ? true : false;
 
         Vector3 startPos = right ? _proyectileSpawnTransform[0].position : _proyectileSpawnTransform[_proyectileSpawnTransform.Length - 1].position;
-        startPos += Vector3.forward * 5;
+        startPos += Vector3.forward * 4;
         Quaternion rotation = right ? _proyectileSpawnTransform[0].rotation : _proyectileSpawnTransform[_proyectileSpawnTransform.Length - 1].rotation;
 
         _hands[handIndex].ChangeHandState(BossHands.HandStates.Open);
@@ -280,7 +280,7 @@ public class Boss : Rewind
         {
             for (int i = 0; i < _proyectileSpawnTransform.Length; i++)
             {
-                Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 6;
+                Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 4;
 
                 StartCoroutine(_hands[handIndex].MoveAndRotate(goal, _spawnProyectileSpeed));
 
@@ -298,7 +298,7 @@ public class Boss : Rewind
         {
             for (int i = _proyectileSpawnTransform.Length - 1; i >= 0; i--)
             {
-                Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 6;
+                Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 4;
 
                 StartCoroutine(_hands[handIndex].MoveAndRotate(goal, _spawnProyectileSpeed));
 

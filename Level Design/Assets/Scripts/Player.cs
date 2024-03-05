@@ -295,6 +295,7 @@ public class Player : Entity
         }
         _myRB.constraints = RigidbodyConstraints.FreezeRotationX|RigidbodyConstraints.FreezeRotationZ;
         _loading = false;
+        Save();
     }
 
     public void Knockback(float hazardX, float hazardZ)
