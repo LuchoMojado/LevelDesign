@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
     [SerializeField] GameObject _pause, _options, _lang, _audio, _back, _sensitivity;
     [SerializeField] Player _player;
-    [SerializeField] Slider _sensSlider;
+    [SerializeField] Slider _sensSlider, _volMaster, _volFx, _volMusic;
+    public AudioMixer _am;
     private void Awake()
     {
         instance = this;
@@ -72,6 +74,12 @@ public class UIManager : MonoBehaviour
     public void ChangeSensitivity()
     {
         _player.movement._mouseSensitivity = _sensSlider.value;
+    }
+    public void ChangeVolume()
+    {
+        _am.SetFloat("VolMaster", _volMaster.value);
+        _am.SetFloat("MusicVol", _volFx.value);
+        _am.SetFloat("FXVol", _volMusic.value);
     }
     public void SetSpanish()
     {

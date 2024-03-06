@@ -12,5 +12,8 @@
 "IDBAudio" : "Audio" |
 "IDBLang" : "Idioma" |
 "IDVol" : "Volumen" |
-"IDBBack" : "Volver"
+"IDBBack" : "Volver" |
+"IDVolMaster" : "Volumen General" |
+"IDVolFx" : "Volumen de Efectos" |
+"IDVolMusic" : "Volumen de Musica"
 }
