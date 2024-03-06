@@ -17,6 +17,7 @@ public class Player : Entity, IPlaySound
 
     AudioSource _audioSource;
     public AudioClip audioclip;
+    [SerializeField] AudioClip _grunt;
     public Movement movement;
     Inputs _inputs;
     WallrunController _wallrun;
@@ -316,7 +317,7 @@ public class Player : Entity, IPlaySound
         var dir = new Vector3(transform.position.x - hazardX, 0, transform.position.z - hazardZ).normalized;
 
         _myRB.AddForce((dir + Vector3.up * _knockbackY) * (_baseKnockbackStr + _knockbackIncreaseRate * _hitsReceived));
-
+        PlaySound(_grunt, false);
         _hitsReceived++;
     }
 
