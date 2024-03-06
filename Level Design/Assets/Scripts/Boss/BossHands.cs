@@ -165,10 +165,11 @@ public class BossHands : Rewind, IPlaySound
     {
         _audioSource.clip = clip;
         _audioSource.loop = loop;
+        _audioSource.Play();
     }
 
     public void StopSound()
     {
-        throw new System.NotImplementedException();
+        _audioSource.Stop();
     }
 }

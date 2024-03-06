@@ -5,13 +5,6 @@ using System.Linq;
 
 public class Boss : Rewind, IPlaySound
 {
-    [SerializeField] AudioSource audioSource;
-    public AudioClip audioClip;
-    public AudioClip audioClip1;
-    public AudioClip audioClip2;
-    public AudioClip audioClip3;
-    public AudioClip audioClip4;
-    public AudioClip audioClip5;
     FiniteStateMachine _fsm;
     [SerializeField] LevelManager _lvlManager;
 
@@ -63,9 +56,19 @@ public class Boss : Rewind, IPlaySound
 
     [SerializeField] float _handsToHeadDestroyWait, _levelChangeDelay;
 
+    AudioSource _audioSource;
+
+    [Header("Audio clips")]
+    [SerializeField] AudioClip _slam;
+    [SerializeField] AudioClip _sweeping;
+    [SerializeField] AudioClip _slamming;
+    [SerializeField] AudioClip _thirdPhase;
+    [SerializeField] AudioClip _death;
+    [SerializeField] AudioClip _audioClip5;
+
     [HideInInspector] public Vector3 playerPos { get; private set; }
     [HideInInspector] public bool takingAction { get; private set; }
-    public bool _loading;
+    public bool _loading { get; private set; }
     BossStates currentState;
 
     public enum BossStates
@@ -149,7 +152,8 @@ public class Boss : Rewind, IPlaySound
         yield return new WaitForSeconds(_slamPrepareTime);
 
         //mano lista para atacar
-        PlaySound(audioClip2, false);
+        _hands[index].PlaySound(_slamming, false);
+
         StartCoroutine(_hands[index].MoveAndRotate(new Vector3(playerPos.x, 49, playerPos.z), Quaternion.identity, _slamSpeed));
 
         // moviendo mano hacia player
@@ -161,7 +165,7 @@ public class Boss : Rewind, IPlaySound
 
         //mano golpea piso
 
-        PlaySound(audioClip, false);
+        _hands[index].PlaySound(_slam, false);
 
         foreach (var item in tiles)
         {
@@ -237,7 +241,7 @@ public class Boss : Rewind, IPlaySound
         StartCoroutine(_hands[index].Sweep(playerPos, xEnd, zEnd, _sweepSpeed));
 
         //haciendo sweep
-        PlaySound(audioClip1, true);
+        _hands[index].PlaySound(_sweeping, true);
 
         while (_hands[index].moving)
         {
@@ -245,7 +249,7 @@ public class Boss : Rewind, IPlaySound
             yield return null;
         }
 
-        StopSound();
+        _hands[index].StopSound();
 
         yield return new WaitForSeconds(_recoverTime);
 
@@ -294,7 +298,7 @@ public class Boss : Rewind, IPlaySound
             for (int i = 0; i < _proyectileSpawnTransform.Length; i++)
             {
                 Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 4;
-                PlaySound(audioClip5, false);
+                //PlaySound(_audioClip5, false);
                 StartCoroutine(_hands[handIndex].MoveAndRotate(goal, _spawnProyectileSpeed));
 
                 while (_hands[handIndex].moving)
@@ -312,7 +316,7 @@ public class Boss : Rewind, IPlaySound
             for (int i = _proyectileSpawnTransform.Length - 1; i >= 0; i--)
             {
                 Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 4;
-                PlaySound(audioClip5, false);
+                //PlaySound(_audioClip5, false);
                 StartCoroutine(_hands[handIndex].MoveAndRotate(goal, _spawnProyectileSpeed));
 
                 while (_hands[handIndex].moving)
@@ -619,7 +623,7 @@ public class Boss : Rewind, IPlaySound
 
     public IEnumerator ThirdPhaseTransition()
     {
-        PlaySound(audioClip3, false);
+        PlaySound(_thirdPhase, false);
         for (int i = 0; i < _hands.Length; i++)
         {
             StartCoroutine(_hands[i].MoveAndRotate(new Vector3(_thirdPhaseTransform[i].position.x, _thirdPhaseTransform[i].position.y, _hands[i].transform.position.z),
@@ -681,7 +685,7 @@ public class Boss : Rewind, IPlaySound
 
         // animacion o particula?
         GetComponentInChildren<Renderer>().enabled = false;
-        PlaySound(audioClip4, false);
+        PlaySound(_death, false);
 
         yield return new WaitForSeconds(_levelChangeDelay);
 
@@ -751,12 +755,12 @@ public class Boss : Rewind, IPlaySound
     }
     public void PlaySound(AudioClip clip, bool loop)
     {
-        audioSource.clip = clip;
-        audioSource.loop = loop;
-        audioSource.Play();
+        _audioSource.clip = clip;
+        _audioSource.loop = loop;
+        _audioSource.Play();
     }
     public void StopSound()
     {
-        audioSource.Stop();
+        _audioSource.Stop();
     }
 }

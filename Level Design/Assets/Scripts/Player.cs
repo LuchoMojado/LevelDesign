@@ -15,7 +15,7 @@ public class Player : Entity, IPlaySound
     CapsuleCollider _myCol;
     [SerializeField] Image _crosshair;
 
-    public AudioSource audioSource;
+    AudioSource _audioSource;
     public AudioClip audioclip;
     public Movement movement;
     Inputs _inputs;
@@ -42,6 +42,7 @@ public class Player : Entity, IPlaySound
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        _audioSource = GetComponent<AudioSource>();
         _myRB = GetComponent<Rigidbody>();
         _myCol = GetComponent<CapsuleCollider>();
         _cameraTransform = Camera.main.transform;
@@ -341,13 +342,13 @@ public class Player : Entity, IPlaySound
     }
     public void PlaySound(AudioClip clip, bool loop)
     {
-        audioSource.clip = clip;
-        audioSource.loop = loop;
-        audioSource.Play();
+        _audioSource.clip = clip;
+        _audioSource.loop = loop;
+        _audioSource.Play();
     }
     public void StopSound()
     {
-        audioSource.Stop();
+        _audioSource.Stop();
     }
 }
 
