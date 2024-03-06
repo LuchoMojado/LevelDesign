@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public Rewind[] rewinds;
     public Rewind[] rewinds2;
     public string sceneToLoad;
-    public int playerDieDistance=-30;
+    public int playerDieDistance;
     void Awake()
     {
         if (instance == null) instance = this;

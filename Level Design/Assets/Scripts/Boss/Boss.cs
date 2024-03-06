@@ -686,13 +686,17 @@ public class Boss : Rewind, IPlaySound
         yield return new WaitForSeconds(_handsToHeadDestroyWait);
 
         // animacion o particula?
-        GetComponentInChildren<Renderer>().enabled = false;
+        var children = GetComponentsInChildren<GameObject>();
+        foreach (var item in children)
+        {
+            item.SetActive(false);
+        }
         PlaySound(_death, false);
 
         yield return new WaitForSeconds(_levelChangeDelay);
 
         _lvlManager.BeginPart2(transform.position);
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public override void Save()
