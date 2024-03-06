@@ -7,6 +7,7 @@ public class End : MonoBehaviour
 {
     public string sceneToLoad;
 
+    
     void OnTriggerEnter(Collider collision)
     {
         

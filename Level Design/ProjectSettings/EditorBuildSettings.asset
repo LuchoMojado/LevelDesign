@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Blocking.unity
     guid: 128403317c53c834fb40754f6b7366f4
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/End.unity
     guid: ea8ed33f0d4429b4d9a390439145e55b
   - enabled: 1
