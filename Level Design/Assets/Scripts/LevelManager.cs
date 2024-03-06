@@ -50,7 +50,7 @@ public class LevelManager : MonoBehaviour
         {
             item.SetActive(true);
         }
-        GameManager.instance.playerDieDistance = -300;
+        GameManager.instance.playerDieDistance = -250;
         Instantiate(_blackHole, pos, Quaternion.identity);
     }
 }
