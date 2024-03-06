@@ -46,6 +46,7 @@ public class ThirdPhaseState : State
             if (_timer <= 0)
             {
                 _boss.SpawnObstacle(Random.Range(0, _obstacleDictionary.Count), _obstacleDictionary, _zObstacleSpawn);
+                _boss.SpawnWall(_zWallSpawn);
 
                 _timer = _obstacleSpawnInterval;
             }
@@ -70,8 +71,6 @@ public class ThirdPhaseState : State
         {
             _boss.SpawnWall(_initialWallTransform[i].position.z);
         }
-
-        _boss.StartCoroutine(WallSpawnCycle());
     }
 
     IEnumerator WallSpawnCycle()
