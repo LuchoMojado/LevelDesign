@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
     }
     public void SetOptionsMenu()
     {
-        if (_options.activeInHierarchy == true)
+        if (_options.activeInHierarchy)
         {
             _lang.SetActive(false);
             _audio.SetActive(false);
