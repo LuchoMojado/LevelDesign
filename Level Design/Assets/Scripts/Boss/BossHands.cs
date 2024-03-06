@@ -94,7 +94,7 @@ public class BossHands : Rewind, IPlaySound
     {
         moving = true;
 
-        var dir = new Vector3(playerPos.x - transform.position.x, 0, playerPos.z - transform.position.z);
+        var dir = new Vector3(playerPos.x - transform.position.x, 0, (playerPos.z + 3) - transform.position.z);
 
         while (Mathf.Abs(Mathf.Abs(endPosX) - Mathf.Abs(transform.position.x)) > 0.3f && Mathf.Abs(Mathf.Abs(endPosZ) - Mathf.Abs(transform.position.z)) > 0.3f)
         {
@@ -141,6 +141,7 @@ public class BossHands : Rewind, IPlaySound
     {
         StopAllCoroutines();
         moving = false;
+        busy = false;
         if (_mementoState.IsRemember())
         {
             StartCoroutine(CoroutineLoad());

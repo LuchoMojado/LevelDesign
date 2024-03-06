@@ -227,7 +227,7 @@ public class Boss : Rewind, IPlaySound
 
         _hands[index].ChangeHandState(BossHands.HandStates.Open);
 
-        StartCoroutine(_hands[index].MoveAndRotate(new Vector3(xStart, 49, playerPos.z + 1.5f), Quaternion.identity, _sweepPrepareSpeed));
+        StartCoroutine(_hands[index].MoveAndRotate(new Vector3(xStart, 49, playerPos.z + 3f), Quaternion.identity, _sweepPrepareSpeed));
 
         //moviendo hacia al lado del player
 
@@ -343,7 +343,7 @@ public class Boss : Rewind, IPlaySound
             yield return null;
         }
 
-        yield return new WaitForSeconds(_recoverTime);
+        yield return new WaitForSeconds(_recoverTime * 2);
 
         _hands[handIndex].busy = false;
         takingAction = false;
