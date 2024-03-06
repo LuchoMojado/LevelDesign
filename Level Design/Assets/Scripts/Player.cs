@@ -10,13 +10,13 @@ public class Player : Entity, IPlaySound
     [SerializeField] float maxHp, _speed, _sprintSpeed, _crouchSpeed, _airSpeed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _sDrag, _wallRunSpeed, _baseKnockbackStr, _knockbackIncreaseRate, _knockbackY;
 
     [Range(200, 1000), SerializeField]
-    public AudioSource audioSource;
-    public AudioClip audioclip;
     float _mouseSensitivity;
     Rigidbody _myRB;
     CapsuleCollider _myCol;
     [SerializeField] Image _crosshair;
 
+    public AudioSource audioSource;
+    public AudioClip audioclip;
     public Movement movement;
     Inputs _inputs;
     WallrunController _wallrun;
@@ -340,10 +340,7 @@ public class Player : Entity, IPlaySound
     }
     public void PlaySound(AudioClip clip)
     {
-        if (clip != null)
-        {
-            audioSource.PlayOneShot(clip);
-        }
+        audioSource.PlayOneShot(clip);
     }
     public void StopSound(AudioClip clip)
     {
