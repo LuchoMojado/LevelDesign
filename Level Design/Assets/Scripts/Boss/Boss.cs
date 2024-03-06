@@ -226,7 +226,7 @@ public class Boss : Rewind, IPlaySound
 
         _hands[index].ChangeHandState(BossHands.HandStates.Open);
 
-        StartCoroutine(_hands[index].MoveAndRotate(new Vector3(xStart, 49, playerPos.z + 1.5f), Quaternion.identity, _sweepPrepareSpeed));
+        StartCoroutine(_hands[index].MoveAndRotate(new Vector3(xStart, 49, playerPos.z + 1), Quaternion.identity, _sweepPrepareSpeed));
 
         //moviendo hacia al lado del player
 
