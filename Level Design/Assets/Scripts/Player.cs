@@ -10,7 +10,7 @@ public class Player : Entity, IPlaySound
     [SerializeField] float maxHp, _speed, _sprintSpeed, _crouchSpeed, _airSpeed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _sDrag, _wallRunSpeed, _baseKnockbackStr, _knockbackIncreaseRate, _knockbackY;
 
     [Range(200, 1000), SerializeField]
-    float _mouseSensitivity;
+    public float _mouseSensitivity;
     Rigidbody _myRB;
     CapsuleCollider _myCol;
     [SerializeField] Image _crosshair;
@@ -64,6 +64,7 @@ public class Player : Entity, IPlaySound
 
     void Update()
     {
+        Debug.Log(_mouseSensitivity);
         if (_inputs.inputUpdate != null)
             _inputs.inputUpdate();
 

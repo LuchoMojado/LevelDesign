@@ -1,17 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
-    [SerializeField] GameObject _pause, _options, _lang, _audio, _back;
-
+    [SerializeField] GameObject _pause, _options, _lang, _audio, _back, _sensitivity;
+    [SerializeField] Player _player;
+    [SerializeField] Slider _sensSlider;
     private void Awake()
     {
         instance = this;
     }
-
+    private void Start()
+    {
+        _sensSlider.value = _player.movement._mouseSensitivity;
+    }
     public void SetPauseMenu(bool pause)
     {
         if (pause)
@@ -26,6 +31,7 @@ public class UIManager : MonoBehaviour
             _pause.SetActive(false);
             _lang.SetActive(false);
             _audio.SetActive(false);
+            _back.SetActive(false);
         }
     }
     public void SetOptionsMenu()
@@ -62,6 +68,10 @@ public class UIManager : MonoBehaviour
         _options.SetActive(false);
         _audio.SetActive(true);
         _back.SetActive(true);
+    }
+    public void ChangeSensitivity()
+    {
+        _player.movement._mouseSensitivity = _sensSlider.value;
     }
     public void SetSpanish()
     {

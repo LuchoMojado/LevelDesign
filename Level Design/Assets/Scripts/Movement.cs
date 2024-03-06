@@ -8,7 +8,8 @@ public class Movement
     public event FloatsDelegate OnRotation;
     public event FloatsDelegate OnWallRunRotation;
 
-    float _normalSpeed, _sprintSpeed, _crouchSpeed, _xRotation, _mouseSensitivity, _jumpStrength, _maxVel, _groundDrag, _airDrag, _slideDrag, _wallRunSpeed;
+    float _normalSpeed, _sprintSpeed, _crouchSpeed, _xRotation, _jumpStrength, _maxVel, _groundDrag, _airDrag, _slideDrag, _wallRunSpeed;
+    public float _mouseSensitivity;
     Transform _playerTransform;
     Rigidbody _myRB;
     //public AudioSource audioSource;
