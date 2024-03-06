@@ -5,11 +5,13 @@ using System;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Player : Entity
+public class Player : Entity, IPlaySound
 {
     [SerializeField] float maxHp, _speed, _sprintSpeed, _crouchSpeed, _airSpeed, _jumpStrength, _grappleRange, _hookSpeed, _propelStr, _climbSpeed, _wallCheckRange, _wallrunMinAngle, _minWallRunSpd, _gDrag, _aDrag, _sDrag, _wallRunSpeed, _baseKnockbackStr, _knockbackIncreaseRate, _knockbackY;
 
     [Range(200, 1000), SerializeField]
+    public AudioSource audioSource;
+    public AudioClip audioclip;
     float _mouseSensitivity;
     Rigidbody _myRB;
     CapsuleCollider _myCol;
@@ -197,6 +199,7 @@ public class Player : Entity
 
     public void WallStarted(bool right)
     {
+        PlaySound(audioclip);
         _wallingRight = right;
         movement.StartWall();
         movement.SetWallJump(right);
@@ -204,6 +207,7 @@ public class Player : Entity
 
     public void WallFinished()
     {
+        StopSound(audioclip);
         _myRB.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         isWallRunning = false;
         isWallGrabbing = false;
@@ -333,6 +337,17 @@ public class Player : Entity
             Die();
             //GameManager.instance.Respawn();
         }
+    }
+    public void PlaySound(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
+    public void StopSound(AudioClip clip)
+    {
+        audioSource.Stop();
     }
 }
 

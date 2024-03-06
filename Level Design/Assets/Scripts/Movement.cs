@@ -11,6 +11,8 @@ public class Movement
     float _normalSpeed, _sprintSpeed, _crouchSpeed, _xRotation, _mouseSensitivity, _jumpStrength, _maxVel, _groundDrag, _airDrag, _slideDrag, _wallRunSpeed;
     Transform _playerTransform;
     Rigidbody _myRB;
+    //public AudioSource audioSource;
+    //public AudioClip audioclip1;
     /*public LayerMask whatisWall;
     public float _maxWallrunTime, wallrunForce, currentWallRunTime, maxWallSpeed;
     bool isWallRunning = false;*/
@@ -81,6 +83,7 @@ public class Movement
     {
         if (GroundedCheck())
         {
+            //PlaySound(audioclip1);
             _myRB.AddForce(Vector3.up * (_jumpStrength));
             stopWallRun = false;
             return false;
@@ -161,4 +164,15 @@ public class Movement
     {
         _moveType = type;
     }
+    /*public void PlaySound(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
+    public void StopSound(AudioClip clip)
+    {
+        audioSource.Stop();
+    }*/
 }
