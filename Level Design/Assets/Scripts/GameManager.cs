@@ -83,7 +83,10 @@ public class GameManager : MonoBehaviour
     {
         foreach (var item in rewinds2)
         {
-            item.Load();
+            if (item.gameObject.activeInHierarchy)
+            {
+                item.Load();
+            }
         }
     }
     IEnumerator CoroutineSave()

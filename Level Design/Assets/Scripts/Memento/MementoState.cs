@@ -34,4 +34,24 @@ public class MementoState
         //Normal
         //return _parameters;
     }
+
+    public ParamsMemento Remember(bool forget)
+    {
+        //Cuando vos cargas la partida se borra
+        //var x = _parameters;
+        //_parameters = null;
+        //return x;
+
+        var x = _parameters[_parameters.Count - 1];
+
+        if (forget)
+        {
+            _parameters.RemoveAt(_parameters.Count - 1);
+        }
+        
+        return x;
+
+        //Normal
+        //return _parameters;
+    }
 }

@@ -18,6 +18,7 @@ public class SpawnerObjetos : MonoBehaviour
             var x = myPool.Get();
             x.Initialize(myPool);
             x.transform.position = listSpots[i].transform.position;
+            x.transform.localScale = listSpots[i].transform.localScale;
         } 
     }
 

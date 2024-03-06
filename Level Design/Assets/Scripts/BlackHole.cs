@@ -7,6 +7,11 @@ public class BlackHole : Rewind
     [SerializeField] float _additiveGrow, _multiplicativeGrow, _changeGrowthTime;
     bool _loading;
 
+    private void Start()
+    {
+        Save();
+    }
+
     void Update()
     {
         if (_changeGrowthTime > 0)
@@ -40,7 +45,10 @@ public class BlackHole : Rewind
     {
         if (_mementoState.IsRemember())
         {
-            StartCoroutine(CoroutineLoad());
+            var data = _mementoState.Remember(false);
+            transform.localScale = (Vector3)data.parameters[0];
+            _changeGrowthTime = (float)data.parameters[1];
+            //StartCoroutine(CoroutineLoad());
         }
     }
 
@@ -51,7 +59,7 @@ public class BlackHole : Rewind
         
         while (_mementoState.IsRemember())
         {
-            var data = _mementoState.Remember();
+            var data = _mementoState.Remember(false);
             transform.localScale = (Vector3)data.parameters[0];
             _changeGrowthTime = (float)data.parameters[1];
             yield return WaitForSeconds;
