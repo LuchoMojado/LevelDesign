@@ -163,7 +163,8 @@ public class BossHands : Rewind, IPlaySound
 
     public void PlaySound(AudioClip clip, bool loop)
     {
-        
+        _audioSource.clip = clip;
+        _audioSource.loop = loop;
     }
 
     public void StopSound()

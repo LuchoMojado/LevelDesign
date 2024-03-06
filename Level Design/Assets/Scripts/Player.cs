@@ -200,7 +200,7 @@ public class Player : Entity, IPlaySound
 
     public void WallStarted(bool right)
     {
-        PlaySound(audioclip);
+        //PlaySound();
         _wallingRight = right;
         movement.StartWall();
         movement.SetWallJump(right);
@@ -208,7 +208,7 @@ public class Player : Entity, IPlaySound
 
     public void WallFinished()
     {
-        StopSound(audioclip);
+        StopSound();
         _myRB.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         isWallRunning = false;
         isWallGrabbing = false;
@@ -339,11 +339,13 @@ public class Player : Entity, IPlaySound
             //GameManager.instance.Respawn();
         }
     }
-    public void PlaySound(AudioClip clip)
+    public void PlaySound(AudioClip clip, bool loop)
     {
-        audioSource.PlayOneShot(clip);
+        audioSource.clip = clip;
+        audioSource.loop = loop;
+        audioSource.Play();
     }
-    public void StopSound(AudioClip clip)
+    public void StopSound()
     {
         audioSource.Stop();
     }
