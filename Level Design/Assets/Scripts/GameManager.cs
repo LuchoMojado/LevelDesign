@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     {
         if(player.transform.position.y < -225)
         {
-            Respawn();
+            player.Die();
         }
         //if (Input.GetKeyDown(KeyCode.T))
         //{
