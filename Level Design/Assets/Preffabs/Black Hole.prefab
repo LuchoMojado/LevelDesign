@@ -196,9 +196,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7089125aebcac0f44a723acd56c70a84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _additiveGrow: 6
-  _multiplicativeGrow: 0.03
-  _changeGrowthTime: 5
+  _additiveGrow: 7
+  _multiplicativeGrow: 0.04
+  _changeGrowthTime: 10
 --- !u!1 &5790838554022170926
 GameObject:
   m_ObjectHideFlags: 0

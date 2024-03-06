@@ -684,16 +684,16 @@ public class Boss : Rewind, IPlaySound
         for (int i = 0; i < _hands.Length; i++)
         {
             // animacion o particula?
-            Destroy(_hands[i].gameObject);
+            _hands[i].gameObject.SetActive(false);
         }
 
         yield return new WaitForSeconds(_handsToHeadDestroyWait);
 
         // animacion o particula?
-        var children = GetComponentsInChildren<GameObject>();
+        var children = GetComponentsInChildren<Renderer>();
         foreach (var item in children)
         {
-            item.SetActive(false);
+            item.enabled = false;
         }
         PlaySound(_death, false);
 
