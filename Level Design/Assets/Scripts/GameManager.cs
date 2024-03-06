@@ -67,7 +67,10 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(sceneToLoad);
         }
     }
-
+    public void LoadScene(string scene)
+    {
+        SceneManager.LoadScene(scene);
+    }
     public void LoadGame()
     {
         foreach (var item in rewinds)
