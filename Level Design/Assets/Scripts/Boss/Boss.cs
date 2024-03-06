@@ -65,7 +65,8 @@ public class Boss : Rewind, IPlaySound
     [SerializeField] AudioClip _thirdPhase;
     [SerializeField] AudioClip _death;
     [SerializeField] AudioClip _audioClip5;
-
+    [SerializeField] AudioClip _explosion;
+    [SerializeField] AudioClip _beep;
     [HideInInspector] public Vector3 playerPos { get; private set; }
     [HideInInspector] public bool takingAction { get; private set; }
     public bool _loading { get; private set; }
@@ -489,7 +490,8 @@ public class Boss : Rewind, IPlaySound
         while (time > 0.03f)
         {
             tile.material = _damagedTileMat;
-
+            // beep
+            PlaySound(_beep, false);
             yield return new WaitForSeconds(0.1f);
 
             tile.material = _nonDamagedTileMat;
@@ -497,7 +499,8 @@ public class Boss : Rewind, IPlaySound
             yield return new WaitForSeconds(time);
             time *= 0.75f;
         }
-
+        // explosion
+        PlaySound(_explosion, false);
         if (Vector3.Distance(tile.transform.position, playerPos) <= _explosionRadius)
         {
             GameManager.instance.player.Knockback(tile.transform.position.x, tile.transform.position.z);

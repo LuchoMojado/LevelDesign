@@ -78,8 +78,8 @@ public class UIManager : MonoBehaviour
     public void ChangeVolume()
     {
         _am.SetFloat("VolMaster", _volMaster.value);
-        _am.SetFloat("MusicVol", _volFx.value);
-        _am.SetFloat("FXVol", _volMusic.value);
+        _am.SetFloat("MusicVol", _volMusic.value);
+        _am.SetFloat("FXVol", _volFx.value);
     }
     public void SetSpanish()
     {
