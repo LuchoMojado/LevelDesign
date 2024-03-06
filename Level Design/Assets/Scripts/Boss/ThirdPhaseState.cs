@@ -40,6 +40,7 @@ public class ThirdPhaseState : State
             if (Vector3.Distance(_boss.transform.position, _boss.playerPos) <= 20)
             {
                 _boss.StartCoroutine(_boss.Die());
+                GameManager.instance.player.Save();
                 _transitioning = true;
             }
 
