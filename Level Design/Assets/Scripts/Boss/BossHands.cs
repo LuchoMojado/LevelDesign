@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossHands : Rewind
+public class BossHands : Rewind, IPlaySound
 {
     [HideInInspector] public bool moving { get; private set; }
     [HideInInspector] public bool busy;
     [SerializeField] GameObject[] _handState;
+    AudioSource _audioSource;
     bool _loading;
 
     public enum HandStates
@@ -158,5 +159,15 @@ public class BossHands : Rewind
         }
         //_myRB.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         _loading = false;
+    }
+
+    public void PlaySound(AudioClip clip, bool loop)
+    {
+        
+    }
+
+    public void StopSound()
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -149,7 +149,7 @@ public class Boss : Rewind, IPlaySound
         yield return new WaitForSeconds(_slamPrepareTime);
 
         //mano lista para atacar
-        PlaySound(audioClip2);
+        PlaySound(audioClip2, false);
         StartCoroutine(_hands[index].MoveAndRotate(new Vector3(playerPos.x, 49, playerPos.z), Quaternion.identity, _slamSpeed));
 
         // moviendo mano hacia player
@@ -161,11 +161,12 @@ public class Boss : Rewind, IPlaySound
 
         //mano golpea piso
 
+        PlaySound(audioClip, false);
+
         foreach (var item in tiles)
         {
             if (Vector3.Distance(item.transform.position, _hands[index].transform.position) <= 8)
             {
-                PlaySound(audioClip);
                 StartCoroutine(DestroyTile(item));
             }
         }
@@ -236,13 +237,16 @@ public class Boss : Rewind, IPlaySound
         StartCoroutine(_hands[index].Sweep(playerPos, xEnd, zEnd, _sweepSpeed));
 
         //haciendo sweep
-        PlaySound(audioClip1);
+        PlaySound(audioClip1, true);
+
         while (_hands[index].moving)
         {
             
             yield return null;
         }
-        StopSound(audioClip1);
+
+        StopSound();
+
         yield return new WaitForSeconds(_recoverTime);
 
         _hands[index].ChangeHandState(BossHands.HandStates.Idle);
@@ -290,7 +294,7 @@ public class Boss : Rewind, IPlaySound
             for (int i = 0; i < _proyectileSpawnTransform.Length; i++)
             {
                 Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 4;
-                PlaySound(audioClip5);
+                PlaySound(audioClip5, false);
                 StartCoroutine(_hands[handIndex].MoveAndRotate(goal, _spawnProyectileSpeed));
 
                 while (_hands[handIndex].moving)
@@ -308,7 +312,7 @@ public class Boss : Rewind, IPlaySound
             for (int i = _proyectileSpawnTransform.Length - 1; i >= 0; i--)
             {
                 Vector3 goal = _proyectileSpawnTransform[i].position + Vector3.forward * 4;
-                PlaySound(audioClip5);
+                PlaySound(audioClip5, false);
                 StartCoroutine(_hands[handIndex].MoveAndRotate(goal, _spawnProyectileSpeed));
 
                 while (_hands[handIndex].moving)
@@ -615,7 +619,7 @@ public class Boss : Rewind, IPlaySound
 
     public IEnumerator ThirdPhaseTransition()
     {
-        PlaySound(audioClip3);
+        PlaySound(audioClip3, false);
         for (int i = 0; i < _hands.Length; i++)
         {
             StartCoroutine(_hands[i].MoveAndRotate(new Vector3(_thirdPhaseTransform[i].position.x, _thirdPhaseTransform[i].position.y, _hands[i].transform.position.z),
@@ -663,7 +667,6 @@ public class Boss : Rewind, IPlaySound
 
     public IEnumerator Die()
     {
-        PlaySound(audioClip4); //Donde lo pongo esto
         // alguna animacion o movimiento?
 
         yield return new WaitForSeconds(2f);
@@ -678,6 +681,7 @@ public class Boss : Rewind, IPlaySound
 
         // animacion o particula?
         GetComponentInChildren<Renderer>().enabled = false;
+        PlaySound(audioClip4, false);
 
         yield return new WaitForSeconds(_levelChangeDelay);
 
@@ -745,14 +749,13 @@ public class Boss : Rewind, IPlaySound
         }
         tilesDestroy.Clear();
     }
-    public void PlaySound(AudioClip clip)
+    public void PlaySound(AudioClip clip, bool loop)
     {
-        if (clip != null)
-        {
-            audioSource.PlayOneShot(clip);
-        }
+        audioSource.clip = clip;
+        audioSource.loop = loop;
+        audioSource.Play();
     }
-    public void StopSound(AudioClip clip)
+    public void StopSound()
     {
         audioSource.Stop();
     }

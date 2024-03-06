@@ -4,12 +4,7 @@ using UnityEngine;
 
 public interface IPlaySound 
 {
-    public void PlaySound(AudioClip clip)
-    {
+    public void PlaySound(AudioClip clip, bool loop);
 
-    }
-    public void StopSound(AudioClip clip)
-    {
-
-    }
+    public void StopSound();
 }
