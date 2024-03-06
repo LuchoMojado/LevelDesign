@@ -38,6 +38,7 @@ public class Player : Entity, IPlaySound
     protected override void Awake()
     {
         base.Awake();
+        Save();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
