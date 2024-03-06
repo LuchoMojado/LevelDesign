@@ -67,8 +67,9 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(sceneToLoad);
         }
     }
-    public void LoadScene(string scene)
+    public void SkipLevel(string scene)
     {
+        UnpauseGame();
         SceneManager.LoadScene(scene);
     }
     public void LoadGame()
