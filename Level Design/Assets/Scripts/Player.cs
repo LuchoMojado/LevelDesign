@@ -64,7 +64,6 @@ public class Player : Entity, IPlaySound
 
     void Update()
     {
-        Debug.Log(_mouseSensitivity);
         if (_inputs.inputUpdate != null)
             _inputs.inputUpdate();
 
