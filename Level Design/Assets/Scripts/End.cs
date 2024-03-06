@@ -7,7 +7,7 @@ public class End : MonoBehaviour
 {
     public string sceneToLoad;
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider collision)
     {
         
         if (collision.gameObject.CompareTag("Player"))

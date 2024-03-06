@@ -17,8 +17,11 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/End.unity
     guid: ea8ed33f0d4429b4d9a390439145e55b
+  - enabled: 1
+    path: Assets/Scenes/ENDCHILL.unity
+    guid: 23db2c6a3dae6b049bb64611ec988b4b
   - enabled: 0
-    path: Assets/Scenes/Level1.unity
+    path: 
     guid: e2bdd1a6b0a60404b84ed797cf9b70c7
   - enabled: 1
     path: Assets/Scenes/Yea.unity
