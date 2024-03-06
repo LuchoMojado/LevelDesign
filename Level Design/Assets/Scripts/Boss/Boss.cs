@@ -69,6 +69,7 @@ public class Boss : Rewind, IPlaySound
     [HideInInspector] public Vector3 playerPos { get; private set; }
     [HideInInspector] public bool takingAction { get; private set; }
     public bool _loading { get; private set; }
+    [HideInInspector] public bool transitioning;
     BossStates currentState;
 
     public enum BossStates
@@ -226,7 +227,7 @@ public class Boss : Rewind, IPlaySound
 
         _hands[index].ChangeHandState(BossHands.HandStates.Open);
 
-        StartCoroutine(_hands[index].MoveAndRotate(new Vector3(xStart, 49, playerPos.z + 1.5f), Quaternion.identity, _sweepPrepareSpeed));
+        StartCoroutine(_hands[index].MoveAndRotate(new Vector3(xStart, 49, playerPos.z + 3f), Quaternion.identity, _sweepPrepareSpeed));
 
         //moviendo hacia al lado del player
 
@@ -342,7 +343,7 @@ public class Boss : Rewind, IPlaySound
             yield return null;
         }
 
-        yield return new WaitForSeconds(_recoverTime);
+        yield return new WaitForSeconds(_recoverTime * 2);
 
         _hands[handIndex].busy = false;
         takingAction = false;
@@ -733,7 +734,7 @@ public class Boss : Rewind, IPlaySound
             var data = _mementoState.Remember();
             //_loading = true;
             //Pongo en el array la pos que se donde lo puse lo que quiero
-            _fsm.ChangeState((BossStates)data.parameters[0]);
+            _fsm.RestartState((BossStates)data.parameters[0]);
             transform.position = (Vector3)data.parameters[1];
             transform.rotation = (Quaternion)data.parameters[2];
             yield return WaitForSeconds;

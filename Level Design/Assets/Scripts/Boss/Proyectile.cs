@@ -52,7 +52,7 @@ public class Proyectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == 14)
+        if (other.gameObject.layer == 14 || other.gameObject.layer == 12)
         {
             return;
         }

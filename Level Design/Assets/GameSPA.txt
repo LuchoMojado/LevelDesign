@@ -10,5 +10,7 @@
 "IDBOptions" : "Opciones" |
 "IDSens" : "Sensibilidad" |
 "IDBAudio" : "Audio" |
-"IDBLang" : "Idioma"
+"IDBLang" : "Idioma" |
+"IDVol" : "Volumen" |
+"IDBBack" : "Volver"
 }
