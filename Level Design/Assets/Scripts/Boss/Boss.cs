@@ -575,6 +575,7 @@ public class Boss : Rewind, IPlaySound
 
         yield return new WaitForSeconds(1);
 
+        _lvlManager.ChangeMusic(1);
         takingAction = false;
         currentState = BossStates.FirstPhase;
     }
@@ -717,6 +718,7 @@ public class Boss : Rewind, IPlaySound
         takingAction = false;
         if (currentState == BossStates.FirstPhase)
         {
+            _lvlManager.ChangeMusic(0);
             ActiveAllPlatforms();
             foreach (var item in _hands)
                 item.ChangeHandState(BossHands.HandStates.Idle);

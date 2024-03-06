@@ -10,9 +10,15 @@ public class LevelManager : MonoBehaviour
     [SerializeField] Transform[] _hookDisablerInLevel;
     [SerializeField] GameObject[] _part1Objects, _part2Objects;
     [SerializeField] BlackHole _blackHole;
+    [SerializeField] AudioClip[] music;
+
+    AudioSource _audioSource;
 
     void Start()
     {
+        _audioSource = GetComponent<AudioSource>();
+        ChangeMusic(0);
+
         _disablerFactory = new Factory<HookDisabler>(_hookDisabler);
         _disablerPool = new ObjectPool<HookDisabler>(_disablerFactory.GetObject, HookDisabler.TurnOff, HookDisabler.TurnOn, 2);
 
@@ -41,6 +47,8 @@ public class LevelManager : MonoBehaviour
 
     public void BeginPart2(Vector3 pos)
     {
+        ChangeMusic(2);
+
         foreach (var item in _part1Objects)
         {
             item.SetActive(false);
@@ -52,5 +60,11 @@ public class LevelManager : MonoBehaviour
         }
         GameManager.instance.playerDieDistance = -250;
         Instantiate(_blackHole, pos, Quaternion.identity);
+    }
+
+    public void ChangeMusic(int index)
+    {
+        _audioSource.clip = music[index];
+        _audioSource.Play();
     }
 }
