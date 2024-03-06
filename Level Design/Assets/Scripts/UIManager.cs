@@ -5,7 +5,7 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
-    [SerializeField] GameObject _pause, _options;
+    [SerializeField] GameObject _pause, _options, _lang;
 
     private void Awake()
     {

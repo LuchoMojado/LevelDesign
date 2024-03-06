@@ -7,5 +7,8 @@
 "IDTutoHook" : "To use the hook aim at a hookable surface highlighted in black and press Right Click. You can use R and F to adjust the length of the rope"|
 "IDTutoSlide" : "To slide press ctrl while moving"|
 "IDBResume" : "Resume" |
-"IDBOptions" : "Options"
+"IDBOptions" : "Options" |
+"IDSens" : "Mouse Sensitivity" |
+"IDBAudio" : "Audio" |
+"IDBLang" : "Language"
 }
