@@ -10,6 +10,11 @@ public class BossHands : Rewind, IPlaySound
     AudioSource _audioSource;
     bool _loading;
 
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
+
     public enum HandStates
     {
         Closed,

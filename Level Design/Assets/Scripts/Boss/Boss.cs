@@ -82,6 +82,7 @@ public class Boss : Rewind, IPlaySound
     void Start()
     {
         _fsm = new FiniteStateMachine();
+        _audioSource = GetComponent<AudioSource>();
 
         var secondPhaseDictionary = new Dictionary<Vector3, Vector3[]>
         {
