@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public Rewind[] rewinds;
     public Rewind[] rewinds2;
     public string sceneToLoad;
+    public int playerDieDistance=-30;
     void Awake()
     {
         if (instance == null) instance = this;
@@ -28,9 +29,9 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(player.transform.position.y < -225)
+        if(player.transform.position.y < playerDieDistance)
         {
-            Respawn();
+            player.Die();
         }
         //if (Input.GetKeyDown(KeyCode.T))
         //{
