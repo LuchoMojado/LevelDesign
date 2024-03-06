@@ -29,4 +29,10 @@ public class FiniteStateMachine
             _currentState = _allStates[state];
         _currentState.OnEnter();
     }
+
+    public void RestartState(Boss.BossStates state)
+    {
+        if (_allStates.ContainsKey(state))
+            _currentState = _allStates[state];
+    }
 }
