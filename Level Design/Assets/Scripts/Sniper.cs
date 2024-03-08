@@ -9,9 +9,11 @@ public class Sniper : Entity
     LineRenderer _line;
     [SerializeField] LayerMask _obstacleLayer;
     AudioSource _AS;
+    ObjectPool<Sniper> _objectPool;
 
-    void Start()
+    public void Initialize(ObjectPool<Sniper> pool)
     {
+        _objectPool = pool;
         _AS = GetComponent<AudioSource>();
         _line = GetComponent<LineRenderer>();
         _line.SetPosition(0, transform.position);
@@ -57,7 +59,7 @@ public class Sniper : Entity
 
     public override void Die()
     {
-        Destroy(gameObject);
+        _objectPool.RefillStock(this);
     }
 
     public override void Load()
@@ -76,5 +78,14 @@ public class Sniper : Entity
         {
             Die();
         }
+    }
+
+    public static void TurnOff(Sniper x)
+    {
+        x.gameObject.SetActive(false);
+    }
+    public static void TurnOn(Sniper x)
+    {
+        x.gameObject.SetActive(true);
     }
 }

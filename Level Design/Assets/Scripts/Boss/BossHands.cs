@@ -8,11 +8,16 @@ public class BossHands : Rewind, IPlaySound
     [HideInInspector] public bool busy;
     [SerializeField] GameObject[] _handState;
     AudioSource _audioSource;
+    ObjectPool<BossHands> _objectPool;
     bool _loading;
 
-    private void Start()
+    public void Initialize(ObjectPool<BossHands> pool, Transform t)
     {
+        _objectPool = pool;
         _audioSource = GetComponent<AudioSource>();
+        transform.position = t.position;
+        transform.rotation = t.rotation;
+        transform.localScale = t.localScale;
     }
 
     public enum HandStates
@@ -177,5 +182,14 @@ public class BossHands : Rewind, IPlaySound
     public void StopSound()
     {
         _audioSource.Stop();
+    }
+
+    public static void TurnOff(BossHands x)
+    {
+        x.gameObject.SetActive(false);
+    }
+    public static void TurnOn(BossHands x)
+    {
+        x.gameObject.SetActive(true);
     }
 }

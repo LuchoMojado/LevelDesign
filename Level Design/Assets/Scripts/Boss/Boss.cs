@@ -9,11 +9,17 @@ public class Boss : Rewind, IPlaySound
     [SerializeField] LevelManager _lvlManager;
 
     [Header("Hands")]
-    [SerializeField] BossHands[] _hands;
-    [SerializeField] Transform[] _prepareSlamTransform, _idleTransform, _proyectileSpawnTransform, _secondPhaseTransform, _thirdPhaseTransform;
+    [SerializeField] BossHands _handPrefab;
+    [SerializeField][Min(2)] int _handAmount;
+    ObjectPool<BossHands> _handPool;
+    Factory<BossHands> _handFactory;
+    BossHands[] _hands;
+    [SerializeField] Transform[] _proyectileSpawnTransform;
+    [SerializeField] Transform _sweepLimitRight, _sweepLimitLeft, _sweepLimitFront, _sweepLimitBack, _disablerSpawnTransform, _prepareSlamRTransform, _prepareSlamLTransform,
+        _idleRTransform, _idleLTransform, _secondPhaseRTransform, _secondPhaseLTransform;
     [SerializeField] float _slamPrepareSpeed, _slamSpeed, _sweepPrepareSpeed, _sweepSpeed, _retractSpeed, _slamPrepareTime, _sweepPrepareTime, _recoverTime,
-        _spawnProyectileSpeed, _spawnPrepareTime, _spawnPrepareSpeed;
-    [SerializeField] Transform _sweepLimitRight, _sweepLimitLeft, _sweepLimitFront, _sweepLimitBack, _disablerSpawnTransform;
+        _spawnProyectileSpeed, _spawnPrepareTime, _spawnPrepareSpeed, _handOffset;
+    Transform[] _prepareSlamTransform, _idleTransform, _secondPhaseTransform;
 
     [Header("First Phase")]
     [SerializeField] Proyectile _proyectile;
@@ -83,6 +89,70 @@ public class Boss : Rewind, IPlaySound
 
     void Start()
     {
+        _proyectileFactory = new Factory<Proyectile>(_proyectile);
+        _proyectilePool = new ObjectPool<Proyectile>(_proyectileFactory.GetObject, Proyectile.TurnOff, Proyectile.TurnOn, _proyectileSpawnTransform.Length);
+
+        _obstacleFactory = new Factory<Obstacle>(_obstacle);
+        _obstaclePool = new ObjectPool<Obstacle>(_obstacleFactory.GetObject, Obstacle.TurnOff, Obstacle.TurnOn, 14);
+
+        _wallFactory = new Factory<Obstacle>(_wall);
+        _wallPool = new ObjectPool<Obstacle>(_wallFactory.GetObject, Obstacle.TurnOff, Obstacle.TurnOn, 10);
+
+        _handFactory = new Factory<BossHands>(_handPrefab);
+        _handPool = new ObjectPool<BossHands>(_handFactory.GetObject, BossHands.TurnOff, BossHands.TurnOn, _handAmount);
+
+        _hands = new BossHands[_handAmount];
+        _prepareSlamTransform = new Transform[_handAmount];
+        _idleTransform = new Transform[_handAmount];
+        _secondPhaseTransform = new Transform[_handAmount];
+
+        int lCounter = 0, rCounter = 0;
+        for (int i = 0; i < _hands.Length; i++)
+        {
+            if (i % 2 == 0)
+            {
+                Vector3 offset = new Vector3(_handOffset * rCounter, 0, 0);
+
+                var slam = Instantiate(_prepareSlamRTransform, _prepareSlamRTransform.position, _prepareSlamRTransform.rotation);
+                _prepareSlamTransform[i] = slam;
+                _prepareSlamTransform[i].transform.position -= offset;
+
+                var idle = Instantiate(_idleRTransform, _idleRTransform.position, _idleRTransform.rotation);
+                _idleTransform[i] = idle;
+                _idleTransform[i].transform.position -= offset;
+
+                var secondPhase = Instantiate(_secondPhaseRTransform, _secondPhaseRTransform.position, _secondPhaseRTransform.rotation);
+                _secondPhaseTransform[i] = secondPhase;
+                _secondPhaseTransform[i].transform.position -= offset;
+
+                _hands[i] = _handPool.Get();
+                _hands[i].Initialize(_handPool, _idleTransform[i]);
+
+                rCounter++;
+            }
+            else
+            {
+                Vector3 offset = new Vector3(_handOffset * lCounter, 0, 0);
+
+                var slam = Instantiate(_prepareSlamLTransform, _prepareSlamLTransform.position, _prepareSlamLTransform.rotation);
+                _prepareSlamTransform[i] = slam;
+                _prepareSlamTransform[i].transform.position += offset;
+
+                var idle = Instantiate(_idleLTransform, _idleLTransform.position, _idleLTransform.rotation);
+                _idleTransform[i] = idle;
+                _idleTransform[i].transform.position += offset;
+
+                var secondPhase = Instantiate(_secondPhaseLTransform, _secondPhaseLTransform.position, _secondPhaseLTransform.rotation);
+                _secondPhaseTransform[i] = secondPhase;
+                _secondPhaseTransform[i].transform.position += offset;
+
+                _hands[i] = _handPool.Get();
+                _hands[i].Initialize(_handPool, _idleTransform[i]);
+
+                lCounter++;
+            }
+        }
+
         _fsm = new FiniteStateMachine();
         _audioSource = GetComponent<AudioSource>();
 
@@ -105,17 +175,9 @@ public class Boss : Rewind, IPlaySound
         _fsm.AddState(BossStates.SecondPhase, new SecondPhaseState(this, _2ndPhaseTransitionTime, _2ndPhaseObstacleInterval, _2ndPhaseRetreatSpawnInterval, secondPhaseDictionary,
             _secondPhaseTransform[0].position.z - 7.5f));
         _fsm.AddState(BossStates.ThirdPhase, new ThirdPhaseState(this, _3rdPhaseTransitionTime, _wallSpawnInterval, _3rdPhaseObstacleInterval, _3rdPhaseRetreatSpawnInterval,
-            thirdPhaseDictionary, _thirdPhaseTransform[0].position.z - 19.5f, _thirdPhaseTransform[0].position.z - 7.5f, _initialWallSpawns));
+            thirdPhaseDictionary, _thirdPhasePos.position.z - 19.5f, _thirdPhasePos.position.z - 7.5f, _initialWallSpawns));
         _fsm.ChangeState(BossStates.Waiting);
         currentState = BossStates.Waiting;
-        _proyectileFactory = new Factory<Proyectile>(_proyectile);
-        _proyectilePool = new ObjectPool<Proyectile>(_proyectileFactory.GetObject, Proyectile.TurnOff, Proyectile.TurnOn, _proyectileSpawnTransform.Length);
-
-        _obstacleFactory = new Factory<Obstacle>(_obstacle);
-        _obstaclePool = new ObjectPool<Obstacle>(_obstacleFactory.GetObject, Obstacle.TurnOff, Obstacle.TurnOn, 14);
-
-        _wallFactory = new Factory<Obstacle>(_wall);
-        _wallPool = new ObjectPool<Obstacle>(_wallFactory.GetObject, Obstacle.TurnOff, Obstacle.TurnOn, 10);
     }
 
     void Update()
@@ -632,18 +694,7 @@ public class Boss : Rewind, IPlaySound
         PlaySound(_thirdPhase, false);
         for (int i = 0; i < _hands.Length; i++)
         {
-            StartCoroutine(_hands[i].MoveAndRotate(new Vector3(_thirdPhaseTransform[i].position.x, _thirdPhaseTransform[i].position.y, _hands[i].transform.position.z),
-                _3rdPhaseTransitionSpeed));
-        }
-
-        while (_hands[0].moving)
-        {
-            yield return null;
-        }
-
-        for (int i = 0; i < _hands.Length; i++)
-        {
-            StartCoroutine(_hands[i].MoveAndRotate(_thirdPhaseTransform[i], _3rdPhaseTransitionSpeed, true));
+            _handPool.RefillStock(_hands[i]);
         }
 
         while (transform.position != _thirdPhasePos.position)
@@ -680,14 +731,6 @@ public class Boss : Rewind, IPlaySound
         // alguna animacion o movimiento?
 
         yield return new WaitForSeconds(2f);
-
-        for (int i = 0; i < _hands.Length; i++)
-        {
-            // animacion o particula?
-            _hands[i].gameObject.SetActive(false);
-        }
-
-        yield return new WaitForSeconds(_handsToHeadDestroyWait);
 
         // animacion o particula?
         var children = GetComponentsInChildren<Renderer>();
