@@ -10,4 +10,5 @@ public class Flyweight
     public float attackRadius;
     public float damage;
     public Color enemyColor;
+    public float _disableDelay, _firstDisableDelay, _disableDuration, _disableCooldown, _disableRadius;
 }

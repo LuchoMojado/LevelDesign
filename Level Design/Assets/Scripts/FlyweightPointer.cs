@@ -40,4 +40,15 @@ public static class FlyweightPointer
         damage = 20,
         enemyColor = Color.cyan
     };
+    public static readonly Flyweight HookDisabler = new Flyweight
+    {
+        _firstDisableDelay=4,
+        _disableDuration=1.75f,
+        _disableCooldown=7,
+        _disableRadius = 60
+    };
+    public static readonly Flyweight HookDisablerLongRange = new Flyweight
+    {
+        _disableRadius = 70
+    };
 }
