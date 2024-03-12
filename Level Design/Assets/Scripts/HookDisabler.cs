@@ -6,28 +6,39 @@ public class HookDisabler : Entity
 {
     ObjectPool<HookDisabler> _objectPool;
     float _firstDisableDelay, _disableDuration, _disableCooldown, _disableRadius;
-    [SerializeField] float _disableDelay;
     [SerializeField] LayerMask _ghostHookableLayer;
-    [SerializeField] Material _normalHookable, _disabledHookable;
+    [SerializeField] Material _normalHookable, _disabledHookable, _warningHookable;
 
-    /*float _timer;
-    bool _disable = true;*/
+    enum Actions
+    {
+        Activate,
+        Warn,
+        Disable
+    }
+
     List<Renderer> _hookables = new List<Renderer>();
 
     IEnumerator DisableCycle()
     {
-        yield return new WaitForSeconds(_disableDelay + _firstDisableDelay);
+        yield return new WaitForSeconds(_firstDisableDelay);
 
         foreach (var item in _hookables)
         {
-            ChangeHookable(item, true);
+            ChangeHookable(item, Actions.Warn);
+        }
+
+        yield return new WaitForSeconds(1);
+
+        foreach (var item in _hookables)
+        {
+            ChangeHookable(item, Actions.Disable);
         }
 
         yield return new WaitForSeconds(_disableDuration);
 
         foreach (var item in _hookables)
         {
-            ChangeHookable(item, false);
+            ChangeHookable(item, Actions.Activate);
         }
 
         yield return new WaitForSeconds(_disableCooldown);
@@ -35,19 +46,25 @@ public class HookDisabler : Entity
         StartCoroutine(DisableCycle());
     }
 
-    void ChangeHookable(Renderer hookable, bool disable)
+    void ChangeHookable(Renderer hookable, Actions action)
     {
-        if (disable)
+        switch (action)
         {
-            hookable.gameObject.layer = 0;
-            hookable.material = _disabledHookable;
+            case Actions.Activate:
+                hookable.material = _normalHookable;
+                hookable.gameObject.layer = 12;
+                break;
+            case Actions.Warn:
+                hookable.material = _warningHookable;
+                break;
+            case Actions.Disable:
+                hookable.material = _disabledHookable;
+                hookable.gameObject.layer = 0;
+                break;
+            default:
+                break;
         }
-        else
-        {
-            hookable.gameObject.layer = 12;
-            hookable.material = _normalHookable;
-        }
-        
+
     }
 
     public void Initialize(ObjectPool<HookDisabler> op, float radius, float duration, float firstDelay, float cooldown)
@@ -83,7 +100,7 @@ public class HookDisabler : Entity
     {
         foreach (var item in _hookables)
         {
-            ChangeHookable(item, false);
+            ChangeHookable(item, Actions.Activate);
         }
 
         _objectPool.RefillStock(this);

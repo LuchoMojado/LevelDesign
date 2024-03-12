@@ -44,7 +44,7 @@ public static class FlyweightPointer
     {
         _firstDisableDelay=4,
         _disableDuration=1.75f,
-        _disableCooldown=7,
+        _disableCooldown=6,
         _disableRadius = 60
     };
     public static readonly Flyweight HookDisablerLongRange = new Flyweight

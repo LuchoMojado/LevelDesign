@@ -25,7 +25,7 @@ public class LevelManager : MonoBehaviour
         SpawnDisabler(_hookDisablerInLevel[1], FlyweightPointer.HookDisabler._disableRadius, FlyweightPointer.HookDisabler._disableDuration, FlyweightPointer.HookDisabler._firstDisableDelay);
     }
 
-    public HookDisabler SpawnDisabler(Transform transform, float radius = 50, float duration = 2.5f, float firstDelay = 0, float cooldown = 7)
+    public HookDisabler SpawnDisabler(Transform transform, float radius = 50, float duration = 2.5f, float firstDelay = 0, float cooldown = 6)
     {
         var disabler = _disablerPool.Get();
         disabler.transform.position = transform.position;
@@ -35,7 +35,7 @@ public class LevelManager : MonoBehaviour
         return disabler;
     }
 
-    public HookDisabler SpawnDisabler(Vector3 pos, float radius = 50, float duration = 2.5f, float firstDelay = 0, float cooldown = 7)
+    public HookDisabler SpawnDisabler(Vector3 pos, float radius = 50, float duration = 2.5f, float firstDelay = 0, float cooldown = 6)
     {
         var disabler = _disablerPool.Get();
         disabler.transform.position = pos;

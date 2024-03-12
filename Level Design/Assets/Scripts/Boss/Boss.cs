@@ -151,6 +151,8 @@ public class Boss : Rewind, IPlaySound
 
                 lCounter++;
             }
+
+            GameManager.instance.rewinds2.Add(_hands[i]);
         }
 
         _fsm = new FiniteStateMachine();

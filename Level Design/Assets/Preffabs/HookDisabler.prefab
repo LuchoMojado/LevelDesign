@@ -338,6 +338,7 @@ MonoBehaviour:
     m_Bits: 4096
   _normalHookable: {fileID: 2100000, guid: e24799f28aea57f46ae7f4677e051a34, type: 2}
   _disabledHookable: {fileID: 2100000, guid: 0c22a4b21b47d614d8f21e7d910de045, type: 2}
+  _warningHookable: {fileID: 2100000, guid: 45c41417ff890ad44aef9b2921342aaf, type: 2}
 --- !u!1 &1399524356221558091
 GameObject:
   m_ObjectHideFlags: 0

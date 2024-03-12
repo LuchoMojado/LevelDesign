@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public Vector3 checkPointPos;
     public float countObjects = 0;
     public Rewind[] rewinds;
-    public Rewind[] rewinds2;
+    public List<Rewind> rewinds2;
     public string sceneToLoad;
     public int playerDieDistance;
     void Awake()

@@ -14,12 +14,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Blocking.unity
     guid: 128403317c53c834fb40754f6b7366f4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level 3.unity
     guid: 7ee7daa1022f7dc42a681df2a0022fd0
   - enabled: 0
     path: Assets/Scenes/End.unity
     guid: ea8ed33f0d4429b4d9a390439145e55b
+  - enabled: 0
+    path: Assets/Scenes/Level 3.unity
+    guid: 7ee7daa1022f7dc42a681df2a0022fd0
   - enabled: 1
     path: Assets/Scenes/Yea.unity
     guid: 9a99f2a9d7c749c4d96145eb70f1ad8c
